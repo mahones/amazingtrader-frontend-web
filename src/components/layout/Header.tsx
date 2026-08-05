@@ -4,11 +4,29 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { useAuth } from "@/context/AuthContext";
+
+const TELEGRAM_URL = "https://t.me/+Y27TJtoHhdNlZDQ0";
+
+function TelegramButton({ className }: { className?: string }) {
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className={className}
+      render={
+        <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Rejoindre notre Telegram">
+          <Send className="size-5 text-primary" />
+        </a>
+      }
+    />
+  );
+}
 
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
@@ -20,11 +38,18 @@ const NAV_LINKS = [
 
 export function Header() {
   const pathname = usePathname();
-  const { user, isLoading } = useAuth();
+  const router = useRouter();
+  const { user, isLoading, logout } = useAuth();
   const [open, setOpen] = useState(false);
 
+  async function handleLogout() {
+    await logout();
+    setOpen(false);
+    router.push("/");
+  }
+
   return (
-    <header className="dark sticky top-0 z-50 border-b border-border/60 bg-background">
+    <header className="dark sticky top-0 z-50 border-b border-border/60 bg-background text-foreground">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" aria-label="amazingtraders, accueil">
           <Logo className="text-lg" />
@@ -55,8 +80,14 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
+          <TelegramButton />
           {!isLoading && user ? (
-            <Button render={<Link href="/dashboard">Tableau de bord</Link>} />
+            <>
+              <Button variant="ghost" onClick={handleLogout}>
+                Déconnexion
+              </Button>
+              <Button render={<Link href="/dashboard">Tableau de bord</Link>} />
+            </>
           ) : (
             <>
               <Button variant="ghost" render={<Link href="/login">Se connecter</Link>} />
@@ -67,6 +98,7 @@ export function Header() {
 
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
+          <TelegramButton />
           <Button variant="ghost" size="icon" onClick={() => setOpen((o) => !o)} aria-label="Menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </Button>
@@ -88,7 +120,12 @@ export function Header() {
             ))}
             <div className="mt-2 flex gap-2">
               {!isLoading && user ? (
-                <Button className="flex-1" render={<Link href="/dashboard">Tableau de bord</Link>} />
+                <>
+                  <Button variant="ghost" className="flex-1" onClick={handleLogout}>
+                    Déconnexion
+                  </Button>
+                  <Button className="flex-1" render={<Link href="/dashboard">Tableau de bord</Link>} />
+                </>
               ) : (
                 <>
                   <Button

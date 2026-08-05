@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer className="dark border-t border-border/60 bg-background">
+    <footer className="dark border-t border-border/60 bg-background text-foreground">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <Link href="/" aria-label="amazingtraders, accueil">
