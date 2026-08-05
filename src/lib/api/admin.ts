@@ -1,7 +1,7 @@
 import { apiClient } from "./client";
-import type { Course } from "@/types/course";
+import type { Course, Lesson } from "@/types/course";
 import type { LicensePlan } from "@/types/license";
-import type { TradingBot } from "@/types/bot";
+import type { BotAssignment, BotAssignmentStatus, BotTrade, TradingBot } from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { User } from "@/types/user";
 
@@ -31,8 +31,17 @@ export async function deleteAdminCourse(id: number) {
 }
 
 export async function createAdminLesson(courseId: number, payload: Record<string, unknown>) {
-  const { data } = await apiClient.post(`/admin/courses/${courseId}/lessons`, payload);
+  const { data } = await apiClient.post<{ data: Lesson }>(`/admin/courses/${courseId}/lessons`, payload);
   return data.data;
+}
+
+export async function updateAdminLesson(id: number, payload: Record<string, unknown>) {
+  const { data } = await apiClient.put<{ data: Lesson }>(`/admin/lessons/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminLesson(id: number) {
+  await apiClient.delete(`/admin/lessons/${id}`);
 }
 
 // License plans
@@ -61,15 +70,63 @@ export async function fetchAdminTradingBots() {
   return data.data;
 }
 
+export async function fetchAdminTradingBot(id: number) {
+  const { data } = await apiClient.get<{ data: TradingBot }>(`/admin/trading-bots/${id}`);
+  return data.data;
+}
+
 export async function createAdminTradingBot(payload: Partial<TradingBot>) {
   const { data } = await apiClient.post<{ data: TradingBot }>("/admin/trading-bots", payload);
   return data.data;
 }
 
+export async function updateAdminTradingBot(id: number, payload: Partial<TradingBot>) {
+  const { data } = await apiClient.put<{ data: TradingBot }>(`/admin/trading-bots/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminTradingBot(id: number) {
+  await apiClient.delete(`/admin/trading-bots/${id}`);
+}
+
+export async function fetchAdminBotAssignments(botId: number) {
+  const { data } = await apiClient.get<{ data: BotAssignment[] }>(
+    `/admin/trading-bots/${botId}/assignments`
+  );
+  return data.data;
+}
+
 export async function assignBotToUser(botId: number, userId: number) {
-  const { data } = await apiClient.post(`/admin/trading-bots/${botId}/assignments`, {
-    user_id: userId,
+  const { data } = await apiClient.post<{ data: BotAssignment }>(
+    `/admin/trading-bots/${botId}/assignments`,
+    { user_id: userId }
+  );
+  return data.data;
+}
+
+export async function updateAdminBotAssignment(id: number, status: BotAssignmentStatus) {
+  const { data } = await apiClient.put<{ data: BotAssignment }>(`/admin/bot-assignments/${id}`, {
+    status,
   });
+  return data.data;
+}
+
+export async function createAdminBotTrade(
+  assignmentId: number,
+  payload: {
+    pair: string;
+    direction: "buy" | "sell";
+    entry_price: number;
+    exit_price?: number | null;
+    profit_loss?: number | null;
+    opened_at: string;
+    closed_at?: string | null;
+  }
+) {
+  const { data } = await apiClient.post<{ data: BotTrade }>(
+    `/admin/bot-assignments/${assignmentId}/trades`,
+    payload
+  );
   return data.data;
 }
 

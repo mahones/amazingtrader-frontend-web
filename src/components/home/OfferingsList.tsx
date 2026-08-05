@@ -6,32 +6,34 @@ import { ArrowUpRight } from "lucide-react";
 
 const OFFERINGS = [
   {
-    title: "Auto-trading",
+    title: "Intelligence Artificielle",
     description:
       "Souscrivez une licence, connectez votre broker et laissez une stratégie éprouvée trader pour vous — avec un résumé clair de sa logique, pas une boîte noire.",
     href: "/auto-trading",
-    size: "text-4xl sm:text-5xl",
+    size: "text-2xl sm:text-2xl",
   },
   {
-    title: "Bots de trading",
+    title: "Efficacité & Rentabilité",
     description:
       "Des algorithmes aux performances historiques documentées (rendement, drawdown, win rate), attribués à votre compte et suivis en continu.",
     href: "/bot-trading",
-    size: "text-3xl sm:text-4xl",
+    size: "text-2xl sm:text-2xl",
   },
   {
-    title: "Formations",
+    title: "Formation sur mesure",
     description:
       "Des parcours vidéo, du premier ordre aux stratégies avancées, pour comprendre les marchés avant — ou en complément — de l'auto-trading.",
     href: "/formations",
-    size: "text-3xl sm:text-4xl",
+    size: "text-2xl sm:text-2xl",
   },
 ];
 
 export function OfferingsList() {
   return (
-    <section className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
-      <div className="border-t border-border/60">
+    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="border-t border-border/60 text-justify">
+        <h1 className="font-bold text-3xl sm:text-3xl">votre recherche d’une rentabilité constante du trading se termine ici….</h1>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {OFFERINGS.map((offering, index) => (
           <motion.div
             key={offering.title}
@@ -52,6 +54,7 @@ export function OfferingsList() {
             </Link>
           </motion.div>
         ))}
+      </div>
       </div>
     </section>
   );

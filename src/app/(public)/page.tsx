@@ -68,7 +68,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      {/*<section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="rounded-2xl bg-primary px-8 py-12 text-center text-primary-foreground">
           <h2 className="text-3xl font-bold">Prêt à passer au niveau supérieur ?</h2>
           <p className="mt-3 text-primary-foreground/80">
@@ -81,7 +81,7 @@ export default async function HomePage() {
             render={<Link href="/register">Créer mon compte gratuitement</Link>}
           />
         </div>
-      </section>
+      </section>*/}
     </>
   );
 }

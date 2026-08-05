@@ -22,6 +22,7 @@ const CATEGORIES = [
   { value: "Crypto", label: "Crypto" },
   { value: "Bourse", label: "Bourse" },
   { value: "Analyse technique", label: "Analyse technique" },
+  { value: "Trading algorithmique", label: "Trading algorithmique" },
 ];
 
 export function CourseFilters() {

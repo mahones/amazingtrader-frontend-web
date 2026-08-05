@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
-import { apiClient } from "@/lib/api/client";
+import { apiClient, extractApiError } from "@/lib/api/client";
 
 export default function SettingsPage() {
   const { user, refresh } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [profileSaved, setProfileSaved] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -22,10 +23,15 @@ export default function SettingsPage() {
 
   async function handleProfileSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await apiClient.patch("/me", { name, email });
-    await refresh();
-    setProfileSaved(true);
-    setTimeout(() => setProfileSaved(false), 2000);
+    setProfileError(null);
+    try {
+      await apiClient.patch("/me", { name, email });
+      await refresh();
+      setProfileSaved(true);
+      setTimeout(() => setProfileSaved(false), 2000);
+    } catch (err) {
+      setProfileError(extractApiError(err, "Impossible d'enregistrer vos informations."));
+    }
   }
 
   async function handlePasswordSubmit(e: React.FormEvent) {
@@ -42,8 +48,10 @@ export default function SettingsPage() {
       setNewPasswordConfirmation("");
       setPasswordSaved(true);
       setTimeout(() => setPasswordSaved(false), 2000);
-    } catch {
-      setPasswordError("Mot de passe actuel incorrect ou nouveau mot de passe invalide.");
+    } catch (err) {
+      setPasswordError(
+        extractApiError(err, "Mot de passe actuel incorrect ou nouveau mot de passe invalide.")
+      );
     }
   }
 
@@ -65,6 +73,7 @@ export default function SettingsPage() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
+            {profileError && <p className="text-sm text-destructive">{profileError}</p>}
             <Button type="submit">{profileSaved ? "Enregistré ✓" : "Enregistrer"}</Button>
           </form>
         </CardContent>

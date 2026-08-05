@@ -9,7 +9,13 @@ import { Label } from "@/components/ui/label";
 import { VideoPlayer } from "@/components/media/VideoPlayer";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollment, updateEnrollmentProgress } from "@/lib/api/courses";
-import { fetchAdminCourse, createAdminLesson } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
+import {
+  fetchAdminCourse,
+  createAdminLesson,
+  updateAdminLesson,
+  deleteAdminLesson,
+} from "@/lib/api/admin";
 import type { Enrollment, Lesson } from "@/types/course";
 import type { Course } from "@/types/course";
 
@@ -110,32 +116,46 @@ function AdminCourseView({ courseId }: { courseId: number }) {
   const [title, setTitle] = useState("");
   const [videoId, setVideoId] = useState("");
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
+
+  async function reload() {
+    const refreshed = await fetchAdminCourse(courseId);
+    setCourse(refreshed);
+  }
 
   useEffect(() => {
-    fetchAdminCourse(courseId).then(setCourse);
+    reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
   if (!course) return <p className="text-muted-foreground">Chargement...</p>;
 
   async function handleAddLesson(e: React.FormEvent) {
     e.preventDefault();
-    if (!course) return;
+    setError(null);
     setPending(true);
     try {
-      await createAdminLesson(course.id, {
+      await createAdminLesson(courseId, {
         title,
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         video_provider: "vimeo",
         video_id: videoId,
         is_preview: false,
       });
-      const refreshed = await fetchAdminCourse(course.id);
-      setCourse(refreshed);
+      await reload();
       setTitle("");
       setVideoId("");
+    } catch (err) {
+      setError(extractApiError(err, "Impossible d'ajouter la leçon."));
     } finally {
       setPending(false);
     }
+  }
+
+  async function handleDeleteLesson(lessonId: number) {
+    await deleteAdminLesson(lessonId);
+    await reload();
   }
 
   return (
@@ -158,9 +178,31 @@ function AdminCourseView({ courseId }: { courseId: number }) {
         </CardHeader>
         <CardContent className="space-y-4">
           <ul className="divide-y divide-border">
-            {course.lessons?.map((lesson) => (
-              <li key={lesson.id} className="py-2 text-sm">{lesson.title}</li>
-            ))}
+            {course.lessons?.map((lesson) =>
+              editingLessonId === lesson.id ? (
+                <LessonEditRow
+                  key={lesson.id}
+                  lesson={lesson}
+                  onCancel={() => setEditingLessonId(null)}
+                  onSaved={async () => {
+                    setEditingLessonId(null);
+                    await reload();
+                  }}
+                />
+              ) : (
+                <li key={lesson.id} className="flex items-center justify-between gap-3 py-2 text-sm">
+                  <span>{lesson.title}</span>
+                  <div className="flex shrink-0 gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setEditingLessonId(lesson.id)}>
+                      Modifier
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDeleteLesson(lesson.id)}>
+                      Supprimer
+                    </Button>
+                  </div>
+                </li>
+              )
+            )}
           </ul>
 
           <form onSubmit={handleAddLesson} className="grid gap-3 border-t border-border pt-4 sm:grid-cols-3">
@@ -172,6 +214,7 @@ function AdminCourseView({ courseId }: { courseId: number }) {
               <Label htmlFor="lesson-video">ID vidéo Vimeo</Label>
               <Input id="lesson-video" value={videoId} onChange={(e) => setVideoId(e.target.value)} />
             </div>
+            {error && <p className="text-sm text-destructive sm:col-span-3">{error}</p>}
             <Button type="submit" disabled={pending} className="sm:col-span-3">
               {pending ? "Ajout..." : "Ajouter la leçon"}
             </Button>
@@ -179,5 +222,67 @@ function AdminCourseView({ courseId }: { courseId: number }) {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function LessonEditRow({
+  lesson,
+  onCancel,
+  onSaved,
+}: {
+  lesson: Lesson;
+  onCancel: () => void;
+  onSaved: () => void;
+}) {
+  const [title, setTitle] = useState(lesson.title);
+  const [videoId, setVideoId] = useState(lesson.video_id ?? "");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setPending(true);
+    try {
+      await updateAdminLesson(lesson.id, {
+        title,
+        slug: lesson.slug,
+        video_provider: lesson.video_provider ?? "vimeo",
+        video_id: videoId,
+        is_preview: lesson.is_preview,
+      });
+      onSaved();
+    } catch (err) {
+      setError(extractApiError(err, "Impossible d'enregistrer la leçon."));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <li className="py-2">
+      <form onSubmit={handleSave} className="grid gap-2 sm:grid-cols-3">
+        <Input
+          className="sm:col-span-2"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <Input
+          placeholder="ID vidéo Vimeo"
+          value={videoId}
+          onChange={(e) => setVideoId(e.target.value)}
+        />
+        {error && <p className="text-sm text-destructive sm:col-span-3">{error}</p>}
+        <div className="flex gap-2 sm:col-span-3">
+          <Button type="submit" size="sm" disabled={pending}>
+            {pending ? "Enregistrement..." : "Enregistrer"}
+          </Button>
+          <Button type="button" variant="outline" size="sm" onClick={onCancel}>
+            Annuler
+          </Button>
+        </div>
+      </form>
+    </li>
   );
 }

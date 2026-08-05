@@ -1,3 +1,5 @@
+import type { User } from "./user";
+
 export type BotAssignmentStatus = "active" | "paused" | "stopped";
 export type TradeDirection = "buy" | "sell";
 
@@ -19,6 +21,7 @@ export interface BotAssignment {
   status: BotAssignmentStatus;
   assigned_at: string | null;
   trading_bot: TradingBot;
+  user?: User;
 }
 
 export interface BotTrade {

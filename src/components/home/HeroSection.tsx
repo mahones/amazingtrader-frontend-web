@@ -22,7 +22,7 @@ function ChartLine() {
         strokeLinejoin="round"
         fill="none"
         initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 0.5 }}
+        animate={{ pathLength: 1, opacity: 1 }}
         transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
       />
       <motion.path
