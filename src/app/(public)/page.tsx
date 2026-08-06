@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/cards/CourseCard";
 import { BotPerformanceCard } from "@/components/cards/BotPerformanceCard";
 import { ArticleCard } from "@/components/cards/ArticleCard";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OfferingsList } from "@/components/home/OfferingsList";
+import { FounderSection } from "@/components/home/FounderSection";
 import { getCourses, getPosts, getTradingBots } from "@/lib/api/server";
 
 export default async function HomePage() {
@@ -19,6 +19,8 @@ export default async function HomePage() {
       <HeroSection />
 
       <OfferingsList />
+
+      <FounderSection />
 
       {bots.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

@@ -5,12 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PurchaseButton } from "@/components/purchase/PurchaseButton";
 import { formatCurrency } from "@/lib/utils";
 import { getCourse } from "@/lib/api/server";
-
-const LEVEL_LABELS: Record<string, string> = {
-  beginner: "Débutant",
-  intermediate: "Intermédiaire",
-  advanced: "Avancé",
-};
+import { LEVEL_BADGE_CLASSES, LEVEL_LABELS } from "@/lib/course-level";
 
 export default async function CourseDetailPage({
   params,
@@ -30,7 +25,7 @@ export default async function CourseDetailPage({
         <div className="lg:col-span-2">
           <div className="flex items-center gap-2">
             {course.category && <Badge variant="secondary">{course.category}</Badge>}
-            <Badge className="gap-1">
+            <Badge className={`gap-1 ${LEVEL_BADGE_CLASSES[course.level] ?? ""}`}>
               <Signal className="size-3" />
               {LEVEL_LABELS[course.level] ?? course.level}
             </Badge>

@@ -4,13 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
+import { LEVEL_BADGE_CLASSES, LEVEL_LABELS } from "@/lib/course-level";
 import type { Course } from "@/types/course";
-
-const LEVEL_LABELS: Record<string, string> = {
-  beginner: "Débutant",
-  intermediate: "Intermédiaire",
-  advanced: "Avancé",
-};
 
 export function CourseCard({ course }: { course: Course }) {
   return (
@@ -18,7 +13,7 @@ export function CourseCard({ course }: { course: Course }) {
       <CardHeader>
         <div className="flex items-center gap-2">
           {course.category && <Badge variant="secondary">{course.category}</Badge>}
-          <Badge className="gap-1">
+          <Badge className={`gap-1 ${LEVEL_BADGE_CLASSES[course.level] ?? ""}`}>
             <Signal className="size-3" />
             {LEVEL_LABELS[course.level] ?? course.level}
           </Badge>
