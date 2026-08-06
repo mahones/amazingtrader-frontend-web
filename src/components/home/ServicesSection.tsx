@@ -29,13 +29,13 @@ const services = [
 
 export function ServicesSection() {
   return (
-    <section className="bg-primary py-16">
+    <section className="bg-neutral-900 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div>
-          <span className="text-sm font-semibold text-black">
+          <span className="text-sm font-semibold text-primary">
             Ce que nous proposons
           </span>
-          <h2 className="mt-3 text-4xl font-bold text-black sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-bold text-black sm:text-5xl text-slate-300">
             Nos services
           </h2>
         </div>
@@ -47,7 +47,7 @@ export function ServicesSection() {
               href={service.href}
               className="group block"
             >
-              <Card className="h-full overflow-hidden border border-white/25 bg-white/20 py-12 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30">
+              <Card className="h-full overflow-hidden border border-[#F2F2F2]/25 bg-neutral-800/60 py-12 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30 hover:border-amber-500">
                 {/* <div className="relative aspect-[16/9] w-full overflow-hidden">
                   <Image
                     src={service.image}
@@ -58,12 +58,12 @@ export function ServicesSection() {
                   />
                 </div> */}
                 <CardHeader>
-                  <CardTitle className="text-xl font-bold text-white">
+                  <CardTitle className="text-xl font-bold text-slate-300">
                     {service.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-white text-pretty">
+                  <p className="text-sm text-slate-300 text-pretty">
                     {service.description}
                   </p>
                 </CardContent>
