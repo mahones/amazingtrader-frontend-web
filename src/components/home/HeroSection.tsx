@@ -45,7 +45,7 @@ function ChartLine() {
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden border-b border-border/60 bg-background">
+    <section className="relative overflow-hidden bg-background">
       <div className="absolute inset-x-0 bottom-0 h-[55%] opacity-90">
         <ChartLine />
       </div>
@@ -59,14 +59,16 @@ export function HeroSection() {
           className="max-w-2xl"
         >
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-6xl">
-            Automatisez votre trading,{" "}
-            <span className="text-primary">accompagné</span> à chaque étape
+            Devenez rentable grâce à nos <span className="text-primary">formations</span> et à notre <span className="text-primary">intelligence artificielle</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
-            amazingtraders combine des formations claires et des licences
+            Nous sommes une startup qui innove dans le trading algorithmique
+            et propose aux traders un système simple et rentable. Nos robots analysent
+            les marchés pour vous, nos experts vous guident jusqu&apos;à la rentabilité.
+            {/* amazingtraders combine des formations claires et des licences
             d&apos;auto-trading transparentes : vous comprenez chaque stratégie
             avant de lui confier votre capital, avec un vrai accompagnement,
-            pas une boîte noire.
+            pas une boîte noire. */}
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button size="lg" render={
