@@ -48,7 +48,7 @@ export default function DashboardOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Bonjour, {user?.name} 👋</h1>
+        <h1 className="text-2xl font-bold">Bonjour, <span className="text-primary">{user?.name}</span></h1>
         <p className="text-muted-foreground">
           {isStaff
             ? "Voici un aperçu de l'activité de la plateforme."
