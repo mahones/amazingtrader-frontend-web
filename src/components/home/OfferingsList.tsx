@@ -1,29 +1,34 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import { BookOpen, Cpu, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const STATS = [
+const STATS: {
+  value: string;
+  label: string;
+  icon: LucideIcon;
+}[] = [
   {
     value: "Intelligence Artificielle",
     label: "Traders formés",
-    href: "/auto-trading",
+    icon: Cpu,
   },
   {
     value: "Efficacité & Rentabilité",
     label: "Marchés scannés",
-    href: "/bot-trading",
+    icon: TrendingUp,
   },
   {
     value: "Formation sur mesure",
     label: "Disponibilité",
-    href: "/formations",
+    icon: BookOpen,
   },
 ];
 
 export function OfferingsList() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div>
         <h1 className="text-center  text-2xl sm:text-2xl">
           Votre recherche d’une rentabilité constante du trading se termine
@@ -44,14 +49,10 @@ export function OfferingsList() {
               }}
               className="rounded-2xl border border-primary/25 bg-primary/10 px-6 py-6 text-center backdrop-blur-md"
             >
-              <Link href={stat.href}>
-                <div className="text-2xl font-extrabold tracking-tight sm:text-2xl">
-                  {stat.value}
-                </div>
-                {/*<div className="mt-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                  {stat.label}
-                </div>*/}
-              </Link>
+              <stat.icon className="mx-auto mb-4 h-10 w-10 text-primary" />
+              <div className="text-2xl tracking-tight sm:text-2xl">
+                {stat.value}
+              </div>
             </motion.div>
           ))}
         </div>

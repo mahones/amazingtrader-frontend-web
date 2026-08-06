@@ -25,7 +25,7 @@ export function FounderSection() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center sm:text-left"
         >
-          <Eyebrow>Qui sommes nous ?</Eyebrow>
+          <span className="text-sm font-semibold">Qui sommes nous ?</span>
           <h2 className="mt-3 text-4xl font-bold text-primary sm:text-5xl">
             Amazing Traders
           </h2>
@@ -61,9 +61,9 @@ export function FounderSection() {
             Mon Histoire
           </Button>
 
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <Eyebrow>J&apos;étais comme toi</Eyebrow>
-          </div>
+          </div> */}
         </motion.div>
 
         <motion.div
@@ -72,7 +72,7 @@ export function FounderSection() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         >
-          <div className="relative aspect-[4/5] w-full max-w-[450px] mx-auto overflow-hidden rounded-2xl flex flex-col justify-end">
+          <div className="relative aspect-[4/5] w-full max-w-[450px] ml-auto overflow-hidden rounded-2xl flex flex-col justify-end">
             <Image
               src="/profil22.webp"
               alt="Rodolphe SEDJRO, CEO d'amazingtraders"
@@ -82,7 +82,7 @@ export function FounderSection() {
               priority
             />
           </div>
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-end">
             <Eyebrow>CEO</Eyebrow>
           </div>
         </motion.div>
