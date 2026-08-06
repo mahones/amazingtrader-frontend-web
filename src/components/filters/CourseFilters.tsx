@@ -30,9 +30,9 @@ export function CourseFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function updateParam(key: string, value: string) {
+  function updateParam(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
+    if (!value || value === "all") {
       params.delete(key);
     } else {
       params.set(key, value);

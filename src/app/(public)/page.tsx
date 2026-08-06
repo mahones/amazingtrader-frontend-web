@@ -1,17 +1,25 @@
 import Link from "next/link";
-import { CourseCard } from "@/components/cards/CourseCard";
-import { BotPerformanceCard } from "@/components/cards/BotPerformanceCard";
+// import { CourseCard } from "@/components/cards/CourseCard";
+// import { BotPerformanceCard } from "@/components/cards/BotPerformanceCard";
 import { ArticleCard } from "@/components/cards/ArticleCard";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OfferingsList } from "@/components/home/OfferingsList";
 import { FounderSection } from "@/components/home/FounderSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
-import { getCourses, getPosts, getTradingBots } from "@/lib/api/server";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { 
+  // getCourses,
+  getPosts, 
+  // getTradingBots
+ } from "@/lib/api/server";
 
 export default async function HomePage() {
-  const [courses, bots, posts] = await Promise.all([
-    getCourses().catch(() => []),
-    getTradingBots().catch(() => []),
+  const [
+    // courses,
+    // bots,
+    posts] = await Promise.all([
+    // getCourses().catch(() => []),
+    // getTradingBots().catch(() => []),
     getPosts().catch(() => []),
   ]);
 
@@ -25,37 +33,7 @@ export default async function HomePage() {
 
       <ServicesSection />
 
-      {bots.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-bold">Nos bots les plus performants</h2>
-            <Link href="/bot-trading" className="text-sm font-medium text-primary hover:underline">
-              Voir tout
-            </Link>
-          </div>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {bots.slice(0, 3).map((bot) => (
-              <BotPerformanceCard key={bot.id} bot={bot} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {courses.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-bold">Formations populaires</h2>
-            <Link href="/formations" className="text-sm font-medium text-primary hover:underline">
-              Voir tout
-            </Link>
-          </div>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.slice(0, 3).map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
-        </section>
-      )}
+      <TestimonialsSection />
 
       {posts.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

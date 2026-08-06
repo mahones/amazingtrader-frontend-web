@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -47,7 +47,7 @@ export function ServicesSection() {
               href={service.href}
               className="group block"
             >
-              <Card className="h-full overflow-hidden border border-[#F2F2F2]/25 bg-neutral-800/60 py-12 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30 hover:border-amber-500">
+              <Card className="h-full overflow-hidden border border-[#F2F2F2]/25 bg-neutral-800/60 py-10 px-4 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30 hover:border-amber-500">
                 {/* <div className="relative aspect-[16/9] w-full overflow-hidden">
                   <Image
                     src={service.image}

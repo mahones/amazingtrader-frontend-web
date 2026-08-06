@@ -22,9 +22,9 @@ export function PostFilters() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function updateParam(value: string) {
+  function updateParam(value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
+    if (!value || value === "all") {
       params.delete("category");
     } else {
       params.set("category", value);
@@ -34,7 +34,7 @@ export function PostFilters() {
 
   return (
     <Select
-      defaultValue={searchParams.get("category") ?? "all"}
+      value={searchParams.get("category") ?? "all"}
       onValueChange={updateParam}
     >
       <SelectTrigger className="w-[220px]">
