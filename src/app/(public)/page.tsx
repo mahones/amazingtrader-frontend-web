@@ -7,6 +7,7 @@ import { OfferingsList } from "@/components/home/OfferingsList";
 import { FounderSection } from "@/components/home/FounderSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { PortfolioSection } from "@/components/home/PortfolioSection";
 import { 
   // getCourses,
   getPosts, 
@@ -50,6 +51,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <PortfolioSection />
 
       {/*<section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="rounded-2xl bg-primary px-8 py-12 text-center text-primary-foreground">
