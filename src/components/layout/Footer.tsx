@@ -4,7 +4,7 @@ import { Logo } from "./Logo";
 export function Footer() {
   return (
     <footer className="dark border-t border-border/60 bg-background text-foreground">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
           <Link href="/" aria-label="amazingtraders, accueil">
             <Logo className="text-lg" />
@@ -30,6 +30,15 @@ export function Footer() {
             <li><Link href="/login" className="hover:text-primary">Se connecter</Link></li>
             <li><Link href="/register" className="hover:text-primary">S&apos;inscrire</Link></li>
             <li><Link href="/dashboard" className="hover:text-primary">Tableau de bord</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold">Documents légaux</h3>
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <li><Link href="/termes-et-conditions" className="hover:text-primary">Termes et conditions</Link></li>
+            <li><Link href="/divulgation-des-risques" className="hover:text-primary">Divulgation des risques</Link></li>
+            <li><Link href="/politique-de-confidentialite" className="hover:text-primary">Politique de confidentialité</Link></li>
           </ul>
         </div>
 

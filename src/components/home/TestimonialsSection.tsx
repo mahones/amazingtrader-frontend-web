@@ -1,28 +1,19 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ImageIcon, PlayCircle } from "lucide-react";
+import Image from "next/image";
 
-interface TestimonialItem {
-  type: "image" | "video";
-  caption: string;
-}
-
-const testimonials: TestimonialItem[] = [
-  { type: "image", caption: "Témoignage client" },
-  { type: "video", caption: "Témoignage vidéo" },
-  { type: "image", caption: "Témoignage client" },
-  { type: "video", caption: "Témoignage vidéo" },
-  { type: "image", caption: "Témoignage client" },
-  { type: "video", caption: "Témoignage vidéo" },
-];
+const TESTIMONIAL_IMAGES = Array.from(
+  { length: 26 },
+  (_, i) => `/testimonies/testimony-${String(i + 1).padStart(2, "0")}.jpg`,
+);
 
 const SCROLL_SPEED_PX_PER_FRAME = 0.6;
 
 export function TestimonialsSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
-  const loop = [...testimonials, ...testimonials];
+  const loop = [...TESTIMONIAL_IMAGES, ...TESTIMONIAL_IMAGES];
 
   useEffect(() => {
     const track = trackRef.current;
@@ -70,18 +61,17 @@ export function TestimonialsSection() {
         }}
         className="mt-12 flex gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [&::-webkit-scrollbar]:hidden"
       >
-        {loop.map((item, index) => (
+        {loop.map((src, index) => (
           <div key={index} className="w-72 shrink-0">
-            <div className="relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-2xl border border-border bg-muted">
-              {item.type === "video" ? (
-                <PlayCircle className="size-14 text-muted-foreground" />
-              ) : (
-                <ImageIcon className="size-14 text-muted-foreground" />
-              )}
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-muted">
+              <Image
+                src={src}
+                alt="Témoignage client"
+                fill
+                sizes="288px"
+                className="object-cover"
+              />
             </div>
-            <p className="mt-3 text-center text-sm text-muted-foreground">
-              {item.caption}
-            </p>
           </div>
         ))}
       </div>
