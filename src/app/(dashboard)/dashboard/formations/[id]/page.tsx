@@ -1,12 +1,12 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { VideoPlayer } from "@/components/media/VideoPlayer";
+import { EMPTY_LESSON_DRAFT, LessonFields, type LessonDraft } from "@/components/forms/LessonFields";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollment, updateEnrollmentProgress } from "@/lib/api/courses";
 import { extractApiError } from "@/lib/api/client";
@@ -73,7 +73,12 @@ function StudentCourseView({ enrollmentId }: { enrollmentId: number }) {
         {activeLesson && (
           <div>
             <h2 className="text-lg font-semibold">{activeLesson.title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{activeLesson.description}</p>
+            {activeLesson.description && (
+              <div
+                className="mt-1 space-y-2 text-sm leading-relaxed text-muted-foreground [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(activeLesson.description) }}
+              />
+            )}
             <Button
               variant={completed.has(activeLesson.id) ? "secondary" : "default"}
               className="mt-3"
@@ -113,8 +118,7 @@ function StudentCourseView({ enrollmentId }: { enrollmentId: number }) {
 
 function AdminCourseView({ courseId }: { courseId: number }) {
   const [course, setCourse] = useState<Course | null>(null);
-  const [title, setTitle] = useState("");
-  const [videoId, setVideoId] = useState("");
+  const [draft, setDraft] = useState<LessonDraft>(EMPTY_LESSON_DRAFT);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
@@ -137,15 +141,16 @@ function AdminCourseView({ courseId }: { courseId: number }) {
     setPending(true);
     try {
       await createAdminLesson(courseId, {
-        title,
-        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        video_provider: "vimeo",
-        video_id: videoId,
-        is_preview: false,
+        title: draft.title,
+        slug: `${draft.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${(course?.lessons?.length ?? 0) + 1}`,
+        position: course?.lessons?.length ?? 0,
+        description: draft.description,
+        video_provider: draft.video_id ? "vimeo" : null,
+        video_id: draft.video_id || null,
+        is_preview: draft.is_preview,
       });
       await reload();
-      setTitle("");
-      setVideoId("");
+      setDraft(EMPTY_LESSON_DRAFT);
     } catch (err) {
       setError(extractApiError(err, "Impossible d'ajouter la leçon."));
     } finally {
@@ -205,17 +210,11 @@ function AdminCourseView({ courseId }: { courseId: number }) {
             )}
           </ul>
 
-          <form onSubmit={handleAddLesson} className="grid gap-3 border-t border-border pt-4 sm:grid-cols-3">
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="lesson-title">Titre de la leçon</Label>
-              <Input id="lesson-title" required value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lesson-video">ID vidéo Vimeo</Label>
-              <Input id="lesson-video" value={videoId} onChange={(e) => setVideoId(e.target.value)} />
-            </div>
-            {error && <p className="text-sm text-destructive sm:col-span-3">{error}</p>}
-            <Button type="submit" disabled={pending} className="sm:col-span-3">
+          <form onSubmit={handleAddLesson} className="space-y-4 border-t border-border pt-4">
+            <p className="text-sm font-medium">Ajouter une leçon</p>
+            <LessonFields value={draft} onChange={setDraft} idPrefix="new-lesson" />
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" disabled={pending}>
               {pending ? "Ajout..." : "Ajouter la leçon"}
             </Button>
           </form>
@@ -234,8 +233,12 @@ function LessonEditRow({
   onCancel: () => void;
   onSaved: () => void;
 }) {
-  const [title, setTitle] = useState(lesson.title);
-  const [videoId, setVideoId] = useState(lesson.video_id ?? "");
+  const [draft, setDraft] = useState<LessonDraft>({
+    title: lesson.title,
+    video_id: lesson.video_id ?? "",
+    description: lesson.description ?? "",
+    is_preview: lesson.is_preview,
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -245,11 +248,12 @@ function LessonEditRow({
     setPending(true);
     try {
       await updateAdminLesson(lesson.id, {
-        title,
+        title: draft.title,
         slug: lesson.slug,
-        video_provider: lesson.video_provider ?? "vimeo",
-        video_id: videoId,
-        is_preview: lesson.is_preview,
+        description: draft.description,
+        video_provider: draft.video_id ? "vimeo" : null,
+        video_id: draft.video_id || null,
+        is_preview: draft.is_preview,
       });
       onSaved();
     } catch (err) {
@@ -260,21 +264,11 @@ function LessonEditRow({
   }
 
   return (
-    <li className="py-2">
-      <form onSubmit={handleSave} className="grid gap-2 sm:grid-cols-3">
-        <Input
-          className="sm:col-span-2"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <Input
-          placeholder="ID vidéo Vimeo"
-          value={videoId}
-          onChange={(e) => setVideoId(e.target.value)}
-        />
-        {error && <p className="text-sm text-destructive sm:col-span-3">{error}</p>}
-        <div className="flex gap-2 sm:col-span-3">
+    <li className="py-4">
+      <form onSubmit={handleSave} className="space-y-4">
+        <LessonFields value={draft} onChange={setDraft} idPrefix={`lesson-${lesson.id}`} />
+        {error && <p className="text-sm text-destructive">{error}</p>}
+        <div className="flex gap-2">
           <Button type="submit" size="sm" disabled={pending}>
             {pending ? "Enregistrement..." : "Enregistrer"}
           </Button>

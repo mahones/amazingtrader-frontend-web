@@ -2,23 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
+import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
-import { extractApiError } from "@/lib/api/client";
 import { fetchMyBotAssignments } from "@/lib/api/bots";
-import { deleteAdminTradingBot, fetchAdminTradingBots, createAdminTradingBot } from "@/lib/api/admin";
+import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import type { BotAssignment, TradingBot } from "@/types/bot";
 
 export default function DashboardBotsPage() {
   const { isStaff } = useAuth();
   const [assignments, setAssignments] = useState<BotAssignment[] | null>(null);
   const [bots, setBots] = useState<TradingBot[] | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
 
   async function reloadBots() {
     const refreshed = await fetchAdminTradingBots();
@@ -43,19 +40,14 @@ export default function DashboardBotsPage() {
             <h1 className="text-2xl font-bold">Bots de trading</h1>
             <p className="text-muted-foreground">Gérez les bots proposés et leurs attributions.</p>
           </div>
-          <Button onClick={() => setShowCreate((v) => !v)}>
-            {showCreate ? "Annuler" : "Nouveau bot"}
-          </Button>
-        </div>
-
-        {showCreate && (
-          <CreateBotForm
-            onCreated={async () => {
-              setShowCreate(false);
-              await reloadBots();
-            }}
+          <Button
+            render={
+              <Link href="/dashboard/bots/new">
+                <Plus className="mr-1 size-4" /> Nouveau bot
+              </Link>
+            }
           />
-        )}
+        </div>
 
         <div className="grid gap-4">
           {bots === null && <p className="text-muted-foreground">Chargement...</p>}
@@ -75,7 +67,12 @@ export default function DashboardBotsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/dashboard/bots/${bot.id}`}>Gérer</Link>}
+                    render={<Link href={`/dashboard/bots/${bot.id}/edit`}>Modifier le contenu</Link>}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/dashboard/bots/${bot.id}`}>Attributions</Link>}
                   />
                   <Button variant="outline" size="sm" onClick={() => handleDeleteBot(bot.id)}>
                     Supprimer
@@ -114,7 +111,10 @@ export default function DashboardBotsPage() {
               </Badge>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">{assignment.trading_bot.description}</p>
+              <div
+                className="line-clamp-3 text-sm text-muted-foreground [&_p]:inline"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(assignment.trading_bot.description) }}
+              />
               <Button
                 variant="outline"
                 className="mt-3"
@@ -125,62 +125,5 @@ export default function DashboardBotsPage() {
         ))}
       </div>
     </div>
-  );
-}
-
-function CreateBotForm({ onCreated }: { onCreated: () => void }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setPending(true);
-    try {
-      await createAdminTradingBot({
-        name,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        description,
-        is_active: true,
-      });
-      setName("");
-      setDescription("");
-      onCreated();
-    } catch (err) {
-      setError(extractApiError(err, "Impossible de créer le bot."));
-    } finally {
-      setPending(false);
-    }
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Nouveau bot</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="bot-name">Nom</Label>
-            <Input id="bot-name" required value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="bot-description">Description</Label>
-            <Textarea
-              id="bot-description"
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={pending}>
-            {pending ? "Création..." : "Créer le bot"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
   );
 }

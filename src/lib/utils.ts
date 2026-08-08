@@ -13,3 +13,7 @@ export function formatDate(date: string | null) {
   if (!date) return "-"
   return new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(new Date(date))
 }
+
+export function stripHtml(html: string) {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+}

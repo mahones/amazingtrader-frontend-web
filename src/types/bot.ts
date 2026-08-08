@@ -2,11 +2,43 @@ import type { User } from "./user";
 
 export type BotAssignmentStatus = "active" | "paused" | "stopped";
 export type TradeDirection = "buy" | "sell";
+export type PerformancePlatform = "myfxbook" | "mql5" | "other";
+export type BotLicenseOfferType = "time_limited" | "lifetime";
+
+export interface BotRequirement {
+  id: number;
+  label: string;
+  position: number;
+}
+
+export interface BotPerformanceLink {
+  id: number;
+  platform: PerformancePlatform;
+  label: string;
+  url: string;
+  position: number;
+}
+
+export interface BotLicensePlan {
+  id: number;
+  trading_bot_id: number;
+  offer_type: BotLicenseOfferType;
+  name: string;
+  description: string | null;
+  duration_days: number | null;
+  price: number;
+  features: string[];
+  is_featured: boolean;
+  is_active: boolean;
+  position: number;
+  purchase_count?: number;
+}
 
 export interface TradingBot {
   id: number;
   name: string;
   slug: string;
+  image_url: string | null;
   description: string;
   strategy_summary: string | null;
   pairs_traded: string[];
@@ -14,6 +46,19 @@ export interface TradingBot {
   drawdown_percent: number | null;
   win_rate_percent: number | null;
   is_active: boolean;
+  requirements?: BotRequirement[];
+  performance_links?: BotPerformanceLink[];
+  license_plans?: BotLicensePlan[];
+}
+
+export interface UserBotLicense {
+  id: number;
+  license_key: string;
+  status: "active" | "expired" | "revoked";
+  broker_config: Record<string, unknown> | null;
+  activated_at: string | null;
+  expires_at: string | null;
+  bot_license_plan: BotLicensePlan;
 }
 
 export interface BotAssignment {

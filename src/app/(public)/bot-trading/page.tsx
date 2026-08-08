@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BotPerformanceCard } from "@/components/cards/BotPerformanceCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { getTradingBots } from "@/lib/api/server";
@@ -17,7 +18,9 @@ export default async function BotTradingPage() {
 
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {bots.map((bot) => (
-          <BotPerformanceCard key={bot.id} bot={bot} />
+          <Link key={bot.id} href={`/bot-trading/${bot.slug}`} className="block">
+            <BotPerformanceCard bot={bot} />
+          </Link>
         ))}
       </div>
 

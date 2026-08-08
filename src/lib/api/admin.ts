@@ -1,7 +1,15 @@
 import { apiClient } from "./client";
 import type { Course, Lesson } from "@/types/course";
 import type { LicensePlan } from "@/types/license";
-import type { BotAssignment, BotAssignmentStatus, BotTrade, TradingBot } from "@/types/bot";
+import type {
+  BotAssignment,
+  BotAssignmentStatus,
+  BotLicensePlan,
+  BotPerformanceLink,
+  BotRequirement,
+  BotTrade,
+  TradingBot,
+} from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { User } from "@/types/user";
 
@@ -109,6 +117,66 @@ export async function updateAdminBotAssignment(id: number, status: BotAssignment
     status,
   });
   return data.data;
+}
+
+// Bot requirements
+export async function createAdminBotRequirement(botId: number, payload: Partial<BotRequirement>) {
+  const { data } = await apiClient.post<{ data: BotRequirement }>(
+    `/admin/trading-bots/${botId}/requirements`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBotRequirement(id: number, payload: Partial<BotRequirement>) {
+  const { data } = await apiClient.put<{ data: BotRequirement }>(`/admin/bot-requirements/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBotRequirement(id: number) {
+  await apiClient.delete(`/admin/bot-requirements/${id}`);
+}
+
+// Bot performance links
+export async function createAdminBotPerformanceLink(
+  botId: number,
+  payload: Partial<BotPerformanceLink>
+) {
+  const { data } = await apiClient.post<{ data: BotPerformanceLink }>(
+    `/admin/trading-bots/${botId}/performance-links`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBotPerformanceLink(id: number, payload: Partial<BotPerformanceLink>) {
+  const { data } = await apiClient.put<{ data: BotPerformanceLink }>(
+    `/admin/bot-performance-links/${id}`,
+    payload
+  );
+  return data.data;
+}
+
+export async function deleteAdminBotPerformanceLink(id: number) {
+  await apiClient.delete(`/admin/bot-performance-links/${id}`);
+}
+
+// Bot license plans
+export async function createAdminBotLicensePlan(botId: number, payload: Partial<BotLicensePlan>) {
+  const { data } = await apiClient.post<{ data: BotLicensePlan }>(
+    `/admin/trading-bots/${botId}/license-plans`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBotLicensePlan(id: number, payload: Partial<BotLicensePlan>) {
+  const { data } = await apiClient.put<{ data: BotLicensePlan }>(`/admin/bot-license-plans/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBotLicensePlan(id: number) {
+  await apiClient.delete(`/admin/bot-license-plans/${id}`);
 }
 
 export async function createAdminBotTrade(

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import DOMPurify from "isomorphic-dompurify";
 import { Clock, Lock, PlayCircle, Signal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,8 @@ export default async function CourseDetailPage({
     notFound();
   }
 
+  const sanitizedDescription = DOMPurify.sanitize(course.description);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="grid gap-10 lg:grid-cols-3">
@@ -31,7 +34,10 @@ export default async function CourseDetailPage({
             </Badge>
           </div>
           <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{course.title}</h1>
-          <p className="mt-4 text-muted-foreground">{course.description}</p>
+          <div
+            className="mt-4 max-w-none space-y-4 leading-relaxed text-muted-foreground [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_img]:rounded-lg [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5"
+            dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+          />
 
           <div className="mt-4 flex items-center gap-1 text-sm text-muted-foreground">
             <Clock className="size-4" />

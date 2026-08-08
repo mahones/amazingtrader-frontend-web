@@ -2,6 +2,7 @@ import type { Course } from "@/types/course";
 import type { LicensePlan } from "@/types/license";
 import type { TradingBot } from "@/types/bot";
 import type { Post } from "@/types/post";
+import type { Broker } from "@/types/broker";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -34,6 +35,16 @@ export async function getLicensePlans() {
 
 export async function getTradingBots() {
   const { data } = await getJson<{ data: TradingBot[] }>("/trading-bots");
+  return data;
+}
+
+export async function getTradingBot(slug: string) {
+  const { data } = await getJson<{ data: TradingBot }>(`/trading-bots/${slug}`);
+  return data;
+}
+
+export async function getBrokers() {
+  const { data } = await getJson<{ data: Broker[] }>("/brokers");
   return data;
 }
 

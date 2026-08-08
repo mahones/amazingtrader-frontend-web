@@ -1,7 +1,7 @@
 import { apiClient } from "./client";
 import type { Order } from "@/types/order";
 
-export type PurchasableType = "course" | "license_plan";
+export type PurchasableType = "course" | "license_plan" | "bot_license_plan";
 
 export async function createOrder(items: { type: PurchasableType; id: number; quantity?: number }[]) {
   const { data } = await apiClient.post<{ data: Order }>("/orders", { items });

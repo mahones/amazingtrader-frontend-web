@@ -1,0 +1,286 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { extractApiError } from "@/lib/api/client";
+import {
+  createAdminBotLicensePlan,
+  deleteAdminBotLicensePlan,
+  updateAdminBotLicensePlan,
+} from "@/lib/api/admin";
+import { formatCurrency } from "@/lib/utils";
+import type { BotLicenseOfferType, BotLicensePlan } from "@/types/bot";
+
+const OFFER_LABELS: Record<BotLicenseOfferType, string> = {
+  time_limited: "Time-limited offer",
+  lifetime: "Lifetime offer",
+};
+
+interface PlanDraft {
+  offer_type: BotLicenseOfferType;
+  name: string;
+  description: string;
+  duration_days: string;
+  price: string;
+  features: string;
+  is_featured: boolean;
+  is_active: boolean;
+}
+
+const EMPTY_DRAFT: PlanDraft = {
+  offer_type: "time_limited",
+  name: "",
+  description: "",
+  duration_days: "",
+  price: "",
+  features: "",
+  is_featured: false,
+  is_active: true,
+};
+
+function planToDraft(plan: BotLicensePlan): PlanDraft {
+  return {
+    offer_type: plan.offer_type,
+    name: plan.name,
+    description: plan.description ?? "",
+    duration_days: plan.duration_days?.toString() ?? "",
+    price: plan.price.toString(),
+    features: plan.features.join("\n"),
+    is_featured: plan.is_featured,
+    is_active: plan.is_active,
+  };
+}
+
+function draftToPayload(draft: PlanDraft) {
+  return {
+    offer_type: draft.offer_type,
+    name: draft.name,
+    description: draft.description || null,
+    duration_days: draft.offer_type === "lifetime" ? null : draft.duration_days ? Number(draft.duration_days) : null,
+    price: Number(draft.price || 0),
+    features: draft.features
+      .split("\n")
+      .map((f) => f.trim())
+      .filter(Boolean),
+    is_featured: draft.is_featured,
+    is_active: draft.is_active,
+  };
+}
+
+function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: PlanDraft) => void }) {
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label>Type d&apos;offre</Label>
+          <Select
+            value={value.offer_type}
+            onValueChange={(v) => v && onChange({ ...value, offer_type: v as BotLicenseOfferType })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="time_limited">Time-limited offer</SelectItem>
+              <SelectItem value="lifetime">Lifetime offer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Nom</Label>
+          <Input
+            placeholder="Licence Semestrielle (6 Mois)"
+            value={value.name}
+            onChange={(e) => onChange({ ...value, name: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Description</Label>
+        <Textarea
+          rows={2}
+          value={value.description}
+          onChange={(e) => onChange({ ...value, description: e.target.value })}
+        />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {value.offer_type === "time_limited" && (
+          <div className="space-y-2">
+            <Label>Durée (jours)</Label>
+            <Input
+              type="number"
+              min="1"
+              value={value.duration_days}
+              onChange={(e) => onChange({ ...value, duration_days: e.target.value })}
+            />
+          </div>
+        )}
+        <div className="space-y-2">
+          <Label>Prix ($)</Label>
+          <Input
+            type="number"
+            min="0"
+            step="0.01"
+            value={value.price}
+            onChange={(e) => onChange({ ...value, price: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Fonctionnalités incluses (une par ligne)</Label>
+        <Textarea
+          rows={4}
+          value={value.features}
+          onChange={(e) => onChange({ ...value, features: e.target.value })}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-6">
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={value.is_featured}
+            onCheckedChange={(checked) => onChange({ ...value, is_featured: checked })}
+          />
+          <Label>Mise en avant (&quot;Populaire&quot;)</Label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={value.is_active}
+            onCheckedChange={(checked) => onChange({ ...value, is_active: checked })}
+          />
+          <Label>Active</Label>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function BotLicensePlansManager({
+  botId,
+  plans,
+  onChange,
+}: {
+  botId: number;
+  plans: BotLicensePlan[];
+  onChange: (next: BotLicensePlan[]) => void;
+}) {
+  const [draft, setDraft] = useState<PlanDraft>(EMPTY_DRAFT);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingDraft, setEditingDraft] = useState<PlanDraft>(EMPTY_DRAFT);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    if (!draft.name.trim()) return;
+    setPending(true);
+    setError(null);
+    try {
+      const created = await createAdminBotLicensePlan(botId, {
+        ...draftToPayload(draft),
+        position: plans.length,
+      });
+      onChange([...plans, created]);
+      setDraft(EMPTY_DRAFT);
+    } catch (err) {
+      setError(extractApiError(err, "Impossible d'ajouter la licence."));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function handleSave(id: number) {
+    setPending(true);
+    setError(null);
+    try {
+      const updated = await updateAdminBotLicensePlan(id, draftToPayload(editingDraft));
+      onChange(plans.map((p) => (p.id === id ? updated : p)));
+      setEditingId(null);
+    } catch (err) {
+      setError(extractApiError(err, "Impossible d'enregistrer la licence."));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    await deleteAdminBotLicensePlan(id);
+    onChange(plans.filter((p) => p.id !== id));
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Licences ({plans.length})</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <ul className="divide-y divide-border">
+          {plans.map((plan) =>
+            editingId === plan.id ? (
+              <li key={plan.id} className="space-y-3 py-3">
+                <PlanFields value={editingDraft} onChange={setEditingDraft} />
+                <div className="flex gap-2">
+                  <Button size="sm" disabled={pending} onClick={() => handleSave(plan.id)}>
+                    Enregistrer
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setEditingId(null)}>
+                    Annuler
+                  </Button>
+                </div>
+              </li>
+            ) : (
+              <li key={plan.id} className="flex items-center justify-between gap-3 py-2 text-sm">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{plan.name}</span>
+                    <Badge variant="secondary">{OFFER_LABELS[plan.offer_type]}</Badge>
+                    {plan.is_featured && <Badge>Populaire</Badge>}
+                    {!plan.is_active && <Badge variant="secondary">Inactive</Badge>}
+                  </div>
+                  <p className="mt-1 text-muted-foreground">{formatCurrency(plan.price)}</p>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEditingId(plan.id);
+                      setEditingDraft(planToDraft(plan));
+                    }}
+                  >
+                    Modifier
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleDelete(plan.id)}>
+                    Supprimer
+                  </Button>
+                </div>
+              </li>
+            )
+          )}
+          {plans.length === 0 && (
+            <p className="py-2 text-sm text-muted-foreground">Aucune licence pour le moment.</p>
+          )}
+        </ul>
+
+        <form onSubmit={handleAdd} className="space-y-3 border-t border-border pt-4">
+          <p className="text-sm font-medium">Ajouter une licence</p>
+          <PlanFields value={draft} onChange={setDraft} />
+          <Button type="submit" disabled={pending || !draft.name.trim()}>
+            Ajouter
+          </Button>
+        </form>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+      </CardContent>
+    </Card>
+  );
+}

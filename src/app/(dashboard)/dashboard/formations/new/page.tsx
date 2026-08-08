@@ -15,7 +15,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { createAdminCourse } from "@/lib/api/admin";
+import { createAdminCourse, createAdminLesson } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
+import { LessonDraftManager } from "@/components/forms/LessonDraftManager";
+import type { LessonDraft } from "@/components/forms/LessonFields";
 
 export default function NewCoursePage() {
   useRequireRole(["admin", "developer"]);
@@ -28,6 +31,7 @@ export default function NewCoursePage() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("99");
   const [durationMinutes, setDurationMinutes] = useState("120");
+  const [lessons, setLessons] = useState<LessonDraft[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -46,9 +50,22 @@ export default function NewCoursePage() {
         duration_minutes: Number(durationMinutes),
         is_published: true,
       });
+
+      for (const [index, lesson] of lessons.entries()) {
+        await createAdminLesson(course.id, {
+          title: lesson.title,
+          slug: `${lesson.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${index + 1}`,
+          position: index,
+          description: lesson.description,
+          video_provider: lesson.video_id ? "vimeo" : null,
+          video_id: lesson.video_id || null,
+          is_preview: lesson.is_preview,
+        });
+      }
+
       router.push(`/dashboard/formations/${course.id}`);
-    } catch {
-      setError("Impossible de créer la formation. Vérifiez les champs (le slug doit être unique).");
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de créer la formation. Vérifiez les champs (le slug doit être unique)."));
     } finally {
       setPending(false);
     }
@@ -63,7 +80,7 @@ export default function NewCoursePage() {
           <CardTitle>Informations générales</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form id="new-course-form" onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Titre</Label>
               <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -90,7 +107,7 @@ export default function NewCoursePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Niveau</Label>
-                <Select value={level} onValueChange={setLevel}>
+                <Select value={level} onValueChange={(value) => value && setLevel(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -129,13 +146,23 @@ export default function NewCoursePage() {
                 />
               </div>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" disabled={pending}>
-              {pending ? "Création..." : "Créer la formation"}
-            </Button>
           </form>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Leçons ({lessons.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LessonDraftManager lessons={lessons} onChange={setLessons} />
+        </CardContent>
+      </Card>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button type="submit" form="new-course-form" disabled={pending}>
+        {pending ? "Création..." : "Créer la formation"}
+      </Button>
     </div>
   );
 }
