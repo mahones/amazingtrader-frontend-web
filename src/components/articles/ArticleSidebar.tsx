@@ -11,7 +11,7 @@ export async function ArticleSidebar({ currentSlug }: { currentSlug: string }) {
   const recentPosts = posts.filter((p) => p.slug !== currentSlug).slice(0, 5);
 
   return (
-    <aside className="space-y-6">
+    <aside className="sticky top-20 self-start space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Articles récents</CardTitle>

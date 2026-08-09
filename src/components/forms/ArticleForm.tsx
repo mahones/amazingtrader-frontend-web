@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
+import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { extractApiError } from "@/lib/api/client";
 import { createAdminPost, deleteAdminPost, updateAdminPost } from "@/lib/api/admin";
 import type { Post } from "@/types/post";
@@ -23,7 +24,7 @@ export function ArticleForm({ post }: { post?: Post }) {
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [category, setCategory] = useState(post?.category ?? CATEGORIES[0]);
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
-  const [coverImageUrl, setCoverImageUrl] = useState(post?.cover_image_url ?? "");
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [content, setContent] = useState(post?.content ?? "");
   const [isPublished, setIsPublished] = useState(post?.is_published ?? true);
   const [error, setError] = useState<string | null>(null);
@@ -34,21 +35,23 @@ export function ArticleForm({ post }: { post?: Post }) {
     setPending(true);
     setError(null);
 
-    const payload = {
-      title,
-      slug: slug || title.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-"),
-      category,
-      excerpt,
-      cover_image_url: coverImageUrl || null,
-      content,
-      is_published: isPublished,
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append(
+      "slug",
+      slug || title.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-")
+    );
+    if (category) formData.append("category", category);
+    if (excerpt) formData.append("excerpt", excerpt);
+    formData.append("content", content);
+    formData.append("is_published", isPublished ? "1" : "0");
+    if (coverImageFile) formData.append("cover_image", coverImageFile);
 
     try {
       if (isEditing && post) {
-        await updateAdminPost(post.id, payload);
+        await updateAdminPost(post.id, formData);
       } else {
-        await createAdminPost(payload);
+        await createAdminPost(formData);
       }
       router.push("/dashboard/articles");
     } catch (err) {
@@ -111,15 +114,13 @@ export function ArticleForm({ post }: { post?: Post }) {
                   ))}
                 </select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="cover">Image de couverture (URL)</Label>
-                <Input
-                  id="cover"
-                  value={coverImageUrl}
-                  onChange={(e) => setCoverImageUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
+              <ImageUploadInput
+                id="cover"
+                label="Image de couverture"
+                value={coverImageFile}
+                onChange={setCoverImageFile}
+                existingUrl={post?.cover_image_url}
+              />
             </div>
 
             <div className="space-y-2">

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { stripHtml } from "@/lib/utils";
+import { formatCurrency, stripHtml } from "@/lib/utils";
 import type { TradingBot } from "@/types/bot";
 
 export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
@@ -23,25 +23,11 @@ export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
       <CardContent className="flex flex-1 flex-col">
         <p className="line-clamp-3 text-sm text-muted-foreground">{stripHtml(bot.description)}</p>
 
-        <div className="mt-5 flex items-baseline divide-x divide-border">
-          <div className="pr-4">
-            <div className="font-mono text-2xl font-bold tabular-nums text-primary">
-              {bot.yield_percent ?? 0}%
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">Rendement</div>
+        <div className="mt-5">
+          <div className="font-mono text-2xl font-bold tabular-nums text-primary">
+            {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
           </div>
-          <div className="px-4">
-            <div className="font-mono text-2xl font-bold tabular-nums">
-              {bot.drawdown_percent ?? 0}%
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">Drawdown</div>
-          </div>
-          <div className="pl-4">
-            <div className="font-mono text-2xl font-bold tabular-nums">
-              {bot.win_rate_percent ?? 0}%
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">Win rate</div>
-          </div>
+          <div className="mt-1 text-xs text-muted-foreground">Capital géré</div>
         </div>
 
         {bot.strategy_summary && (

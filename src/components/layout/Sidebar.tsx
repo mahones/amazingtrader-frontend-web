@@ -35,7 +35,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border/60 bg-background md:flex md:flex-col">
+    <aside className="hidden w-64 shrink-0 self-start border-r border-border/60 bg-background md:sticky md:top-0 md:flex md:h-screen md:flex-col">
       <Link href="/" className="px-6 py-5" aria-label="amazingtraders, accueil">
         <Logo />
       </Link>

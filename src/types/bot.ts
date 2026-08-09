@@ -39,12 +39,10 @@ export interface TradingBot {
   name: string;
   slug: string;
   image_url: string | null;
+  managed_capital: number | null;
   description: string;
   strategy_summary: string | null;
   pairs_traded: string[];
-  yield_percent: number | null;
-  drawdown_percent: number | null;
-  win_rate_percent: number | null;
   is_active: boolean;
   requirements?: BotRequirement[];
   performance_links?: BotPerformanceLink[];

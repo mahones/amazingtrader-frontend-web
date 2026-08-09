@@ -83,12 +83,17 @@ export async function fetchAdminTradingBot(id: number) {
   return data.data;
 }
 
-export async function createAdminTradingBot(payload: Partial<TradingBot>) {
+export async function createAdminTradingBot(payload: Partial<TradingBot> | FormData) {
   const { data } = await apiClient.post<{ data: TradingBot }>("/admin/trading-bots", payload);
   return data.data;
 }
 
-export async function updateAdminTradingBot(id: number, payload: Partial<TradingBot>) {
+export async function updateAdminTradingBot(id: number, payload: Partial<TradingBot> | FormData) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    const { data } = await apiClient.post<{ data: TradingBot }>(`/admin/trading-bots/${id}`, payload);
+    return data.data;
+  }
   const { data } = await apiClient.put<{ data: TradingBot }>(`/admin/trading-bots/${id}`, payload);
   return data.data;
 }
@@ -209,12 +214,17 @@ export async function fetchAdminPost(id: number) {
   return data.data;
 }
 
-export async function createAdminPost(payload: Partial<Post>) {
+export async function createAdminPost(payload: Partial<Post> | FormData) {
   const { data } = await apiClient.post<{ data: Post }>("/admin/posts", payload);
   return data.data;
 }
 
-export async function updateAdminPost(id: number, payload: Partial<Post>) {
+export async function updateAdminPost(id: number, payload: Partial<Post> | FormData) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    const { data } = await apiClient.post<{ data: Post }>(`/admin/posts/${id}`, payload);
+    return data.data;
+  }
   const { data } = await apiClient.put<{ data: Post }>(`/admin/posts/${id}`, payload);
   return data.data;
 }

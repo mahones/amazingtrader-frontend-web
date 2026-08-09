@@ -12,7 +12,7 @@ export async function BotSidebar({ currentSlug }: { currentSlug: string }) {
   const otherBots = bots.filter((bot) => bot.slug !== currentSlug);
 
   return (
-    <aside className="space-y-6">
+    <aside className="sticky top-20 self-start space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Autres bots de trading</CardTitle>

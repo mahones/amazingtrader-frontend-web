@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyBotAssignments } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
+import { formatCurrency } from "@/lib/utils";
 import type { BotAssignment, TradingBot } from "@/types/bot";
 
 export default function DashboardBotsPage() {
@@ -57,7 +58,7 @@ export default function DashboardBotsPage() {
                 <div>
                   <h3 className="font-semibold">{bot.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Rendement {bot.yield_percent}% · Win rate {bot.win_rate_percent}%
+                    Capital géré : {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">

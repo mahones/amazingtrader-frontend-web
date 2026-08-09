@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyLicenses, updateBrokerConfig } from "@/lib/api/licenses";
-import { fetchAdminLicensePlans } from "@/lib/api/admin";
+import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
 import type { LicensePlan } from "@/types/license";
@@ -20,10 +20,21 @@ export default function DashboardLicencesPage() {
   const [licenses, setLicenses] = useState<UserLicense[] | null>(null);
   const [plans, setPlans] = useState<LicensePlan[] | null>(null);
 
+  async function reloadPlans() {
+    const refreshed = await fetchAdminLicensePlans();
+    setPlans(refreshed);
+  }
+
   useEffect(() => {
-    if (isStaff) fetchAdminLicensePlans().then(setPlans);
+    if (isStaff) reloadPlans();
     else fetchMyLicenses().then(setLicenses);
   }, [isStaff]);
+
+  async function handleDeletePlan(id: number) {
+    if (!window.confirm("Supprimer définitivement cette licence ?")) return;
+    await deleteAdminLicensePlan(id);
+    await reloadPlans();
+  }
 
   if (isStaff) {
     return (
@@ -53,9 +64,19 @@ export default function DashboardLicencesPage() {
                     {formatCurrency(plan.price)} · {plan.purchase_count ?? 0} achetée(s)
                   </p>
                 </div>
-                <Badge variant={plan.is_active ? "default" : "secondary"}>
-                  {plan.is_active ? "Active" : "Inactive"}
-                </Badge>
+                <div className="flex items-center gap-3">
+                  <Badge variant={plan.is_active ? "default" : "secondary"}>
+                    {plan.is_active ? "Active" : "Inactive"}
+                  </Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/dashboard/licences/${plan.id}/edit`}>Modifier</Link>}
+                  />
+                  <Button variant="outline" size="sm" onClick={() => handleDeletePlan(plan.id)}>
+                    Supprimer
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}

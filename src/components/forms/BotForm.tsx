@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
+import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { extractApiError } from "@/lib/api/client";
 import { createAdminTradingBot, updateAdminTradingBot } from "@/lib/api/admin";
 import type { TradingBot } from "@/types/bot";
@@ -26,13 +27,11 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
 
   const [name, setName] = useState(bot?.name ?? "");
   const [slug, setSlug] = useState(bot?.slug ?? "");
-  const [imageUrl, setImageUrl] = useState(bot?.image_url ?? "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [description, setDescription] = useState(bot?.description ?? "");
   const [strategySummary, setStrategySummary] = useState(bot?.strategy_summary ?? "");
   const [pairsTraded, setPairsTraded] = useState((bot?.pairs_traded ?? []).join(", "));
-  const [yieldPercent, setYieldPercent] = useState(bot?.yield_percent?.toString() ?? "");
-  const [drawdownPercent, setDrawdownPercent] = useState(bot?.drawdown_percent?.toString() ?? "");
-  const [winRatePercent, setWinRatePercent] = useState(bot?.win_rate_percent?.toString() ?? "");
+  const [managedCapital, setManagedCapital] = useState(bot?.managed_capital?.toString() ?? "");
   const [isActive, setIsActive] = useState(bot?.is_active ?? true);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -42,27 +41,25 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
     setPending(true);
     setError(null);
 
-    const payload = {
-      name,
-      slug: slug || slugify(name),
-      image_url: imageUrl || null,
-      description,
-      strategy_summary: strategySummary || null,
-      pairs_traded: pairsTraded
-        .split(",")
-        .map((p) => p.trim())
-        .filter(Boolean),
-      yield_percent: yieldPercent ? Number(yieldPercent) : null,
-      drawdown_percent: drawdownPercent ? Number(drawdownPercent) : null,
-      win_rate_percent: winRatePercent ? Number(winRatePercent) : null,
-      is_active: isActive,
-    };
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("slug", slug || slugify(name));
+    formData.append("description", description);
+    if (strategySummary) formData.append("strategy_summary", strategySummary);
+    pairsTraded
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .forEach((pair) => formData.append("pairs_traded[]", pair));
+    if (managedCapital) formData.append("managed_capital", managedCapital);
+    formData.append("is_active", isActive ? "1" : "0");
+    if (imageFile) formData.append("image", imageFile);
 
     try {
       const saved =
         isEditing && bot
-          ? await updateAdminTradingBot(bot.id, payload)
-          : await createAdminTradingBot(payload);
+          ? await updateAdminTradingBot(bot.id, formData)
+          : await createAdminTradingBot(formData);
       onSaved(saved);
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer le bot."));
@@ -93,15 +90,13 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="bot-image">Image / média principal (URL)</Label>
-            <Input
-              id="bot-image"
-              placeholder="https://..."
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
-          </div>
+          <ImageUploadInput
+            id="bot-image"
+            label="Image / média principal"
+            value={imageFile}
+            onChange={setImageFile}
+            existingUrl={bot?.image_url}
+          />
 
           <div className="space-y-2">
             <Label>Description</Label>
@@ -128,37 +123,16 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="bot-yield">Rendement (%)</Label>
-              <Input
-                id="bot-yield"
-                type="number"
-                step="0.01"
-                value={yieldPercent}
-                onChange={(e) => setYieldPercent(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bot-drawdown">Drawdown (%)</Label>
-              <Input
-                id="bot-drawdown"
-                type="number"
-                step="0.01"
-                value={drawdownPercent}
-                onChange={(e) => setDrawdownPercent(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bot-winrate">Win rate (%)</Label>
-              <Input
-                id="bot-winrate"
-                type="number"
-                step="0.01"
-                value={winRatePercent}
-                onChange={(e) => setWinRatePercent(e.target.value)}
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="bot-managed-capital">Capital géré ($)</Label>
+            <Input
+              id="bot-managed-capital"
+              type="number"
+              min="0"
+              step="0.01"
+              value={managedCapital}
+              onChange={(e) => setManagedCapital(e.target.value)}
+            />
           </div>
 
           <div className="flex items-center gap-3">
