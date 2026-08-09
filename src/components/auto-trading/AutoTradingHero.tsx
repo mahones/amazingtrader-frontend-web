@@ -60,11 +60,11 @@ export function AutoTradingHero() {
             className="group relative block aspect-video w-full overflow-hidden "
           >
             <Image
-              src="/trading-robot.png"
+              src="/auto-trading.webp"
               alt="Présentation de l'auto-trading amazingtraders"
               fill
               sizes="(min-width: 1024px) 45vw, 90vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
               priority
             />
             {/* <div className="absolute inset-0 bg-black/35 transition-colors group-hover:bg-black/45" /> */}
