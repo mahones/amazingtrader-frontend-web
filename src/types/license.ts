@@ -1,11 +1,13 @@
 export type LicenseStatus = "active" | "expired" | "revoked";
+export type LicenseDurationUnit = "month" | "year";
 
 export interface LicensePlan {
   id: number;
   name: string;
   slug: string;
   description: string;
-  duration_days: number;
+  duration_value: number;
+  duration_unit: LicenseDurationUnit;
   managed_capital_min: number | null;
   managed_capital_max: number | null;
   guarantees: string[];

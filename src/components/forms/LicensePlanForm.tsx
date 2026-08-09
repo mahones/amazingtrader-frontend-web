@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StringListEditor } from "@/components/forms/StringListEditor";
 import { extractApiError } from "@/lib/api/client";
 import { createAdminLicensePlan, updateAdminLicensePlan } from "@/lib/api/admin";
-import type { LicensePlan } from "@/types/license";
+import type { LicenseDurationUnit, LicensePlan } from "@/types/license";
 
 function slugify(value: string) {
   return value
@@ -33,7 +34,8 @@ export function LicensePlanForm({
   const [name, setName] = useState(plan?.name ?? "");
   const [slug, setSlug] = useState(plan?.slug ?? "");
   const [description, setDescription] = useState(plan?.description ?? "");
-  const [durationDays, setDurationDays] = useState(plan?.duration_days?.toString() ?? "30");
+  const [durationValue, setDurationValue] = useState(plan?.duration_value?.toString() ?? "1");
+  const [durationUnit, setDurationUnit] = useState<LicenseDurationUnit>(plan?.duration_unit ?? "month");
   const [price, setPrice] = useState(plan?.price?.toString() ?? "49");
   const [managedCapitalMin, setManagedCapitalMin] = useState(
     plan?.managed_capital_min?.toString() ?? ""
@@ -56,7 +58,8 @@ export function LicensePlanForm({
       name,
       slug: slug || slugify(name),
       description,
-      duration_days: Number(durationDays),
+      duration_value: Number(durationValue),
+      duration_unit: durationUnit,
       price: Number(price),
       managed_capital_min: managedCapitalMin ? Number(managedCapitalMin) : null,
       managed_capital_max: managedCapitalMax ? Number(managedCapitalMax) : null,
@@ -111,16 +114,31 @@ export function LicensePlanForm({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="plan-duration">Durée (jours)</Label>
+              <Label htmlFor="plan-duration">Durée</Label>
               <Input
                 id="plan-duration"
                 type="number"
                 min="1"
-                value={durationDays}
-                onChange={(e) => setDurationDays(e.target.value)}
+                value={durationValue}
+                onChange={(e) => setDurationValue(e.target.value)}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="plan-duration-unit">Unité</Label>
+              <Select
+                value={durationUnit}
+                onValueChange={(v) => v && setDurationUnit(v as LicenseDurationUnit)}
+              >
+                <SelectTrigger id="plan-duration-unit" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month">Mois</SelectItem>
+                  <SelectItem value="year">Année</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="plan-price">Prix ($)</Label>

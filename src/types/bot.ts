@@ -1,3 +1,4 @@
+import type { LicenseDurationUnit } from "./license";
 import type { User } from "./user";
 
 export type BotAssignmentStatus = "active" | "paused" | "stopped";
@@ -25,7 +26,8 @@ export interface BotLicensePlan {
   offer_type: BotLicenseOfferType;
   name: string;
   description: string | null;
-  duration_days: number | null;
+  duration_value: number | null;
+  duration_unit: LicenseDurationUnit | null;
   price: number;
   features: string[];
   is_featured: boolean;

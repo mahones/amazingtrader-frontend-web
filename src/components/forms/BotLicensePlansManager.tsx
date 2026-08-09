@@ -17,6 +17,7 @@ import {
 } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
 import type { BotLicenseOfferType, BotLicensePlan } from "@/types/bot";
+import type { LicenseDurationUnit } from "@/types/license";
 
 const OFFER_LABELS: Record<BotLicenseOfferType, string> = {
   time_limited: "Time-limited offer",
@@ -27,7 +28,8 @@ interface PlanDraft {
   offer_type: BotLicenseOfferType;
   name: string;
   description: string;
-  duration_days: string;
+  duration_value: string;
+  duration_unit: LicenseDurationUnit;
   price: string;
   features: string;
   is_featured: boolean;
@@ -38,7 +40,8 @@ const EMPTY_DRAFT: PlanDraft = {
   offer_type: "time_limited",
   name: "",
   description: "",
-  duration_days: "",
+  duration_value: "",
+  duration_unit: "month",
   price: "",
   features: "",
   is_featured: false,
@@ -50,7 +53,8 @@ function planToDraft(plan: BotLicensePlan): PlanDraft {
     offer_type: plan.offer_type,
     name: plan.name,
     description: plan.description ?? "",
-    duration_days: plan.duration_days?.toString() ?? "",
+    duration_value: plan.duration_value?.toString() ?? "",
+    duration_unit: plan.duration_unit ?? "month",
     price: plan.price.toString(),
     features: plan.features.join("\n"),
     is_featured: plan.is_featured,
@@ -63,7 +67,8 @@ function draftToPayload(draft: PlanDraft) {
     offer_type: draft.offer_type,
     name: draft.name,
     description: draft.description || null,
-    duration_days: draft.offer_type === "lifetime" ? null : draft.duration_days ? Number(draft.duration_days) : null,
+    duration_value: draft.offer_type === "lifetime" ? null : draft.duration_value ? Number(draft.duration_value) : null,
+    duration_unit: draft.offer_type === "lifetime" ? null : draft.duration_unit,
     price: Number(draft.price || 0),
     features: draft.features
       .split("\n")
@@ -112,17 +117,34 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
         />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-3">
         {value.offer_type === "time_limited" && (
-          <div className="space-y-2">
-            <Label>Durée (jours)</Label>
-            <Input
-              type="number"
-              min="1"
-              value={value.duration_days}
-              onChange={(e) => onChange({ ...value, duration_days: e.target.value })}
-            />
-          </div>
+          <>
+            <div className="space-y-2">
+              <Label>Durée</Label>
+              <Input
+                type="number"
+                min="1"
+                value={value.duration_value}
+                onChange={(e) => onChange({ ...value, duration_value: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Unité</Label>
+              <Select
+                value={value.duration_unit}
+                onValueChange={(v) => v && onChange({ ...value, duration_unit: v as LicenseDurationUnit })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month">Mois</SelectItem>
+                  <SelectItem value="year">Année</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
         )}
         <div className="space-y-2">
           <Label>Prix ($)</Label>

@@ -17,3 +17,8 @@ export function formatDate(date: string | null) {
 export function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
 }
+
+export function formatDuration(value: number, unit: "month" | "year") {
+  if (unit === "year") return `${value} an${value > 1 ? "s" : ""}`
+  return `${value} mois`
+}

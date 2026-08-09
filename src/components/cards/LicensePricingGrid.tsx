@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDuration } from "@/lib/utils";
 import type { LicensePlan } from "@/types/license";
 
 export function LicensePricingGrid({
@@ -32,7 +32,7 @@ export function LicensePricingGrid({
             <p className="text-sm text-muted-foreground">{plan.description}</p>
             <div className="mt-2">
               <span className="text-3xl font-bold text-primary">{formatCurrency(plan.price)}</span>
-              <span className="text-sm text-muted-foreground"> / {plan.duration_days} jours</span>
+              <span className="text-sm text-muted-foreground"> / {formatDuration(plan.duration_value, plan.duration_unit)}</span>
             </div>
           </CardHeader>
           <CardContent className="flex-1 space-y-3">

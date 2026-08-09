@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDuration } from "@/lib/utils";
 import type { BotLicenseOfferType, BotLicensePlan } from "@/types/bot";
 
 function PlanCard({
@@ -29,8 +29,11 @@ function PlanCard({
         {plan.description && <p className="text-sm text-muted-foreground">{plan.description}</p>}
         <div className="mt-2">
           <span className="text-3xl font-bold text-primary">{formatCurrency(plan.price)}</span>
-          {plan.duration_days && (
-            <span className="text-sm text-muted-foreground"> / {plan.duration_days} jours</span>
+          {plan.duration_value && plan.duration_unit && (
+            <span className="text-sm text-muted-foreground">
+              {" "}
+              / {formatDuration(plan.duration_value, plan.duration_unit)}
+            </span>
           )}
         </div>
       </CardHeader>
