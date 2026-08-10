@@ -53,11 +53,13 @@ export function SocialLinks({ className = "" }: { className?: string }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={social.name}
-          className="text-muted-foreground transition-colors hover:text-primary"
+          className="transition-colors text-[#0E0E0E] hover:text-white"
         >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
-            {social.icon}
-          </svg>
+          <span className="bg-primary w-7 h-7 rounded-full flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
+              {social.icon}
+            </svg>
+          </span>
         </a>
       ))}
     </div>
