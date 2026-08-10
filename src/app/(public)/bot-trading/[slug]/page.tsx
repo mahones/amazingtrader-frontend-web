@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BotSidebar } from "@/components/bots/BotSidebar";
 import { BotLicensePurchaseGrid } from "@/components/purchase/BotLicensePurchaseGrid";
 import { getTradingBot } from "@/lib/api/server";
-import { formatCurrency } from "@/lib/utils";
+// import { formatCurrency } from "@/lib/utils";
 
 export default async function BotDetailPage({
   params,
@@ -36,12 +36,12 @@ export default async function BotDetailPage({
             </div>
             <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{bot.name}</h1>
 
-            <div className="mt-5">
+            {/* <div className="mt-5">
               <div className="font-mono text-2xl font-bold tabular-nums text-primary">
                 {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
               </div>
               <div className="mt-1 text-xs text-muted-foreground">Capital géré</div>
-            </div>
+            </div> */}
           </div>
 
           {bot.image_url && (

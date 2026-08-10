@@ -36,11 +36,6 @@ export function LicensePricingGrid({
             </div>
           </CardHeader>
           <CardContent className="flex-1 space-y-3">
-            {plan.managed_capital_min !== null && (
-              <p className="text-sm text-muted-foreground">
-                Capital géré : {formatCurrency(plan.managed_capital_min)} – {formatCurrency(plan.managed_capital_max ?? 0)}
-              </p>
-            )}
             <ul className="space-y-2 text-sm">
               {[...plan.features, ...plan.guarantees].map((item) => (
                 <li key={item} className="flex items-start gap-2">

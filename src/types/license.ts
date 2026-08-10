@@ -8,8 +8,6 @@ export interface LicensePlan {
   description: string;
   duration_value: number;
   duration_unit: LicenseDurationUnit;
-  managed_capital_min: number | null;
-  managed_capital_max: number | null;
   guarantees: string[];
   features: string[];
   price: number;

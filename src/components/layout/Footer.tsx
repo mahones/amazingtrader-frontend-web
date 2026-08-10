@@ -8,7 +8,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
           <Link href="/" aria-label="amazingtraders, accueil">
-            <Logo className="text-lg" />
+            <Logo className="text-lg h-25" />
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">
             (+228) 79 92 04 32 <br />

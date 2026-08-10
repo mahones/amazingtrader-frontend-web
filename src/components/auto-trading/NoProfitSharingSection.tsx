@@ -11,12 +11,13 @@ const MQL5_URL =
 export function NoProfitSharingSection() {
   return (
     <section className="bg-neutral-900 py-16">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-1"
         >
           <span className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
             ROI jusqu&apos;à 300% par an
@@ -70,7 +71,7 @@ export function NoProfitSharingSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl"
+          className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:col-span-2"
         >
           <Image
             src="/Capture-decran-234.webp"

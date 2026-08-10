@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, stripHtml } from "@/lib/utils";
+import { stripHtml } from "@/lib/utils";
 import type { TradingBot } from "@/types/bot";
 
 export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
@@ -23,17 +23,6 @@ export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
       <CardContent className="flex flex-1 flex-col">
         <p className="line-clamp-3 text-sm text-muted-foreground">{stripHtml(bot.description)}</p>
 
-        <div className="mt-5">
-          <div className="font-mono text-2xl font-bold tabular-nums text-primary">
-            {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
-          </div>
-        </div>
-
-        {bot.strategy_summary && (
-          <p className="mt-4 border-t border-border/60 pt-4 text-xs text-muted-foreground">
-            {bot.strategy_summary}
-          </p>
-        )}
       </CardContent>
     </Card>
   );

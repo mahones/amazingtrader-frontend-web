@@ -37,12 +37,6 @@ export function LicensePlanForm({
   const [durationValue, setDurationValue] = useState(plan?.duration_value?.toString() ?? "1");
   const [durationUnit, setDurationUnit] = useState<LicenseDurationUnit>(plan?.duration_unit ?? "month");
   const [price, setPrice] = useState(plan?.price?.toString() ?? "49");
-  const [managedCapitalMin, setManagedCapitalMin] = useState(
-    plan?.managed_capital_min?.toString() ?? ""
-  );
-  const [managedCapitalMax, setManagedCapitalMax] = useState(
-    plan?.managed_capital_max?.toString() ?? ""
-  );
   const [features, setFeatures] = useState<string[]>(plan?.features ?? []);
   const [guarantees, setGuarantees] = useState<string[]>(plan?.guarantees ?? []);
   const [isActive, setIsActive] = useState(plan?.is_active ?? true);
@@ -61,8 +55,6 @@ export function LicensePlanForm({
       duration_value: Number(durationValue),
       duration_unit: durationUnit,
       price: Number(price),
-      managed_capital_min: managedCapitalMin ? Number(managedCapitalMin) : null,
-      managed_capital_max: managedCapitalMax ? Number(managedCapitalMax) : null,
       features: features.map((f) => f.trim()).filter(Boolean),
       guarantees: guarantees.map((g) => g.trim()).filter(Boolean),
       is_active: isActive,
@@ -149,31 +141,6 @@ export function LicensePlanForm({
                 step="0.01"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="plan-capital-min">Capital géré min ($)</Label>
-              <Input
-                id="plan-capital-min"
-                type="number"
-                min="0"
-                step="0.01"
-                value={managedCapitalMin}
-                onChange={(e) => setManagedCapitalMin(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="plan-capital-max">Capital géré max ($)</Label>
-              <Input
-                id="plan-capital-max"
-                type="number"
-                min="0"
-                step="0.01"
-                value={managedCapitalMax}
-                onChange={(e) => setManagedCapitalMax(e.target.value)}
               />
             </div>
           </div>
