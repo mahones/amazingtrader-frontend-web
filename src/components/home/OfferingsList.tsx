@@ -28,7 +28,7 @@ const STATS: {
 
 export function OfferingsList() {
   return (
-    <section className="mx-auto max-w-7xl px-4 pt-1 pb-12 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 pt-4 pb-12 sm:px-6 lg:px-8">
       <div>
         <h1 className="text-center  text-2xl sm:text-2xl font-extrabold text-[#0E0E0E]-900 mb-10">
           Votre recherche d’une rentabilité constante du trading <span className="text-amber-500"> se termine ici…. </span>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
+import { SocialLinks } from "./SocialLinks";
 
 export function Footer() {
   return (
@@ -10,37 +11,49 @@ export function Footer() {
             <Logo className="text-lg" />
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">
-            Formations, licences d&apos;auto-trading et bots pour trader plus intelligemment.
+            (+228) 79 92 04 32 <br />
+            LOME - TOGO
+          </p>
+          <SocialLinks className="mt-4" />
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold">⚠ AVERTISSEMENT AUX RISQUES ⚠</h3>
+          <p className="mt-3 text-sm text-muted-foreground">
+Le trading comporte des risques élevés  et ne convient pas à tout le monde. Veillez lire la {""}
+            <Link href="/divulgation-des-risques" className="hover:text-primary text-primary">
+              Divulgation des risques.
+            </Link>{" "} <br />
+            Le contenu de ce site, ne doit pas être interprété comme un moyen de sollicitation.
+
           </p>
         </div>
-
-        <div>
-          <h3 className="text-sm font-semibold">Plateforme</h3>
+<div>
+          <h3 className="text-sm font-semibold">DOCUMENTS LEGAUX</h3>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link href="/formations" className="hover:text-primary">Formations</Link></li>
-            <li><Link href="/auto-trading" className="hover:text-primary">Auto-trading</Link></li>
-            <li><Link href="/bot-trading" className="hover:text-primary">Bot de trading</Link></li>
-            <li><Link href="/articles" className="hover:text-primary">Articles</Link></li>
+            <li><Link href="/termes-et-conditions" className="hover:text-primary text-primary">
+              Termes et conditions
+            </Link></li>
+            <li><Link href="/divulgation-des-risques" className="hover:text-primary text-primary">
+              Divulgation des risques
+            </Link></li>
+            <li><Link href="/politique-de-confidentialite" className="hover:text-primary text-primary">
+              Politique de confidentialité
+            </Link></li>
           </ul>
         </div>
 
+
         <div>
-          <h3 className="text-sm font-semibold">Compte</h3>
+          <h3 className="text-sm font-semibold">COMPTE</h3>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link href="/login" className="hover:text-primary">Se connecter</Link></li>
-            <li><Link href="/register" className="hover:text-primary">S&apos;inscrire</Link></li>
-            <li><Link href="/dashboard" className="hover:text-primary">Tableau de bord</Link></li>
+            <li><Link href="/login" className="hover:text-primary text-primary">Se connecter</Link></li>
+            <li><Link href="/register" className="hover:text-primary text-primary">S&apos;inscrire</Link></li>
+            <li><Link href="/dashboard" className="hover:text-primary text-primary">Tableau de bord</Link></li>
           </ul>
         </div>
 
-        <div>
-          <h3 className="text-sm font-semibold">Documents légaux</h3>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link href="/termes-et-conditions" className="hover:text-primary">Termes et conditions</Link></li>
-            <li><Link href="/divulgation-des-risques" className="hover:text-primary">Divulgation des risques</Link></li>
-            <li><Link href="/politique-de-confidentialite" className="hover:text-primary">Politique de confidentialité</Link></li>
-          </ul>
-        </div>
+        
 
       </div>
       <div className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">

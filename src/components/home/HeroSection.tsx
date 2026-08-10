@@ -46,22 +46,31 @@ function ChartLine() {
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background">
+      <Image
+        src="/banniere 1-1.png"
+        alt=""
+        aria-hidden
+        fill
+        priority
+        className="object-cover"
+      />
+      {/* <div className="pointer-events-none absolute inset-0 bg-background/50" />
       <div className="absolute inset-x-0 bottom-0 h-[55%] opacity-90">
         <ChartLine />
-      </div>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
+      </div> */}
+      {/* <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" /> */}
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-2xl"
         >
-          <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-6xl">
-            Devenez rentable grâce à nos <span className="text-primary">formations</span> et à notre <span className="text-primary">intelligence artificielle</span>.
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
+            Devenez rentable à travers nos <span className="text-primary">formations</span> et <span className="text-primary">coachings</span>.
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty">
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty text-white">
             Nous sommes une startup qui innove dans le trading algorithmique
             et propose aux traders un système simple et rentable. Nos robots analysent
             les marchés pour vous, nos experts vous guident jusqu&apos;à la rentabilité.
@@ -80,7 +89,7 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -94,7 +103,7 @@ export function HeroSection() {
             priority
             className="mx-auto h-auto w-full max-w-md"
           />
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

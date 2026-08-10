@@ -27,7 +27,6 @@ export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
           <div className="font-mono text-2xl font-bold tabular-nums text-primary">
             {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
           </div>
-          <div className="mt-1 text-xs text-muted-foreground">Capital géré</div>
         </div>
 
         {bot.strategy_summary && (
