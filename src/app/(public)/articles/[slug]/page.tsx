@@ -31,6 +31,16 @@ export default async function ArticleDetailPage({
             </span>
           </div>
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{post.title}</h1>
+          {post.cover_image_url && (
+            <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
+              <img
+                src={post.cover_image_url}
+                alt={post.title}
+                className="size-full object-cover"
+              />
+            </div>
+          )}
           <div
             className="mt-8 max-w-none space-y-4 leading-relaxed text-foreground/90 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-5 [&_ol]:pl-5 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_p]:leading-relaxed [&_img]:rounded-lg"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}

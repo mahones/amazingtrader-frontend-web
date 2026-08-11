@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/select";
 
 const LEVELS = [
-  { value: "all", label: "Tous les niveaux" },
+  { value: "tout", label: "Tous les niveaux" },
   { value: "beginner", label: "Débutant" },
   { value: "intermediate", label: "Intermédiaire" },
   { value: "advanced", label: "Avancé" },
 ];
 
 const CATEGORIES = [
-  { value: "all", label: "Toutes les catégories" },
+  { value: "tout", label: "Toutes les catégories" },
   { value: "Forex", label: "Forex" },
   { value: "Crypto", label: "Crypto" },
   { value: "Bourse", label: "Bourse" },
@@ -32,7 +32,7 @@ export function CourseFilters() {
 
   function updateParam(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
-    if (!value || value === "all") {
+    if (!value || value === "tout") {
       params.delete(key);
     } else {
       params.set(key, value);
@@ -43,7 +43,7 @@ export function CourseFilters() {
   return (
     <div className="flex flex-wrap gap-3">
       <Select
-        defaultValue={searchParams.get("level") ?? "all"}
+        value={searchParams.get("level") ?? "tout"}
         onValueChange={(value) => updateParam("level", value)}
       >
         <SelectTrigger className="w-[200px]">
@@ -59,7 +59,7 @@ export function CourseFilters() {
       </Select>
 
       <Select
-        defaultValue={searchParams.get("category") ?? "all"}
+        value={searchParams.get("category") ?? "tout"}
         onValueChange={(value) => updateParam("category", value)}
       >
         <SelectTrigger className="w-[220px]">

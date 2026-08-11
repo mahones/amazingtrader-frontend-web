@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 
 const CATEGORIES = [
-  { value: "all", label: "Toutes les catégories" },
+  { value: "tout", label: "Toutes les catégories" },
   { value: "Forex", label: "Forex" },
   { value: "Crypto", label: "Crypto" },
   { value: "Bourse", label: "Bourse" },
@@ -24,7 +24,7 @@ export function PostFilters() {
 
   function updateParam(value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
-    if (!value || value === "all") {
+    if (!value || value === "tout") {
       params.delete("category");
     } else {
       params.set("category", value);
@@ -34,7 +34,7 @@ export function PostFilters() {
 
   return (
     <Select
-      value={searchParams.get("category") ?? "all"}
+      value={searchParams.get("category") ?? "tout"}
       onValueChange={updateParam}
     >
       <SelectTrigger className="w-[220px]">
