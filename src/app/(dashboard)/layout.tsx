@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { Home } from "lucide-react";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useRequireAuth();
+  const { isStaff } = useAuth();
 
   if (isLoading || !user) {
     return (
@@ -37,7 +40,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               Aller à l&apos;accueil
             </Link>}
           />
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            {isStaff && <NotificationBell />}
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>

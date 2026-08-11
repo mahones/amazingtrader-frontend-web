@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LicensePricingGrid } from "@/components/cards/LicensePricingGrid";
 import { useAuth } from "@/context/AuthContext";
+import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { purchase } from "@/lib/api/orders";
 import type { LicensePlan } from "@/types/license";
 
 export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
   const { user } = useAuth();
   const router = useRouter();
+  const { handlePurchaseResult, modal } = usePostPurchaseFlow();
   const [pendingId, setPendingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,8 +24,8 @@ export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
     setPendingId(plan.id);
     setError(null);
     try {
-      await purchase("license_plan", plan.id);
-      router.push("/dashboard/licences");
+      const order = await purchase("license_plan", plan.id);
+      handlePurchaseResult(order, "license_plan");
     } catch {
       setError("Le paiement a échoué. Veuillez réessayer.");
     } finally {
@@ -35,6 +37,7 @@ export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
     <div>
       <LicensePricingGrid plans={plans} onSelect={handleSelect} isPending={pendingId} />
       {error && <p className="mt-4 text-center text-sm text-destructive">{error}</p>}
+      {modal}
     </div>
   );
 }

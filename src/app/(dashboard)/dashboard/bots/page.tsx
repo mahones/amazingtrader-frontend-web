@@ -3,19 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useAuth } from "@/context/AuthContext";
-import { fetchMyBotAssignments } from "@/lib/api/bots";
+import { downloadBotFile, fetchMyBotAssignments, fetchMyBotLicenses } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
-import type { BotAssignment, TradingBot } from "@/types/bot";
+import type { BotAssignment, BotFile, TradingBot, UserBotLicense } from "@/types/bot";
 
 export default function DashboardBotsPage() {
   const { isStaff } = useAuth();
   const [assignments, setAssignments] = useState<BotAssignment[] | null>(null);
+  const [botLicenses, setBotLicenses] = useState<UserBotLicense[] | null>(null);
   const [bots, setBots] = useState<TradingBot[] | null>(null);
 
   async function reloadBots() {
@@ -24,8 +26,12 @@ export default function DashboardBotsPage() {
   }
 
   useEffect(() => {
-    if (isStaff) reloadBots();
-    else fetchMyBotAssignments().then(setAssignments);
+    if (isStaff) {
+      reloadBots();
+    } else {
+      fetchMyBotAssignments().then(setAssignments);
+      fetchMyBotLicenses().then(setBotLicenses);
+    }
   }, [isStaff]);
 
   async function handleDeleteBot(id: number) {
@@ -88,7 +94,7 @@ export default function DashboardBotsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Mes bots</h1>
         <p className="text-muted-foreground">Suivez les performances des bots qui vous sont attribués.</p>
@@ -125,6 +131,70 @@ export default function DashboardBotsPage() {
           </Card>
         ))}
       </div>
+
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold">Mes licences de bot</h2>
+          <p className="text-muted-foreground">Vos licences achetées et les fichiers associés.</p>
+        </div>
+
+        <div className="grid gap-4">
+          {botLicenses === null && <p className="text-muted-foreground">Chargement...</p>}
+          {botLicenses?.length === 0 && (
+            <Card>
+              <CardContent className="pt-6 text-center text-muted-foreground">
+                Vous n&apos;avez pas encore de licence de bot.
+              </CardContent>
+            </Card>
+          )}
+          {botLicenses?.map((license) => (
+            <BotLicenseCard key={license.id} license={license} />
+          ))}
+        </div>
+      </div>
     </div>
+  );
+}
+
+function BotLicenseCard({ license }: { license: UserBotLicense }) {
+  const bot = license.bot_license_plan.trading_bot;
+  const files = bot?.bot_files ?? [];
+
+  return (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between space-y-0">
+        <CardTitle className="text-lg">{license.bot_license_plan.name}</CardTitle>
+        <Badge variant={license.status === "active" ? "default" : "secondary"}>
+          {license.status === "active" ? "Active" : license.status === "expired" ? "Expirée" : "Révoquée"}
+        </Badge>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <LicenseExpiryGauge
+          activatedAt={license.activated_at}
+          expiresAt={license.expires_at}
+          status={license.status}
+        />
+
+        <p className="text-sm">
+          <span className="text-muted-foreground">Clé de licence :</span> <code>{license.license_key}</code>
+        </p>
+
+        {files.length > 0 && (
+          <div className="space-y-2 border-t border-border pt-4">
+            <p className="text-sm font-medium">Fichiers du bot</p>
+            <ul className="space-y-1.5">
+              {files.map((file: BotFile) => (
+                <li key={file.id} className="flex items-center justify-between text-sm">
+                  <span>{file.label}</span>
+                  <Button variant="outline" size="sm" onClick={() => downloadBotFile(file)}>
+                    <Download className="mr-1 size-3.5" /> Télécharger
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -25,7 +25,7 @@ export default function DashboardOverviewPage() {
         ]);
         setStats([
           { label: "Formations publiées", value: courses.length, icon: BookOpen },
-          { label: "Licences créées", value: plans.length, icon: KeyRound },
+          { label: "Auto-trading créés", value: plans.length, icon: KeyRound },
           { label: "Utilisateurs", value: users.length, icon: Users },
         ]);
       } else {
@@ -36,7 +36,7 @@ export default function DashboardOverviewPage() {
         ]);
         setStats([
           { label: "Mes formations", value: enrollments.length, icon: BookOpen },
-          { label: "Mes licences", value: licenses.length, icon: KeyRound },
+          { label: "Mon auto-trading", value: licenses.length, icon: KeyRound },
           { label: "Mes bots", value: bots.length, icon: Bot },
         ]);
       }
@@ -86,8 +86,8 @@ export default function DashboardOverviewPage() {
           <Link href="/dashboard/formations" className="text-sm font-medium text-primary hover:underline">
             {isStaff ? "Gérer les formations" : "Mes formations"}
           </Link>
-          <Link href="/dashboard/licences" className="text-sm font-medium text-primary hover:underline">
-            {isStaff ? "Gérer les licences" : "Mes licences"}
+          <Link href="/dashboard/auto-trading" className="text-sm font-medium text-primary hover:underline">
+            {isStaff ? "Gérer l'auto-trading" : "Mon auto-trading"}
           </Link>
           <Link href="/dashboard/bots" className="text-sm font-medium text-primary hover:underline">
             {isStaff ? "Gérer les bots" : "Mes bots"}

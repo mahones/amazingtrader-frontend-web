@@ -8,6 +8,7 @@ import { BotForm } from "@/components/forms/BotForm";
 import { BotRequirementsManager } from "@/components/forms/BotRequirementsManager";
 import { BotPerformanceLinksManager } from "@/components/forms/BotPerformanceLinksManager";
 import { BotLicensePlansManager } from "@/components/forms/BotLicensePlansManager";
+import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminTradingBot, fetchAdminTradingBot } from "@/lib/api/admin";
 import type { TradingBot } from "@/types/bot";
@@ -63,6 +64,12 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         botId={bot.id}
         plans={bot.license_plans ?? []}
         onChange={(license_plans) => setBot({ ...bot, license_plans })}
+      />
+
+      <BotFilesManager
+        botId={bot.id}
+        files={bot.bot_files ?? []}
+        onChange={(bot_files) => setBot({ ...bot, bot_files })}
       />
     </div>
   );

@@ -24,7 +24,7 @@ export default function EditLicensePlanPage({ params }: { params: Promise<{ id: 
     if (!plan) return;
     if (!window.confirm("Supprimer définitivement cette licence ?")) return;
     await deleteAdminLicensePlan(plan.id);
-    router.push("/dashboard/licences");
+    router.push("/dashboard/auto-trading");
   }
 
   if (!plan) return <p className="text-muted-foreground">Chargement...</p>;

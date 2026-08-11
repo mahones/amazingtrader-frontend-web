@@ -8,14 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyLicenses, updateBrokerConfig } from "@/lib/api/licenses";
 import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
 import type { LicensePlan } from "@/types/license";
 
-export default function DashboardLicencesPage() {
+export default function DashboardAutoTradingPage() {
   const { isStaff } = useAuth();
   const [licenses, setLicenses] = useState<UserLicense[] | null>(null);
   const [plans, setPlans] = useState<LicensePlan[] | null>(null);
@@ -46,8 +47,8 @@ export default function DashboardLicencesPage() {
           </div>
           <Button
             render={
-              <Link href="/dashboard/licences/new">
-                <Plus className="mr-1 size-4" /> Nouvelle licence
+              <Link href="/dashboard/auto-trading/new">
+                <Plus className="mr-1 size-4" /> Nouvelle formule
               </Link>
             }
           />
@@ -71,7 +72,7 @@ export default function DashboardLicencesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/dashboard/licences/${plan.id}/edit`}>Modifier</Link>}
+                    render={<Link href={`/dashboard/auto-trading/${plan.id}/edit`}>Modifier</Link>}
                   />
                   <Button variant="outline" size="sm" onClick={() => handleDeletePlan(plan.id)}>
                     Supprimer
@@ -88,7 +89,7 @@ export default function DashboardLicencesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Mes licences</h1>
+        <h1 className="text-2xl font-bold">Mon auto-trading</h1>
         <p className="text-muted-foreground">Retrouvez vos licences d&apos;auto-trading actives.</p>
       </div>
 
@@ -133,10 +134,26 @@ function LicenseCard({ license }: { license: UserLicense }) {
         </Badge>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-2 text-sm sm:grid-cols-2">
-          <p><span className="text-muted-foreground">Clé de licence :</span> <code>{license.license_key}</code></p>
-          <p><span className="text-muted-foreground">Expire le :</span> {formatDate(license.expires_at)}</p>
-        </div>
+        <LicenseExpiryGauge
+          activatedAt={license.activated_at}
+          expiresAt={license.expires_at}
+          status={license.status}
+        />
+
+        <p className="text-sm">
+          <span className="text-muted-foreground">Clé de licence :</span> <code>{license.license_key}</code>
+        </p>
+
+        {license.purchase_details && (
+          <div className="grid gap-2 rounded-lg border border-border p-3 text-sm sm:grid-cols-2">
+            <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
+            <p><span className="text-muted-foreground">Serveur :</span> {license.purchase_details.server}</p>
+            <p>
+              <span className="text-muted-foreground">WhatsApp :</span>{" "}
+              {license.purchase_details.whatsapp_number}
+            </p>
+          </div>
+        )}
 
         <div className="space-y-2 border-t border-border pt-4">
           <Label htmlFor={`broker-${license.id}`}>Clé API broker</Label>

@@ -4,6 +4,7 @@ import type { LicensePlan } from "@/types/license";
 import type {
   BotAssignment,
   BotAssignmentStatus,
+  BotFile,
   BotLicensePlan,
   BotPerformanceLink,
   BotRequirement,
@@ -11,7 +12,7 @@ import type {
   TradingBot,
 } from "@/types/bot";
 import type { Post } from "@/types/post";
-import type { User } from "@/types/user";
+import type { User, UserProfile } from "@/types/user";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -233,8 +234,62 @@ export async function deleteAdminPost(id: number) {
   await apiClient.delete(`/admin/posts/${id}`);
 }
 
+// Bot files
+export async function fetchAdminBotFiles(botId: number) {
+  const { data } = await apiClient.get<{ data: BotFile[] }>(`/admin/trading-bots/${botId}/files`);
+  return data.data;
+}
+
+export async function createAdminBotFiles(botId: number, formData: FormData) {
+  const { data } = await apiClient.post<{ data: BotFile[] }>(
+    `/admin/trading-bots/${botId}/files`,
+    formData
+  );
+  return data.data;
+}
+
+export async function updateAdminBotFile(id: number, payload: { label?: string; position?: number }) {
+  const { data } = await apiClient.put<{ data: BotFile }>(`/admin/bot-files/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBotFile(id: number) {
+  await apiClient.delete(`/admin/bot-files/${id}`);
+}
+
 // Users & orders (oversight)
 export async function fetchAdminUsers() {
   const { data } = await apiClient.get<{ data: User[] }>("/admin/users");
+  return data.data;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    total: number;
+  };
+}
+
+export async function fetchAdminUsersPaged(params: {
+  search?: string;
+  role?: string;
+  is_active?: boolean;
+  page?: number;
+}) {
+  const { data } = await apiClient.get<PaginatedResponse<User>>("/admin/users", { params });
+  return data;
+}
+
+export async function fetchAdminUserProfile(id: number) {
+  const { data } = await apiClient.get<{ data: UserProfile }>(`/admin/users/${id}`);
+  return data.data;
+}
+
+export async function updateAdminUserStatus(id: number, isActive: boolean) {
+  const { data } = await apiClient.patch<{ data: User }>(`/admin/users/${id}/status`, {
+    is_active: isActive,
+  });
   return data.data;
 }

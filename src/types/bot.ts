@@ -34,6 +34,17 @@ export interface BotLicensePlan {
   is_active: boolean;
   position: number;
   purchase_count?: number;
+  trading_bot?: TradingBot;
+}
+
+export interface BotFile {
+  id: number;
+  label: string;
+  original_filename: string;
+  size_bytes: number | null;
+  mime_type: string | null;
+  position: number;
+  created_at: string;
 }
 
 export interface TradingBot {
@@ -49,6 +60,11 @@ export interface TradingBot {
   requirements?: BotRequirement[];
   performance_links?: BotPerformanceLink[];
   license_plans?: BotLicensePlan[];
+  bot_files?: BotFile[];
+}
+
+export interface BotLicensePurchaseDetails {
+  id: string;
 }
 
 export interface UserBotLicense {
@@ -56,6 +72,7 @@ export interface UserBotLicense {
   license_key: string;
   status: "active" | "expired" | "revoked";
   broker_config: Record<string, unknown> | null;
+  purchase_details: BotLicensePurchaseDetails | null;
   activated_at: string | null;
   expires_at: string | null;
   bot_license_plan: BotLicensePlan;

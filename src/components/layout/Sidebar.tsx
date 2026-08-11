@@ -6,10 +6,12 @@ import {
   BookOpen,
   Bot,
   FileText,
+  History,
   KeyRound,
   LayoutDashboard,
   LogOut,
   Settings,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
@@ -23,9 +25,11 @@ export function Sidebar() {
   const navItems = [
     { href: "/dashboard", label: "Aperçu", icon: LayoutDashboard },
     { href: "/dashboard/formations", label: "Mes Formations", icon: BookOpen },
-    { href: "/dashboard/licences", label: "Mes Licences", icon: KeyRound },
+    { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
     ...(isStaff ? [{ href: "/dashboard/articles", label: "Articles", icon: FileText }] : []),
+    ...(isStaff ? [{ href: "/dashboard/users", label: "Utilisateurs", icon: Users }] : []),
+    ...(isStaff ? [{ href: "/dashboard/historique", label: "Historique", icon: History }] : []),
     { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
   ];
 

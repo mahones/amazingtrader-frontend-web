@@ -12,7 +12,7 @@ export default function NewLicensePlanPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <h1 className="text-2xl font-bold">Nouvelle licence auto-trading</h1>
 
-      <LicensePlanForm onSaved={(plan) => router.push(`/dashboard/licences/${plan.id}/edit`)} />
+      <LicensePlanForm onSaved={(plan) => router.push(`/dashboard/auto-trading/${plan.id}/edit`)} />
     </div>
   );
 }

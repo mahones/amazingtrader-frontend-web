@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { LicensePlan, UserLicense } from "@/types/license";
+import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 
 export async function fetchLicensePlans() {
   const { data } = await apiClient.get<{ data: LicensePlan[] }>("/license-plans");
@@ -20,6 +20,14 @@ export async function updateBrokerConfig(id: number, brokerConfig: Record<string
   const { data } = await apiClient.patch<{ data: UserLicense }>(
     `/my/licenses/${id}/broker-config`,
     { broker_config: brokerConfig }
+  );
+  return data.data;
+}
+
+export async function updatePurchaseDetails(id: number, details: LicensePurchaseDetails) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(
+    `/my/licenses/${id}/purchase-details`,
+    details
   );
   return data.data;
 }
