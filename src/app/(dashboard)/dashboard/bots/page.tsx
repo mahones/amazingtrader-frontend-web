@@ -9,10 +9,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useAuth } from "@/context/AuthContext";
-import { downloadBotFile, fetchMyBotAssignments, fetchMyBotLicenses } from "@/lib/api/bots";
+import {
+  downloadBotFile,
+  fetchMyBotAssignments,
+  fetchMyBotLicenses,
+} from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
-import type { BotAssignment, BotFile, TradingBot, UserBotLicense } from "@/types/bot";
+import type {
+  BotAssignment,
+  BotFile,
+  TradingBot,
+  UserBotLicense,
+} from "@/types/bot";
 
 export default function DashboardBotsPage() {
   const { isStaff } = useAuth();
@@ -26,12 +35,37 @@ export default function DashboardBotsPage() {
   }
 
   useEffect(() => {
-    if (isStaff) {
-      reloadBots();
-    } else {
-      fetchMyBotAssignments().then(setAssignments);
-      fetchMyBotLicenses().then(setBotLicenses);
+    let isActive = true;
+
+    async function loadData() {
+      try {
+        if (isStaff) {
+          const refreshed = await fetchAdminTradingBots();
+          if (isActive) {
+            setBots(refreshed);
+          }
+          return;
+        }
+
+        const [userAssignments, userLicenses] = await Promise.all([
+          fetchMyBotAssignments(),
+          fetchMyBotLicenses(),
+        ]);
+
+        if (isActive) {
+          setAssignments(userAssignments);
+          setBotLicenses(userLicenses);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des bots", error);
+      }
     }
+
+    void loadData();
+
+    return () => {
+      isActive = false;
+    };
   }, [isStaff]);
 
   async function handleDeleteBot(id: number) {
@@ -45,7 +79,9 @@ export default function DashboardBotsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Bots de trading</h1>
-            <p className="text-muted-foreground">Gérez les bots proposés et leurs attributions.</p>
+            <p className="text-muted-foreground">
+              Gérez les bots proposés et leurs attributions.
+            </p>
           </div>
           <Button
             render={
@@ -57,14 +93,19 @@ export default function DashboardBotsPage() {
         </div>
 
         <div className="grid gap-4">
-          {bots === null && <p className="text-muted-foreground">Chargement...</p>}
+          {bots === null && (
+            <p className="text-muted-foreground">Chargement...</p>
+          )}
           {bots?.map((bot) => (
             <Card key={bot.id}>
               <CardContent className="flex items-center justify-between pt-6">
                 <div>
                   <h3 className="font-semibold">{bot.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Capital géré : {bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}
+                    Capital géré :{" "}
+                    {bot.managed_capital !== null
+                      ? formatCurrency(bot.managed_capital)
+                      : "-"}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -74,14 +115,26 @@ export default function DashboardBotsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/dashboard/bots/${bot.id}/edit`}>Modifier le contenu</Link>}
+                    render={
+                      <Link href={`/dashboard/bots/${bot.id}/edit`}>
+                        Modifier le contenu
+                      </Link>
+                    }
                   />
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/dashboard/bots/${bot.id}`}>Attributions</Link>}
+                    render={
+                      <Link href={`/dashboard/bots/${bot.id}`}>
+                        Attributions
+                      </Link>
+                    }
                   />
-                  <Button variant="outline" size="sm" onClick={() => handleDeleteBot(bot.id)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeleteBot(bot.id)}
+                  >
                     Supprimer
                   </Button>
                 </div>
@@ -95,7 +148,7 @@ export default function DashboardBotsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
+      {/* <div>
         <h1 className="text-2xl font-bold">Mes bots</h1>
         <p className="text-muted-foreground">Suivez les performances des bots qui vous sont attribués.</p>
       </div>
@@ -130,16 +183,20 @@ export default function DashboardBotsPage() {
             </CardContent>
           </Card>
         ))}
-      </div>
+      </div> */}
 
       <div className="space-y-4">
         <div>
           <h2 className="text-xl font-bold">Mes licences de bot</h2>
-          <p className="text-muted-foreground">Vos licences achetées et les fichiers associés.</p>
+          <p className="text-muted-foreground">
+            Vos licences achetées et les fichiers associés.
+          </p>
         </div>
 
         <div className="grid gap-4">
-          {botLicenses === null && <p className="text-muted-foreground">Chargement...</p>}
+          {botLicenses === null && (
+            <p className="text-muted-foreground">Chargement...</p>
+          )}
           {botLicenses?.length === 0 && (
             <Card>
               <CardContent className="pt-6 text-center text-muted-foreground">
@@ -163,9 +220,15 @@ function BotLicenseCard({ license }: { license: UserBotLicense }) {
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-lg">{license.bot_license_plan.name}</CardTitle>
+        <CardTitle className="text-lg">
+          {license.bot_license_plan.name}
+        </CardTitle>
         <Badge variant={license.status === "active" ? "default" : "secondary"}>
-          {license.status === "active" ? "Active" : license.status === "expired" ? "Expirée" : "Révoquée"}
+          {license.status === "active"
+            ? "Active"
+            : license.status === "expired"
+              ? "Expirée"
+              : "Révoquée"}
         </Badge>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -176,7 +239,8 @@ function BotLicenseCard({ license }: { license: UserBotLicense }) {
         />
 
         <p className="text-sm">
-          <span className="text-muted-foreground">Clé de licence :</span> <code>{license.license_key}</code>
+          <span className="text-muted-foreground">Clé de licence :</span>{" "}
+          <code>{license.license_key}</code>
         </p>
 
         {files.length > 0 && (
@@ -184,9 +248,16 @@ function BotLicenseCard({ license }: { license: UserBotLicense }) {
             <p className="text-sm font-medium">Fichiers du bot</p>
             <ul className="space-y-1.5">
               {files.map((file: BotFile) => (
-                <li key={file.id} className="flex items-center justify-between text-sm">
+                <li
+                  key={file.id}
+                  className="flex items-center justify-between text-sm"
+                >
                   <span>{file.label}</span>
-                  <Button variant="outline" size="sm" onClick={() => downloadBotFile(file)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => downloadBotFile(file)}
+                  >
                     <Download className="mr-1 size-3.5" /> Télécharger
                   </Button>
                 </li>

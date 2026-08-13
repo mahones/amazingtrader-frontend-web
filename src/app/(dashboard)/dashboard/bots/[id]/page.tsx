@@ -14,7 +14,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { fetchBotAssignmentTrades } from "@/lib/api/bots";
@@ -27,10 +33,19 @@ import {
   updateAdminBotAssignment,
 } from "@/lib/api/admin";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import type { BotAssignment, BotAssignmentStatus, BotTrade, TradingBot } from "@/types/bot";
+import type {
+  BotAssignment,
+  BotAssignmentStatus,
+  BotTrade,
+  TradingBot,
+} from "@/types/bot";
 import type { User } from "@/types/user";
 
-export default function BotTradesPage({ params }: { params: Promise<{ id: string }> }) {
+export default function BotTradesPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const { isStaff } = useAuth();
 
@@ -57,9 +72,13 @@ function StudentBotTradesView({ assignmentId }: { assignmentId: number }) {
           <CardTitle>Trades récents</CardTitle>
         </CardHeader>
         <CardContent>
-          {trades === null && <p className="text-muted-foreground">Chargement...</p>}
+          {trades === null && (
+            <p className="text-muted-foreground">Chargement...</p>
+          )}
           {trades?.length === 0 && (
-            <p className="text-muted-foreground">Aucun trade enregistré pour ce bot.</p>
+            <p className="text-muted-foreground">
+              Aucun trade enregistré pour ce bot.
+            </p>
           )}
           {trades && trades.length > 0 && <TradesTable trades={trades} />}
         </CardContent>
@@ -86,14 +105,24 @@ function TradesTable({ trades }: { trades: BotTrade[] }) {
           <TableRow key={trade.id}>
             <TableCell>{trade.pair}</TableCell>
             <TableCell>
-              <Badge variant={trade.direction === "buy" ? "default" : "secondary"}>
+              <Badge
+                variant={trade.direction === "buy" ? "default" : "secondary"}
+              >
                 {trade.direction === "buy" ? "Achat" : "Vente"}
               </Badge>
             </TableCell>
             <TableCell>{trade.entry_price}</TableCell>
             <TableCell>{trade.exit_price ?? "-"}</TableCell>
-            <TableCell className={Number(trade.profit_loss) >= 0 ? "text-primary" : "text-destructive"}>
-              {trade.profit_loss !== null ? formatCurrency(trade.profit_loss) : "-"}
+            <TableCell
+              className={
+                Number(trade.profit_loss) >= 0
+                  ? "text-primary"
+                  : "text-destructive"
+              }
+            >
+              {trade.profit_loss !== null
+                ? formatCurrency(trade.profit_loss)
+                : "-"}
             </TableCell>
             <TableCell>{formatDate(trade.opened_at)}</TableCell>
           </TableRow>
@@ -114,10 +143,31 @@ function AdminBotView({ botId }: { botId: number }) {
   }
 
   useEffect(() => {
-    fetchAdminTradingBot(botId).then(setBot);
-    reloadAssignments();
-    fetchAdminUsers().then(setUsers);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let isActive = true;
+
+    async function loadData() {
+      try {
+        const [botData, assignmentsData, usersData] = await Promise.all([
+          fetchAdminTradingBot(botId),
+          fetchAdminBotAssignments(botId),
+          fetchAdminUsers(),
+        ]);
+
+        if (!isActive) return;
+
+        setBot(botData);
+        setAssignments(assignmentsData);
+        setUsers(usersData);
+      } catch (error) {
+        console.error("Erreur lors du chargement du bot admin", error);
+      }
+    }
+
+    void loadData();
+
+    return () => {
+      isActive = false;
+    };
   }, [botId]);
 
   if (!bot) return <p className="text-muted-foreground">Chargement...</p>;
@@ -143,12 +193,20 @@ function AdminBotView({ botId }: { botId: number }) {
             assign={(userId) => assignBotToUser(botId, userId)}
           />
 
-          {assignments === null && <p className="text-muted-foreground">Chargement...</p>}
+          {assignments === null && (
+            <p className="text-muted-foreground">Chargement...</p>
+          )}
           {assignments?.length === 0 && (
-            <p className="text-muted-foreground">Aucun utilisateur n&apos;a ce bot pour le moment.</p>
+            <p className="text-muted-foreground">
+              Aucun utilisateur n&apos;a ce bot pour le moment.
+            </p>
           )}
           {assignments?.map((assignment) => (
-            <AssignmentRow key={assignment.id} assignment={assignment} onChanged={reloadAssignments} />
+            <AssignmentRow
+              key={assignment.id}
+              assignment={assignment}
+              onChanged={reloadAssignments}
+            />
           ))}
         </CardContent>
       </Card>
@@ -188,7 +246,10 @@ function AssignUserForm({
     <div className="flex flex-wrap items-end gap-3 border-b border-border pb-4">
       <div className="space-y-2">
         <Label>Attribuer à un utilisateur</Label>
-        <Select value={selected} onValueChange={(value) => setSelected(value ?? "")}>
+        <Select
+          value={selected}
+          onValueChange={(value) => setSelected(value ?? "")}
+        >
           <SelectTrigger className="w-[260px]">
             <SelectValue placeholder="Choisir un utilisateur" />
           </SelectTrigger>
@@ -237,13 +298,19 @@ function AssignmentRow({
     <div className="rounded-md border border-border p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-medium">{assignment.user?.name ?? `Utilisateur #${assignment.id}`}</p>
-          <p className="text-sm text-muted-foreground">{assignment.user?.email}</p>
+          <p className="font-medium">
+            {assignment.user?.name ?? `Utilisateur #${assignment.id}`}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {assignment.user?.email}
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Select
             value={assignment.status}
-            onValueChange={(value) => value && handleStatusChange(value as BotAssignmentStatus)}
+            onValueChange={(value) =>
+              value && handleStatusChange(value as BotAssignmentStatus)
+            }
             disabled={statusPending}
           >
             <SelectTrigger className="w-[140px]">
@@ -255,7 +322,11 @@ function AssignmentRow({
               <SelectItem value="stopped">Arrêté</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" onClick={() => setShowTradeForm((v) => !v)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTradeForm((v) => !v)}
+          >
             {showTradeForm ? "Fermer" : "Ajouter un trade"}
           </Button>
         </div>
@@ -271,7 +342,13 @@ function AssignmentRow({
   );
 }
 
-function LogTradeForm({ assignmentId, onLogged }: { assignmentId: number; onLogged: () => void }) {
+function LogTradeForm({
+  assignmentId,
+  onLogged,
+}: {
+  assignmentId: number;
+  onLogged: () => void;
+}) {
   const [pair, setPair] = useState("EUR/USD");
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
   const [entryPrice, setEntryPrice] = useState("");
@@ -305,14 +382,25 @@ function LogTradeForm({ assignmentId, onLogged }: { assignmentId: number; onLogg
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-4">
+    <form
+      onSubmit={handleSubmit}
+      className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-4"
+    >
       <div className="space-y-2">
         <Label htmlFor={`pair-${assignmentId}`}>Paire</Label>
-        <Input id={`pair-${assignmentId}`} required value={pair} onChange={(e) => setPair(e.target.value)} />
+        <Input
+          id={`pair-${assignmentId}`}
+          required
+          value={pair}
+          onChange={(e) => setPair(e.target.value)}
+        />
       </div>
       <div className="space-y-2">
         <Label>Sens</Label>
-        <Select value={direction} onValueChange={(v) => v && setDirection(v as "buy" | "sell")}>
+        <Select
+          value={direction}
+          onValueChange={(v) => v && setDirection(v as "buy" | "sell")}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -353,7 +441,9 @@ function LogTradeForm({ assignmentId, onLogged }: { assignmentId: number; onLogg
           onChange={(e) => setProfitLoss(e.target.value)}
         />
       </div>
-      {error && <p className="text-sm text-destructive sm:col-span-4">{error}</p>}
+      {error && (
+        <p className="text-sm text-destructive sm:col-span-4">{error}</p>
+      )}
       <Button type="submit" disabled={pending} className="sm:col-span-4">
         {pending ? "Enregistrement..." : "Enregistrer le trade"}
       </Button>
