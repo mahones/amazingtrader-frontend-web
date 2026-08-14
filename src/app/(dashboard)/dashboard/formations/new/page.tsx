@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,7 +160,7 @@ export default function NewCoursePage() {
         </CardContent>
       </Card>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
       <Button type="submit" form="new-course-form" disabled={pending}>
         {pending ? "Création..." : "Créer la formation"}
       </Button>

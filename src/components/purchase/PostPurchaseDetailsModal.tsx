@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
 import type { PurchasableType } from "@/lib/api/orders";
+import { toast } from "@/lib/toast";
 
 export function PostPurchaseDetailsModal({
   type,
@@ -52,6 +54,7 @@ export function PostPurchaseDetailsModal({
       } else {
         await updateBotLicensePurchaseDetails(licenseId, { id });
       }
+      toast.success("Vos informations ont été enregistrées.");
       onSubmitted();
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer ces informations."));
@@ -106,7 +109,7 @@ export function PostPurchaseDetailsModal({
             </>
           )}
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <Alert variant="error">{error}</Alert>}
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

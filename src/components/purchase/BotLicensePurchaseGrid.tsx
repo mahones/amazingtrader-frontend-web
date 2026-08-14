@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { BotLicensePricingGrid } from "@/components/cards/BotLicensePricingGrid";
 import { useAuth } from "@/context/AuthContext";
 import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { purchase } from "@/lib/api/orders";
+import { toast } from "@/lib/toast";
 import type { BotLicensePlan } from "@/types/bot";
 
 export function BotLicensePurchaseGrid({ plans, botSlug }: { plans: BotLicensePlan[]; botSlug: string }) {
@@ -27,6 +29,7 @@ export function BotLicensePurchaseGrid({ plans, botSlug }: { plans: BotLicensePl
     setError(null);
     try {
       const order = await purchase("bot_license_plan", plan.id);
+      toast.success("Achat effectué avec succès !");
       handlePurchaseResult(order, "bot_license_plan");
     } catch {
       setError("Le paiement a échoué. Veuillez réessayer.");
@@ -38,7 +41,7 @@ export function BotLicensePurchaseGrid({ plans, botSlug }: { plans: BotLicensePl
   return (
     <div>
       <BotLicensePricingGrid plans={plans} onSelect={handleSelect} isPending={pendingId} />
-      {error && <p className="mt-4 text-center text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error" className="mt-4">{error}</Alert>}
       {modal}
     </div>
   );

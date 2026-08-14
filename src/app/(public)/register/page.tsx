@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { register as apiRegister } from "@/lib/api/auth";
 import { extractApiError } from "@/lib/api/client";
 import { purchase, type PurchasableType } from "@/lib/api/orders";
+import { toast } from "@/lib/toast";
 
 export default function RegisterPage() {
   const { refresh } = useAuth();
@@ -38,6 +40,7 @@ export default function RegisterPage() {
         password_confirmation: passwordConfirmation,
       });
       await refresh();
+      toast.success("Votre compte a été créé avec succès. Bienvenue !");
 
       const purchaseParam = searchParams.get("purchase");
       const redirect = searchParams.get("redirect");
@@ -102,7 +105,7 @@ export default function RegisterPage() {
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <Alert variant="error">{error}</Alert>}
             <Button type="submit" className="w-full" disabled={pending}>
               {pending ? "Création..." : "Créer mon compte"}
             </Button>

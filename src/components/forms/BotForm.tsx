@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -140,7 +141,7 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
             <Label htmlFor="bot-active">Actif (visible sur le site)</Label>
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <Alert variant="error">{error}</Alert>}
 
           <Button type="submit" disabled={pending}>
             {pending ? "Enregistrement..." : isEditing ? "Enregistrer les modifications" : "Créer le bot"}

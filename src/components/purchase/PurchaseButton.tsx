@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { purchase, type PurchasableType } from "@/lib/api/orders";
+import { toast } from "@/lib/toast";
 
 export function PurchaseButton({
   type,
@@ -36,6 +38,7 @@ export function PurchaseButton({
     setError(null);
     try {
       const order = await purchase(type, id);
+      toast.success("Achat effectué avec succès !");
       handlePurchaseResult(order, type);
     } catch {
       setError("Le paiement a échoué. Veuillez réessayer.");
@@ -49,7 +52,7 @@ export function PurchaseButton({
       <Button onClick={handleClick} disabled={pending || isLoading} className="w-full">
         {pending ? "Traitement..." : label}
       </Button>
-      {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error" className="mt-2">{error}</Alert>}
       {modal}
     </div>
   );

@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Alert } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -265,7 +266,7 @@ function AssignUserForm({
       <Button onClick={handleAssign} disabled={!selected || pending}>
         {pending ? "Attribution..." : "Attribuer"}
       </Button>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   );
 }
@@ -331,7 +332,7 @@ function AssignmentRow({
           </Button>
         </div>
       </div>
-      {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error" className="mt-2">{error}</Alert>}
       {showTradeForm && (
         <LogTradeForm
           assignmentId={assignment.id}
@@ -442,7 +443,7 @@ function LogTradeForm({
         />
       </div>
       {error && (
-        <p className="text-sm text-destructive sm:col-span-4">{error}</p>
+        <Alert variant="error" className="sm:col-span-4">{error}</Alert>
       )}
       <Button type="submit" disabled={pending} className="sm:col-span-4">
         {pending ? "Enregistrement..." : "Enregistrer le trade"}

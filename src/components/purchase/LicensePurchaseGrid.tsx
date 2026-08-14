@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { LicensePricingGrid } from "@/components/cards/LicensePricingGrid";
 import { useAuth } from "@/context/AuthContext";
 import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { purchase } from "@/lib/api/orders";
+import { toast } from "@/lib/toast";
 import type { LicensePlan } from "@/types/license";
 
 export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
@@ -25,6 +27,7 @@ export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
     setError(null);
     try {
       const order = await purchase("license_plan", plan.id);
+      toast.success("Achat effectué avec succès !");
       handlePurchaseResult(order, "license_plan");
     } catch {
       setError("Le paiement a échoué. Veuillez réessayer.");
@@ -36,7 +39,7 @@ export function LicensePurchaseGrid({ plans }: { plans: LicensePlan[] }) {
   return (
     <div>
       <LicensePricingGrid plans={plans} onSelect={handleSelect} isPending={pendingId} />
-      {error && <p className="mt-4 text-center text-sm text-destructive">{error}</p>}
+      {error && <Alert variant="error" className="mt-4">{error}</Alert>}
       {modal}
     </div>
   );

@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { formatDate } from "@/lib/utils";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const EXPIRY_WARNING_DAYS = 7;
 
 export function LicenseExpiryGauge({
   activatedAt,
@@ -25,6 +27,7 @@ export function LicenseExpiryGauge({
 
   const daysRemaining = Math.ceil((expires - now) / DAY_MS);
   const isExpired = status !== "active" || now > expires;
+  const isExpiringSoon = !isExpired && daysRemaining <= EXPIRY_WARNING_DAYS;
 
   let percentElapsed = 0;
   if (activated !== null && expires > activated) {
@@ -51,6 +54,16 @@ export function LicenseExpiryGauge({
         </span>
         <span>{formatDate(expiresAt)}</span>
       </div>
+      {isExpired && (
+        <Alert variant="error" className="gap-2 py-2 text-xs [&>svg]:size-3.5">
+          Cette licence a expiré. Renouvelez-la pour continuer à en profiter.
+        </Alert>
+      )}
+      {isExpiringSoon && (
+        <Alert variant="warning" className="gap-2 py-2 text-xs [&>svg]:size-3.5">
+          Cette licence expire bientôt, pensez à la renouveler.
+        </Alert>
+      )}
     </div>
   );
 }

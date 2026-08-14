@@ -2,6 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 import DOMPurify from "isomorphic-dompurify";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { EMPTY_LESSON_DRAFT, LessonFields, type LessonDraft } from "@/components
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollment, updateEnrollmentProgress } from "@/lib/api/courses";
 import { extractApiError } from "@/lib/api/client";
+import { toast } from "@/lib/toast";
 import {
   fetchAdminCourse,
   createAdminLesson,
@@ -44,11 +47,17 @@ function StudentCourseView({ enrollmentId }: { enrollmentId: number }) {
   if (!enrollment) return <p className="text-muted-foreground">Chargement...</p>;
 
   const completed = new Set(enrollment.completed_lessons ?? []);
+  const lessons = enrollment.course.lessons ?? [];
+  const activeIndex = lessons.findIndex((lesson) => lesson.id === activeLesson?.id);
+  const previousLesson = activeIndex > 0 ? lessons[activeIndex - 1] : null;
+  const nextLesson =
+    activeIndex >= 0 && activeIndex < lessons.length - 1 ? lessons[activeIndex + 1] : null;
 
   async function toggleComplete(lessonId: number) {
     if (!enrollment) return;
     const next = new Set(completed);
-    if (next.has(lessonId)) next.delete(lessonId);
+    const wasCompleted = next.has(lessonId);
+    if (wasCompleted) next.delete(lessonId);
     else next.add(lessonId);
 
     const total = enrollment.course.lessons?.length ?? 1;
@@ -59,6 +68,13 @@ function StudentCourseView({ enrollmentId }: { enrollmentId: number }) {
       progress_percent: progress,
     });
     setEnrollment(updated);
+
+    if (!wasCompleted) {
+      toast.success(
+        progress >= 100 ? "Félicitations, vous avez terminé la formation !" : "Leçon marquée comme terminée."
+      );
+      if (nextLesson) setActiveLesson(nextLesson);
+    }
   }
 
   return (
@@ -79,13 +95,34 @@ function StudentCourseView({ enrollmentId }: { enrollmentId: number }) {
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(activeLesson.description) }}
               />
             )}
-            <Button
-              variant={completed.has(activeLesson.id) ? "secondary" : "default"}
-              className="mt-3"
-              onClick={() => toggleComplete(activeLesson.id)}
-            >
-              {completed.has(activeLesson.id) ? "Marquée comme terminée ✓" : "Marquer comme terminée"}
-            </Button>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <Button
+                variant={completed.has(activeLesson.id) ? "secondary" : "default"}
+                onClick={() => toggleComplete(activeLesson.id)}
+              >
+                {completed.has(activeLesson.id)
+                  ? "Marquée comme terminée ✓"
+                  : nextLesson
+                    ? "Terminer la leçon"
+                    : "Terminer le cours"}
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!previousLesson}
+                onClick={() => previousLesson && setActiveLesson(previousLesson)}
+              >
+                <ChevronLeft className="size-4" />
+                Leçon précédente
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!nextLesson}
+                onClick={() => nextLesson && setActiveLesson(nextLesson)}
+              >
+                Leçon suivante
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -213,7 +250,7 @@ function AdminCourseView({ courseId }: { courseId: number }) {
           <form onSubmit={handleAddLesson} className="space-y-4 border-t border-border pt-4">
             <p className="text-sm font-medium">Ajouter une leçon</p>
             <LessonFields value={draft} onChange={setDraft} idPrefix="new-lesson" />
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <Alert variant="error">{error}</Alert>}
             <Button type="submit" disabled={pending}>
               {pending ? "Ajout..." : "Ajouter la leçon"}
             </Button>
@@ -267,7 +304,7 @@ function LessonEditRow({
     <li className="py-4">
       <form onSubmit={handleSave} className="space-y-4">
         <LessonFields value={draft} onChange={setDraft} idPrefix={`lesson-${lesson.id}`} />
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && <Alert variant="error">{error}</Alert>}
         <div className="flex gap-2">
           <Button type="submit" size="sm" disabled={pending}>
             {pending ? "Enregistrement..." : "Enregistrer"}

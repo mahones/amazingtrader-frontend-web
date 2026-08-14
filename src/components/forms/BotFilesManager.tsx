@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -108,7 +109,7 @@ export function BotFilesManager({
             {pending ? "Envoi..." : "Ajouter"}
           </Button>
         </form>
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && <Alert variant="error">{error}</Alert>}
       </CardContent>
     </Card>
   );

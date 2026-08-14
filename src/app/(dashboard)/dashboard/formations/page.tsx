@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { CheckCircle2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -92,7 +92,15 @@ export default function DashboardFormationsPage() {
         {enrollments?.map((enrollment) => (
           <Card key={enrollment.id}>
             <CardHeader>
-              <CardTitle className="text-lg">{enrollment.course.title}</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg">{enrollment.course.title}</CardTitle>
+                {enrollment.progress_percent >= 100 && (
+                  <Badge className="border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="size-3" />
+                    Terminé
+                  </Badge>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">

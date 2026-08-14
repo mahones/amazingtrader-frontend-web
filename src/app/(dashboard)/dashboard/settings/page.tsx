@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient, extractApiError } from "@/lib/api/client";
+import { toast } from "@/lib/toast";
 
 export default function SettingsPage() {
   const { user, refresh } = useAuth();
@@ -27,6 +29,7 @@ export default function SettingsPage() {
     try {
       await apiClient.patch("/me", { name, email });
       await refresh();
+      toast.success("Vos informations ont été mises à jour.");
       setProfileSaved(true);
       setTimeout(() => setProfileSaved(false), 2000);
     } catch (err) {
@@ -46,6 +49,7 @@ export default function SettingsPage() {
       setCurrentPassword("");
       setNewPassword("");
       setNewPasswordConfirmation("");
+      toast.success("Votre mot de passe a été mis à jour.");
       setPasswordSaved(true);
       setTimeout(() => setPasswordSaved(false), 2000);
     } catch (err) {
@@ -73,7 +77,7 @@ export default function SettingsPage() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
-            {profileError && <p className="text-sm text-destructive">{profileError}</p>}
+            {profileError && <Alert variant="error">{profileError}</Alert>}
             <Button type="submit">{profileSaved ? "Enregistré ✓" : "Enregistrer"}</Button>
           </form>
         </CardContent>
@@ -114,7 +118,7 @@ export default function SettingsPage() {
                 onChange={(e) => setNewPasswordConfirmation(e.target.value)}
               />
             </div>
-            {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
+            {passwordError && <Alert variant="error">{passwordError}</Alert>}
             <Button type="submit">{passwordSaved ? "Mis à jour ✓" : "Mettre à jour le mot de passe"}</Button>
           </form>
         </CardContent>

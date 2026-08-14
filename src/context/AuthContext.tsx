@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { fetchMe, login as apiLogin, logout as apiLogout } from "@/lib/api/auth";
+import { SESSION_EXPIRED_EVENT } from "@/lib/api/client";
 import { getToken } from "@/lib/api/token";
 import type { User } from "@/types/user";
 
@@ -46,6 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  useEffect(() => {
+    function handleSessionExpired() {
+      setUser(null);
+    }
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+  }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     const me = await apiLogin(email, password);
