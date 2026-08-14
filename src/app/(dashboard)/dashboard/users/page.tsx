@@ -16,7 +16,13 @@ const ROLES = [
   { value: "tout", label: "Tous les rôles" },
   { value: "user", label: "Membre" },
   { value: "admin", label: "Administrateur" },
-  { value: "developer", label: "Développeur" },
+];
+
+const PURCHASE_FILTERS = [
+  { value: "tout", label: "Tous les achats" },
+  { value: "course", label: "Formations payées" },
+  { value: "license", label: "Licence auto-trading" },
+  { value: "bot_license", label: "Bots de trading achetés" },
 ];
 
 export default function DashboardUsersPage() {
@@ -24,6 +30,7 @@ export default function DashboardUsersPage() {
 
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("tout");
+  const [purchase, setPurchase] = useState("tout");
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[] | null>(null);
   const [meta, setMeta] = useState<{ current_page: number; last_page: number } | null>(null);
@@ -33,6 +40,7 @@ export default function DashboardUsersPage() {
       fetchAdminUsersPaged({
         search: search || undefined,
         role: role === "tout" ? undefined : role,
+        purchase: purchase === "tout" ? undefined : purchase,
         page,
       }).then((res) => {
         setUsers(res.data);
@@ -40,7 +48,7 @@ export default function DashboardUsersPage() {
       });
     }, 300);
     return () => clearTimeout(timeout);
-  }, [search, role, page]);
+  }, [search, role, purchase, page]);
 
   return (
     <div className="space-y-6">
@@ -73,6 +81,24 @@ export default function DashboardUsersPage() {
             {ROLES.map((r) => (
               <SelectItem key={r.value} value={r.value}>
                 {r.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={purchase}
+          onValueChange={(value) => {
+            setPurchase(value ?? "tout");
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-[220px]">
+            <SelectValue placeholder="Achats" />
+          </SelectTrigger>
+          <SelectContent>
+            {PURCHASE_FILTERS.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
               </SelectItem>
             ))}
           </SelectContent>

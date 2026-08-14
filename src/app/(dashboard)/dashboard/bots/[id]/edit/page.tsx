@@ -46,8 +46,6 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         </Button>
       </div>
 
-      <BotForm bot={bot} onSaved={setBot} />
-
       <BotRequirementsManager
         botId={bot.id}
         requirements={bot.requirements ?? []}
@@ -71,6 +69,8 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         files={bot.bot_files ?? []}
         onChange={(bot_files) => setBot({ ...bot, bot_files })}
       />
+
+      <BotForm bot={bot} onSaved={setBot} />
     </div>
   );
 }

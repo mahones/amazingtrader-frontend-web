@@ -275,6 +275,7 @@ export interface PaginatedResponse<T> {
 export async function fetchAdminUsersPaged(params: {
   search?: string;
   role?: string;
+  purchase?: string;
   is_active?: boolean;
   page?: number;
 }) {
