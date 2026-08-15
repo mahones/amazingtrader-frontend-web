@@ -17,6 +17,7 @@ export interface Order {
   gateway_reference: string | null;
   paid_at: string | null;
   items?: OrderItem[];
+  created_enrollment_id?: number;
   created_license_id?: number;
   created_bot_license_id?: number;
   created_at: string;

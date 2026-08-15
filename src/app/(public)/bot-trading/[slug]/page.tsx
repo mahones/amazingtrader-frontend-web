@@ -101,7 +101,7 @@ export default async function BotDetailPage({
               Choisissez la licence qui correspond le mieux à vos besoins.
             </p>
             <div className="mt-6">
-              <BotLicensePurchaseGrid plans={bot.license_plans ?? []} botSlug={bot.slug} />
+              <BotLicensePurchaseGrid plans={bot.license_plans ?? []} />
             </div>
           </div>
         </article>

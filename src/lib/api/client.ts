@@ -26,7 +26,7 @@ apiClient.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const url: string = error.config?.url ?? "";
-    const isAuthEndpoint = url.includes("/login") || url.includes("/register");
+    const isAuthEndpoint = url.includes("/login") || url.includes("/register") || url.includes("/logout");
 
     if (status === 401) {
       const hadToken = Boolean(getToken());

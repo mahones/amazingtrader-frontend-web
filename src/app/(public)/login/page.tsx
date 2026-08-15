@@ -9,15 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
-import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { extractApiError } from "@/lib/api/client";
-import { purchase, type PurchasableType } from "@/lib/api/orders";
 
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { handlePurchaseResult, modal } = usePostPurchaseFlow();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -30,19 +27,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-
-      const purchaseParam = searchParams.get("purchase");
-      const redirect = searchParams.get("redirect");
-
-      if (purchaseParam) {
-        const [type, id] = purchaseParam.split(":");
-        const order = await purchase(type as PurchasableType, Number(id)).catch(() => null);
-        if (order) handlePurchaseResult(order, type as PurchasableType);
-        else router.push(redirect ?? "/dashboard");
-        return;
-      }
-
-      router.push(redirect ?? "/dashboard");
+      router.push(searchParams.get("redirect") ?? "/dashboard");
     } catch (err) {
       setError(extractApiError(err, "Identifiants incorrects."));
     } finally {
@@ -91,7 +76,6 @@ export default function LoginPage() {
           </p>
         </CardContent>
       </Card>
-      {modal}
     </div>
   );
 }

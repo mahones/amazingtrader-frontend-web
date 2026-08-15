@@ -9,17 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
-import { usePostPurchaseFlow } from "@/hooks/usePostPurchaseFlow";
 import { register as apiRegister } from "@/lib/api/auth";
 import { extractApiError } from "@/lib/api/client";
-import { purchase, type PurchasableType } from "@/lib/api/orders";
 import { toast } from "@/lib/toast";
 
 export default function RegisterPage() {
   const { refresh } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { handlePurchaseResult, modal } = usePostPurchaseFlow();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,19 +38,7 @@ export default function RegisterPage() {
       });
       await refresh();
       toast.success("Votre compte a été créé avec succès. Bienvenue !");
-
-      const purchaseParam = searchParams.get("purchase");
-      const redirect = searchParams.get("redirect");
-
-      if (purchaseParam) {
-        const [type, id] = purchaseParam.split(":");
-        const order = await purchase(type as PurchasableType, Number(id)).catch(() => null);
-        if (order) handlePurchaseResult(order, type as PurchasableType);
-        else router.push(redirect ?? "/dashboard");
-        return;
-      }
-
-      router.push(redirect ?? "/dashboard");
+      router.push(searchParams.get("redirect") ?? "/dashboard");
     } catch (err) {
       setError(extractApiError(err, "Impossible de créer le compte. Vérifiez les informations saisies."));
     } finally {
@@ -118,7 +103,6 @@ export default function RegisterPage() {
           </p>
         </CardContent>
       </Card>
-      {modal}
     </div>
   );
 }

@@ -98,12 +98,7 @@ export default async function CourseDetailPage({
               <div className="text-3xl font-bold text-primary">{formatCurrency(course.price)}</div>
               <p className="mt-1 text-sm text-muted-foreground">Accès à vie à la formation</p>
               <div className="mt-6">
-                <PurchaseButton
-                  type="course"
-                  id={course.id}
-                  redirectTo={`/formations/${course.slug}`}
-                  label="Souscrire à cette formation"
-                />
+                <PurchaseButton type="course" id={course.id} label="Souscrire à cette formation" />
               </div>
             </CardContent>
           </Card>

@@ -30,6 +30,9 @@ export async function register(payload: {
 export async function logout(): Promise<void> {
   try {
     await apiClient.post("/logout");
+  } catch {
+    // Token was already invalid/expired server-side (e.g. revoked by
+    // inactivity) — the goal is achieved either way once clearToken() runs.
   } finally {
     clearToken();
   }
