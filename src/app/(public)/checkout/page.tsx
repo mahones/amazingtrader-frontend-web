@@ -11,7 +11,7 @@ import { extractApiError } from "@/lib/api/client";
 import { fetchCourses } from "@/lib/api/courses";
 import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
-import { createOrder, payOrder, payOrderWithPayerUrl, type PurchasableType } from "@/lib/api/orders";
+import { createOrder, payOrder, payOrderWithPayerUrl, payOrderWithPayPal, type PurchasableType } from "@/lib/api/orders";
 import { formatCurrency, formatDuration, stripHtml } from "@/lib/utils";
 
 type Recap = {
@@ -108,6 +108,10 @@ export default function CheckoutPage() {
       const order = await createOrder([{ type, id }]);
       if (method === "payerurl") {
         window.location.href = await payOrderWithPayerUrl(order.id);
+        return;
+      }
+      if (method === "paypal") {
+        window.location.href = await payOrderWithPayPal(order.id);
         return;
       }
       await payOrder(order.id, method);

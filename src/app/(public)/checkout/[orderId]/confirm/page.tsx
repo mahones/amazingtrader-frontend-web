@@ -2,14 +2,20 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PostPurchaseDetailsForm } from "@/components/purchase/PostPurchaseDetailsForm";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
-import { fetchOrder, fetchPayerUrlConfig, simulatePayerUrlPayment, type PurchasableType } from "@/lib/api/orders";
+import {
+  capturePayPalPayment,
+  fetchOrder,
+  fetchPayerUrlConfig,
+  simulatePayerUrlPayment,
+  type PurchasableType,
+} from "@/lib/api/orders";
 import { formatCurrency } from "@/lib/utils";
 import type { Order } from "@/types/order";
 
@@ -29,13 +35,16 @@ export default function CheckoutConfirmPage({ params }: { params: Promise<{ orde
   const orderId = Number(orderIdParam);
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [fakeMode, setFakeMode] = useState<boolean | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [simulating, setSimulating] = useState<"paid" | "cancel" | null>(null);
   const [simulateError, setSimulateError] = useState<string | null>(null);
+  const [captureError, setCaptureError] = useState<string | null>(null);
   const hasHandledPaidRedirectRef = useRef(false);
+  const hasCapturedPayPalRef = useRef(false);
 
   async function reload() {
     try {
@@ -75,6 +84,20 @@ export default function CheckoutConfirmPage({ params }: { params: Promise<{ orde
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fakeMode, order?.gateway, order?.status]);
+
+  // PayPal redirects the buyer back here after approval, with ?PayerID=...
+  // in the URL (absent if they hit "cancel" on PayPal's page instead).
+  // Capture immediately rather than waiting on the webhook, for a fast
+  // confirmation — the webhook is only a fallback for abandoned tabs.
+  useEffect(() => {
+    if (order?.gateway !== "paypal" || order?.status !== "pending" || hasCapturedPayPalRef.current) return;
+    if (!searchParams.get("PayerID")) return;
+
+    hasCapturedPayPalRef.current = true;
+    capturePayPalPayment(orderId)
+      .then((fresh) => setOrder(fresh))
+      .catch((err) => setCaptureError(extractApiError(err, "Impossible de finaliser le paiement PayPal.")));
+  }, [order?.gateway, order?.status, orderId, searchParams]);
 
   // A course purchase has nothing to configure — send the buyer straight
   // into their new formation as soon as payment is confirmed.
@@ -143,6 +166,27 @@ export default function CheckoutConfirmPage({ params }: { params: Promise<{ orde
               </div>
             )}
             {fakeMode === false && <Alert>En attente de confirmation du paiement par PayerURL...</Alert>}
+          </CardContent>
+        </Card>
+      )}
+
+      {order && order.status === "pending" && order.gateway === "paypal" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">{formatCurrency(order.total_amount, order.currency)}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {searchParams.get("PayerID") ? (
+              <Alert>Finalisation du paiement PayPal...</Alert>
+            ) : (
+              <Alert variant="error">
+                Paiement PayPal annulé.{" "}
+                <Link href="/" className="font-medium underline">
+                  Retour à l&apos;accueil
+                </Link>
+              </Alert>
+            )}
+            {captureError && <Alert variant="error">{captureError}</Alert>}
           </CardContent>
         </Card>
       )}
