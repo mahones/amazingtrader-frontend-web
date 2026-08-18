@@ -238,11 +238,6 @@ function BotLicenseCard({ license }: { license: UserBotLicense }) {
           status={license.status}
         />
 
-        <p className="text-sm">
-          <span className="text-muted-foreground">Clé de licence :</span>{" "}
-          <code>{license.license_key}</code>
-        </p>
-
         {files.length > 0 && (
           <div className="space-y-2 border-t border-border pt-4">
             <p className="text-sm font-medium">Fichiers du bot</p>

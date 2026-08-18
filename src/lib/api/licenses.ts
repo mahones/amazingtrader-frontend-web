@@ -16,14 +16,6 @@ export async function fetchMyLicenses() {
   return data.data;
 }
 
-export async function updateBrokerConfig(id: number, brokerConfig: Record<string, unknown>) {
-  const { data } = await apiClient.patch<{ data: UserLicense }>(
-    `/my/licenses/${id}/broker-config`,
-    { broker_config: brokerConfig }
-  );
-  return data.data;
-}
-
 export async function updatePurchaseDetails(id: number, details: LicensePurchaseDetails) {
   const { data } = await apiClient.patch<{ data: UserLicense }>(
     `/my/licenses/${id}/purchase-details`,

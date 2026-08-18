@@ -49,24 +49,27 @@ export function NotificationBell() {
   }, []);
 
   async function handleOpenChange(open: boolean) {
-    if (open && notifications === null) {
+    if (!open) return;
+
+    if (notifications === null) {
       const items = await fetchAdminNotifications();
       setNotifications(items);
+    }
+
+    // Opening the bell acknowledges the current notifications — the "9+"
+    // badge only comes back once new ones arrive (next unread-count poll).
+    if (unreadCount > 0) {
+      await markAllNotificationsRead();
+      setUnreadCount(0);
+      setNotifications((items) => items?.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() })) ?? null);
     }
   }
 
   async function handleSelect(notification: AdminNotification) {
     if (!notification.read_at) {
       await markNotificationRead(notification.id);
-      setUnreadCount((c) => Math.max(0, c - 1));
     }
     router.push(`/dashboard/users/${notification.data.user_id}`);
-  }
-
-  async function handleMarkAllRead() {
-    await markAllNotificationsRead();
-    setUnreadCount(0);
-    setNotifications((items) => items?.map((n) => ({ ...n, read_at: new Date().toISOString() })) ?? null);
   }
 
   return (
@@ -84,13 +87,8 @@ export function NotificationBell() {
         <span className="sr-only">Notifications</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
-        <div className="flex items-center justify-between px-1.5 py-1">
-          <span className="px-1.5 py-1 text-xs font-medium text-muted-foreground">Notifications</span>
-          {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={handleMarkAllRead}>
-              Tout marquer lu
-            </Button>
-          )}
+        <div className="px-1.5 py-1">
+          <span className="text-xs font-medium text-muted-foreground">Notifications</span>
         </div>
         <DropdownMenuSeparator />
         {notifications === null && (
@@ -112,6 +110,17 @@ export function NotificationBell() {
             </DropdownMenuItem>
           );
         })}
+        {notifications && notifications.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => router.push("/dashboard/historique")}
+              className="justify-center text-sm font-medium text-primary"
+            >
+              Voir tout l&apos;historique
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

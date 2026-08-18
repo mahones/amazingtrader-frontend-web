@@ -24,9 +24,7 @@ export interface LicensePurchaseDetails {
 
 export interface UserLicense {
   id: number;
-  license_key: string;
   status: LicenseStatus;
-  broker_config: Record<string, unknown> | null;
   purchase_details: LicensePurchaseDetails | null;
   activated_at: string | null;
   expires_at: string | null;

@@ -69,9 +69,7 @@ export interface BotLicensePurchaseDetails {
 
 export interface UserBotLicense {
   id: number;
-  license_key: string;
   status: "active" | "expired" | "revoked";
-  broker_config: Record<string, unknown> | null;
   purchase_details: BotLicensePurchaseDetails | null;
   activated_at: string | null;
   expires_at: string | null;

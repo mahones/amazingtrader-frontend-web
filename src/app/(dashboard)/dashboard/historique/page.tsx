@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   NOTIFICATION_TYPES,
@@ -11,6 +13,12 @@ import {
   formatNotificationMessage,
   type AdminNotification,
 } from "@/lib/api/notifications";
+
+const TYPE_FILTERS = [
+  { value: "tout", label: "Tous les évènements" },
+  { value: "purchase", label: "Achats" },
+  { value: "registration", label: "Inscriptions" },
+];
 
 function formatDateTime(date: string) {
   return new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(date));
@@ -23,16 +31,23 @@ function eventLabel(type: string) {
 export default function DashboardHistoriquePage() {
   useRequireRole(["admin", "developer"]);
 
+  const [type, setType] = useState("tout");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
   const [notifications, setNotifications] = useState<AdminNotification[] | null>(null);
   const [meta, setMeta] = useState<{ current_page: number; last_page: number } | null>(null);
 
   useEffect(() => {
-    fetchAdminNotificationsPaged(page).then((res) => {
+    fetchAdminNotificationsPaged(page, {
+      type: type === "tout" ? undefined : (type as "purchase" | "registration"),
+      date_from: dateFrom || undefined,
+      date_to: dateTo || undefined,
+    }).then((res) => {
       setNotifications(res.data);
       setMeta(res.meta);
     });
-  }, [page]);
+  }, [page, type, dateFrom, dateTo]);
 
   return (
     <div className="space-y-6">
@@ -41,6 +56,71 @@ export default function DashboardHistoriquePage() {
         <p className="text-muted-foreground">
           Journal chronologique de toutes les notifications reçues (achats, inscriptions...).
         </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3">
+        <Select
+          value={type}
+          onValueChange={(value) => {
+            setType(value ?? "tout");
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent>
+            {TYPE_FILTERS.map((t) => (
+              <SelectItem key={t.value} value={t.value}>
+                {t.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="date_from" className="text-xs text-muted-foreground">
+            Du
+          </label>
+          <Input
+            id="date_from"
+            type="date"
+            value={dateFrom}
+            onChange={(e) => {
+              setDateFrom(e.target.value);
+              setPage(1);
+            }}
+            className="w-[160px]"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="date_to" className="text-xs text-muted-foreground">
+            Au
+          </label>
+          <Input
+            id="date_to"
+            type="date"
+            value={dateTo}
+            onChange={(e) => {
+              setDateTo(e.target.value);
+              setPage(1);
+            }}
+            className="w-[160px]"
+          />
+        </div>
+        {(type !== "tout" || dateFrom || dateTo) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setType("tout");
+              setDateFrom("");
+              setDateTo("");
+              setPage(1);
+            }}
+          >
+            Réinitialiser
+          </Button>
+        )}
       </div>
 
       <div className="space-y-3">

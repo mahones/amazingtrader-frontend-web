@@ -6,11 +6,9 @@ import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useAuth } from "@/context/AuthContext";
-import { fetchMyLicenses, updateBrokerConfig } from "@/lib/api/licenses";
+import { fetchMyLicenses } from "@/lib/api/licenses";
 import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
@@ -114,17 +112,6 @@ export default function DashboardAutoTradingPage() {
 }
 
 function LicenseCard({ license }: { license: UserLicense }) {
-  const [brokerApiKey, setBrokerApiKey] = useState(
-    (license.broker_config?.api_key as string) ?? ""
-  );
-  const [saved, setSaved] = useState(false);
-
-  async function handleSave() {
-    await updateBrokerConfig(license.id, { ...license.broker_config, api_key: brokerApiKey });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  }
-
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -140,10 +127,6 @@ function LicenseCard({ license }: { license: UserLicense }) {
           status={license.status}
         />
 
-        <p className="text-sm">
-          <span className="text-muted-foreground">Clé de licence :</span> <code>{license.license_key}</code>
-        </p>
-
         {license.purchase_details && (
           <div className="grid gap-2 rounded-lg border border-border p-3 text-sm sm:grid-cols-2">
             <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
@@ -154,21 +137,6 @@ function LicenseCard({ license }: { license: UserLicense }) {
             </p>
           </div>
         )}
-
-        <div className="space-y-2 border-t border-border pt-4">
-          <Label htmlFor={`broker-${license.id}`}>Clé API broker</Label>
-          <div className="flex gap-2">
-            <Input
-              id={`broker-${license.id}`}
-              value={brokerApiKey}
-              onChange={(e) => setBrokerApiKey(e.target.value)}
-              placeholder="Collez votre clé API broker"
-            />
-            <Button onClick={handleSave} variant="outline">
-              {saved ? "Enregistré ✓" : "Enregistrer"}
-            </Button>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

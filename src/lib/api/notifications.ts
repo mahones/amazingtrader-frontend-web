@@ -49,14 +49,24 @@ export function formatNotificationMessage(notification: AdminNotification): {
   };
 }
 
+export const NOTIFICATION_BELL_LIMIT = 5;
+
 export async function fetchAdminNotifications() {
-  const { data } = await apiClient.get<{ data: AdminNotification[] }>("/admin/notifications");
+  const { data } = await apiClient.get<{ data: AdminNotification[] }>("/admin/notifications", {
+    params: { per_page: NOTIFICATION_BELL_LIMIT },
+  });
   return data.data;
 }
 
-export async function fetchAdminNotificationsPaged(page = 1) {
+export interface NotificationFilters {
+  type?: "purchase" | "registration";
+  date_from?: string;
+  date_to?: string;
+}
+
+export async function fetchAdminNotificationsPaged(page = 1, filters: NotificationFilters = {}) {
   const { data } = await apiClient.get<PaginatedResponse<AdminNotification>>("/admin/notifications", {
-    params: { page },
+    params: { page, ...filters },
   });
   return data;
 }
