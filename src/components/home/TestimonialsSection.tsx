@@ -63,7 +63,7 @@ export function TestimonialsSection() {
       >
         {loop.map((src, index) => (
           <div key={index} className="w-72 shrink-0">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-muted">
+            <div className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-border bg-muted">
               <Image
                 src={src}
                 alt="Témoignage client"

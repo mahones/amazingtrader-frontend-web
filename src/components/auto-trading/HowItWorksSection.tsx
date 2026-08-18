@@ -35,7 +35,7 @@ export function HowItWorksSection() {
   return (
     <section className="mx-auto max-w-7xl px-4 pt-1 pb-16 sm:px-6 lg:px-8">
       <div className="text-center">
-        <h1 className="text-center  text-2xl sm:text-2xl font-extrabold text-[#0E0E0E]-900 mb-10">
+        <h1 className="text-center  text-2xl sm:text-2xl font-extrabold text-[#0E0E0E]-900 mt-5 mb-10">
           Comment <span className="text-amber-500"> ça marche ?</span>
         </h1>
       </div>

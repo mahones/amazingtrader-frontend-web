@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const MYFXBOOK_URL = "https://www.myfxbook.com/members/AMAZINGTRADERS";
 const MQL5_URL =
@@ -46,23 +47,25 @@ export function NoProfitSharingSection() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a
-              href={MYFXBOOK_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:border-primary hover:text-primary"
-            >
-              Vérifier nos performances sur Myfxbook
-            </a>
-            <a
-              href={MQL5_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:border-primary hover:text-primary"
-            >
-              Vérifier nos performances sur MQL5
-            </a>
+          <div className="mt-8 flex flex-col gap-3">
+            <Button
+              size="lg"
+              className="w-full"
+              render={
+                <a href={MYFXBOOK_URL} target="_blank" rel="noopener noreferrer">
+                  Vérifier nos performances sur Myfxbook
+                </a>
+              }
+            />
+            <Button
+              size="lg"
+              className="w-full"
+              render={
+                <a href={MQL5_URL} target="_blank" rel="noopener noreferrer">
+                  Vérifier nos performances sur MQL5
+                </a>
+              }
+            />
           </div>
         </motion.div>
 
