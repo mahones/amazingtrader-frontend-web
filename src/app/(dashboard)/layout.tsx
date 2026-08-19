@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Home } from "lucide-react";
+import { CommunityMenu } from "@/components/layout/CommunityMenu";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -45,6 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-2">
             {isStaff && <NotificationBell />}
             <ThemeToggle />
+            <CommunityMenu />
           </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
