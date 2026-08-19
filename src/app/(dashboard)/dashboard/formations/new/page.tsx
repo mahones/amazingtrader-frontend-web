@@ -22,6 +22,12 @@ import { LessonDraftManager } from "@/components/forms/LessonDraftManager";
 import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import type { LessonDraft } from "@/components/forms/LessonFields";
 
+const LEVEL_LABELS: Record<string, string> = {
+  beginner: "Débutant",
+  intermediate: "Intermédiaire",
+  advanced: "Avancé",
+};
+
 export default function NewCoursePage() {
   useRequireRole(["admin", "developer"]);
   const router = useRouter();
@@ -112,7 +118,7 @@ export default function NewCoursePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Niveau</Label>
-                <Select value={level} onValueChange={(value) => value && setLevel(value)}>
+                <Select items={LEVEL_LABELS} value={level} onValueChange={(value) => value && setLevel(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

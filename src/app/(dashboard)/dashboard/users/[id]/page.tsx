@@ -5,15 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   activateUserBotLicense,
   activateUserLicense,
+  fetchAdminLicensePlans,
+  fetchAdminTradingBots,
   fetchAdminUserProfile,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
+import type { BotLicensePlan } from "@/types/bot";
+import type { LicensePlan } from "@/types/license";
 import type { UserProfile } from "@/types/user";
 
 function ActivationBadge({ isActivated }: { isActivated: boolean }) {
@@ -30,9 +35,18 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
   useRequireRole(["admin", "developer"]);
   const { id } = use(params);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
+  const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
 
   useEffect(() => {
     fetchAdminUserProfile(Number(id)).then(setProfile);
+    fetchAdminLicensePlans().then(setLicensePlans);
+    fetchAdminTradingBots().then((bots) => {
+      const plans = bots.flatMap((bot) =>
+        (bot.license_plans ?? []).map((plan) => ({ ...plan, botName: bot.name }))
+      );
+      setBotLicensePlans(plans);
+    });
   }, [id]);
 
   async function handleToggleStatus() {
@@ -79,6 +93,19 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           <p className="text-muted-foreground">{profile.email}</p>
         </div>
         <div className="flex items-center gap-3">
+          <AssignLicenseDialog
+            userId={profile.id}
+            licensePlans={licensePlans}
+            botLicensePlans={botLicensePlans}
+            onLicenseAssigned={(license) =>
+              setProfile((prev) => (prev ? { ...prev, user_licenses: [...prev.user_licenses, license] } : prev))
+            }
+            onBotLicenseAssigned={(license) =>
+              setProfile((prev) =>
+                prev ? { ...prev, user_bot_licenses: [...prev.user_bot_licenses, license] } : prev
+              )
+            }
+          />
           <Button variant={profile.is_active ? "destructive" : "outline"} onClick={handleToggleStatus}>
             {profile.is_active ? "Désactiver le compte" : "Activer le compte"}
           </Button>

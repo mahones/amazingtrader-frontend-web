@@ -25,6 +25,8 @@ const OFFER_LABELS: Record<BotLicenseOfferType, string> = {
   lifetime: "Lifetime offer",
 };
 
+const DURATION_UNIT_LABELS: Record<string, string> = { month: "Mois", year: "Année" };
+
 interface PlanDraft {
   offer_type: BotLicenseOfferType;
   name: string;
@@ -87,6 +89,7 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
         <div className="space-y-2">
           <Label>Type d&apos;offre</Label>
           <Select
+            items={OFFER_LABELS}
             value={value.offer_type}
             onValueChange={(v) => v && onChange({ ...value, offer_type: v as BotLicenseOfferType })}
           >
@@ -133,6 +136,7 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
             <div className="space-y-2">
               <Label>Unité</Label>
               <Select
+                items={DURATION_UNIT_LABELS}
                 value={value.duration_unit}
                 onValueChange={(v) => v && onChange({ ...value, duration_unit: v as LicenseDurationUnit })}
               >

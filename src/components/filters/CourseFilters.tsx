@@ -43,6 +43,7 @@ export function CourseFilters() {
   return (
     <div className="flex flex-wrap gap-3">
       <Select
+        items={LEVELS}
         value={searchParams.get("level") ?? "tout"}
         onValueChange={(value) => updateParam("level", value)}
       >
@@ -59,6 +60,7 @@ export function CourseFilters() {
       </Select>
 
       <Select
+        items={CATEGORIES}
         value={searchParams.get("category") ?? "tout"}
         onValueChange={(value) => updateParam("category", value)}
       >

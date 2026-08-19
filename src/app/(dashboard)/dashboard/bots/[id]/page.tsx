@@ -42,6 +42,14 @@ import type {
 } from "@/types/bot";
 import type { User } from "@/types/user";
 
+const ASSIGNMENT_STATUS_LABELS: Record<string, string> = {
+  active: "Actif",
+  paused: "En pause",
+  stopped: "Arrêté",
+};
+
+const DIRECTION_LABELS: Record<string, string> = { buy: "Achat", sell: "Vente" };
+
 export default function BotTradesPage({
   params,
 }: {
@@ -248,6 +256,7 @@ function AssignUserForm({
       <div className="space-y-2">
         <Label>Attribuer à un utilisateur</Label>
         <Select
+          items={(users ?? []).map((user) => ({ value: String(user.id), label: `${user.name} (${user.email})` }))}
           value={selected}
           onValueChange={(value) => setSelected(value ?? "")}
         >
@@ -308,6 +317,7 @@ function AssignmentRow({
         </div>
         <div className="flex items-center gap-3">
           <Select
+            items={ASSIGNMENT_STATUS_LABELS}
             value={assignment.status}
             onValueChange={(value) =>
               value && handleStatusChange(value as BotAssignmentStatus)
@@ -399,6 +409,7 @@ function LogTradeForm({
       <div className="space-y-2">
         <Label>Sens</Label>
         <Select
+          items={DIRECTION_LABELS}
           value={direction}
           onValueChange={(v) => v && setDirection(v as "buy" | "sell")}
         >

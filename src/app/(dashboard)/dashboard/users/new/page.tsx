@@ -12,12 +12,14 @@ import { createAdminUser, fetchAdminCourses, fetchAdminLicensePlans, fetchAdminT
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import type { Course } from "@/types/course";
-import type { LicensePlan } from "@/types/license";
+import type { LicensePlan, LicensePurchaseDetails } from "@/types/license";
 import type { BotLicensePlan } from "@/types/bot";
 
 function toggleId(ids: number[], id: number): number[] {
   return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
 }
+
+const emptyLicenseDetails: LicensePurchaseDetails = { id: "", password: "", server: "", whatsapp_number: "" };
 
 export default function NewUserPage() {
   useRequireRole(["admin", "developer"]);
@@ -27,8 +29,12 @@ export default function NewUserPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [courseIds, setCourseIds] = useState<number[]>([]);
+
   const [licensePlanIds, setLicensePlanIds] = useState<number[]>([]);
+  const [licenseDetails, setLicenseDetails] = useState<Record<number, LicensePurchaseDetails>>({});
+
   const [botLicensePlanIds, setBotLicensePlanIds] = useState<number[]>([]);
+  const [botLicenseDetails, setBotLicenseDetails] = useState<Record<number, string>>({});
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
@@ -48,6 +54,23 @@ export default function NewUserPage() {
     });
   }, []);
 
+  function toggleLicensePlan(planId: number) {
+    setLicensePlanIds((ids) => toggleId(ids, planId));
+    setLicenseDetails((prev) => (prev[planId] ? prev : { ...prev, [planId]: { ...emptyLicenseDetails } }));
+  }
+
+  function updateLicenseDetail(planId: number, field: keyof LicensePurchaseDetails, value: string) {
+    setLicenseDetails((prev) => ({
+      ...prev,
+      [planId]: { ...(prev[planId] ?? emptyLicenseDetails), [field]: value },
+    }));
+  }
+
+  function toggleBotLicensePlan(planId: number) {
+    setBotLicensePlanIds((ids) => toggleId(ids, planId));
+    setBotLicenseDetails((prev) => (prev[planId] !== undefined ? prev : { ...prev, [planId]: "" }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
@@ -59,8 +82,14 @@ export default function NewUserPage() {
         email,
         password,
         course_ids: courseIds,
-        license_plan_ids: licensePlanIds,
-        bot_license_plan_ids: botLicensePlanIds,
+        licenses: licensePlanIds.map((planId) => ({
+          license_plan_id: planId,
+          ...(licenseDetails[planId] ?? emptyLicenseDetails),
+        })),
+        bot_licenses: botLicensePlanIds.map((planId) => ({
+          bot_license_plan_id: planId,
+          id: botLicenseDetails[planId] ?? "",
+        })),
       });
       toast.success("Utilisateur créé avec succès.");
       router.push(`/dashboard/users/${user.id}`);
@@ -134,39 +163,116 @@ export default function NewUserPage() {
 
             <div className="space-y-2">
               <Label>Licences Auto-Trading</Label>
-              <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border p-3">
+              <div className="space-y-3 rounded-lg border p-3">
                 {licensePlans.length === 0 && <p className="text-sm text-muted-foreground">Aucune licence.</p>}
-                {licensePlans.map((plan) => (
-                  <label key={plan.id} className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      className="accent-primary"
-                      checked={licensePlanIds.includes(plan.id)}
-                      onChange={() => setLicensePlanIds((ids) => toggleId(ids, plan.id))}
-                    />
-                    {plan.name}
-                  </label>
-                ))}
+                {licensePlans.map((plan) => {
+                  const checked = licensePlanIds.includes(plan.id);
+                  const details = licenseDetails[plan.id] ?? emptyLicenseDetails;
+                  return (
+                    <div key={plan.id} className="space-y-2">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="accent-primary"
+                          checked={checked}
+                          onChange={() => toggleLicensePlan(plan.id)}
+                        />
+                        {plan.name}
+                      </label>
+                      {checked && (
+                        <div className="grid gap-2 rounded-lg bg-muted/40 p-3 sm:grid-cols-2">
+                          <div className="space-y-1">
+                            <Label htmlFor={`license-${plan.id}-id`} className="text-xs">
+                              ID
+                            </Label>
+                            <Input
+                              id={`license-${plan.id}-id`}
+                              required
+                              value={details.id}
+                              onChange={(e) => updateLicenseDetail(plan.id, "id", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor={`license-${plan.id}-password`} className="text-xs">
+                              Mot de passe
+                            </Label>
+                            <Input
+                              id={`license-${plan.id}-password`}
+                              type="password"
+                              required
+                              value={details.password}
+                              onChange={(e) => updateLicenseDetail(plan.id, "password", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor={`license-${plan.id}-server`} className="text-xs">
+                              Serveur
+                            </Label>
+                            <Input
+                              id={`license-${plan.id}-server`}
+                              required
+                              value={details.server}
+                              onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor={`license-${plan.id}-whatsapp`} className="text-xs">
+                              Numéro WhatsApp
+                            </Label>
+                            <Input
+                              id={`license-${plan.id}-whatsapp`}
+                              required
+                              value={details.whatsapp_number}
+                              onChange={(e) => updateLicenseDetail(plan.id, "whatsapp_number", e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             <div className="space-y-2">
               <Label>Licences Bots de Trading</Label>
-              <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border p-3">
+              <div className="space-y-3 rounded-lg border p-3">
                 {botLicensePlans.length === 0 && (
                   <p className="text-sm text-muted-foreground">Aucune licence de bot.</p>
                 )}
-                {botLicensePlans.map((plan) => (
-                  <label key={plan.id} className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      className="accent-primary"
-                      checked={botLicensePlanIds.includes(plan.id)}
-                      onChange={() => setBotLicensePlanIds((ids) => toggleId(ids, plan.id))}
-                    />
-                    {plan.botName} — {plan.name}
-                  </label>
-                ))}
+                {botLicensePlans.map((plan) => {
+                  const checked = botLicensePlanIds.includes(plan.id);
+                  return (
+                    <div key={plan.id} className="space-y-2">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="accent-primary"
+                          checked={checked}
+                          onChange={() => toggleBotLicensePlan(plan.id)}
+                        />
+                        {plan.botName} — {plan.name}
+                      </label>
+                      {checked && (
+                        <div className="rounded-lg bg-muted/40 p-3">
+                          <div className="space-y-1">
+                            <Label htmlFor={`bot-license-${plan.id}-id`} className="text-xs">
+                              ID
+                            </Label>
+                            <Input
+                              id={`bot-license-${plan.id}-id`}
+                              required
+                              value={botLicenseDetails[plan.id] ?? ""}
+                              onChange={(e) =>
+                                setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: e.target.value }))
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

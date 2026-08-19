@@ -60,6 +60,7 @@ export default function DashboardHistoriquePage() {
 
       <div className="flex flex-wrap items-end gap-3">
         <Select
+          items={TYPE_FILTERS}
           value={type}
           onValueChange={(value) => {
             setType(value ?? "tout");

@@ -35,6 +35,7 @@ function LinkFields({ value, onChange }: { value: LinkDraft; onChange: (next: Li
       <div className="space-y-2">
         <Label>Plateforme</Label>
         <Select
+          items={PLATFORM_LABELS}
           value={value.platform}
           onValueChange={(v) => v && onChange({ ...value, platform: v as PerformancePlatform })}
         >

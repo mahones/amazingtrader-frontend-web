@@ -1,11 +1,12 @@
 import { apiClient } from "./client";
 import type { Course, Lesson } from "@/types/course";
-import type { LicensePlan, UserLicense } from "@/types/license";
+import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 import type {
   BotAssignment,
   BotAssignmentStatus,
   BotFile,
   BotLicensePlan,
+  BotLicensePurchaseDetails,
   BotPerformanceLink,
   BotRequirement,
   BotTrade,
@@ -307,10 +308,29 @@ export async function createAdminUser(payload: {
   email: string;
   password: string;
   course_ids?: number[];
-  license_plan_ids?: number[];
-  bot_license_plan_ids?: number[];
+  licenses?: Array<{ license_plan_id: number } & LicensePurchaseDetails>;
+  bot_licenses?: Array<{ bot_license_plan_id: number } & BotLicensePurchaseDetails>;
 }) {
   const { data } = await apiClient.post<{ data: UserProfile }>("/admin/users", payload);
+  return data.data;
+}
+
+export async function assignLicenseToUser(
+  userId: number,
+  payload: { license_plan_id: number; activate?: boolean } & LicensePurchaseDetails
+) {
+  const { data } = await apiClient.post<{ data: UserLicense }>(`/admin/users/${userId}/licenses`, payload);
+  return data.data;
+}
+
+export async function assignBotLicenseToUser(
+  userId: number,
+  payload: { bot_license_plan_id: number; activate?: boolean } & BotLicensePurchaseDetails
+) {
+  const { data } = await apiClient.post<{ data: UserBotLicense }>(
+    `/admin/users/${userId}/bot-licenses`,
+    payload
+  );
   return data.data;
 }
 

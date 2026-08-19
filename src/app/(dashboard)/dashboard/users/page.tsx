@@ -86,6 +86,7 @@ export default function DashboardUsersPage() {
           className="max-w-xs"
         />
         <Select
+          items={ROLES}
           value={role}
           onValueChange={(value) => {
             setRole(value ?? "tout");
@@ -104,6 +105,7 @@ export default function DashboardUsersPage() {
           </SelectContent>
         </Select>
         <Select
+          items={PURCHASE_FILTERS}
           value={purchase}
           onValueChange={(value) => {
             setPurchase(value ?? "tout");
@@ -122,6 +124,7 @@ export default function DashboardUsersPage() {
           </SelectContent>
         </Select>
         <Select
+          items={LICENSE_FILTERS}
           value={licenseStatus}
           onValueChange={(value) => {
             setLicenseStatus(value ?? "tout");

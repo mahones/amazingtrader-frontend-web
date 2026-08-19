@@ -14,6 +14,8 @@ import { extractApiError } from "@/lib/api/client";
 import { createAdminLicensePlan, updateAdminLicensePlan } from "@/lib/api/admin";
 import type { LicenseDurationUnit, LicensePlan } from "@/types/license";
 
+const DURATION_UNIT_LABELS: Record<string, string> = { month: "Mois", year: "Année" };
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -121,6 +123,7 @@ export function LicensePlanForm({
             <div className="space-y-2">
               <Label htmlFor="plan-duration-unit">Unité</Label>
               <Select
+                items={DURATION_UNIT_LABELS}
                 value={durationUnit}
                 onValueChange={(v) => v && setDurationUnit(v as LicenseDurationUnit)}
               >

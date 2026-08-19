@@ -34,6 +34,7 @@ export function PostFilters() {
 
   return (
     <Select
+      items={CATEGORIES}
       value={searchParams.get("category") ?? "tout"}
       onValueChange={updateParam}
     >
