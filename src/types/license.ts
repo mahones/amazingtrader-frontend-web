@@ -25,6 +25,7 @@ export interface LicensePurchaseDetails {
 export interface UserLicense {
   id: number;
   status: LicenseStatus;
+  is_activated: boolean;
   purchase_details: LicensePurchaseDetails | null;
   activated_at: string | null;
   expires_at: string | null;

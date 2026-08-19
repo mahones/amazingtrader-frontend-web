@@ -19,6 +19,7 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { createAdminCourse, createAdminLesson } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { LessonDraftManager } from "@/components/forms/LessonDraftManager";
+import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import type { LessonDraft } from "@/components/forms/LessonFields";
 
 export default function NewCoursePage() {
@@ -32,6 +33,7 @@ export default function NewCoursePage() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("99");
   const [durationMinutes, setDurationMinutes] = useState("120");
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [lessons, setLessons] = useState<LessonDraft[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -41,16 +43,18 @@ export default function NewCoursePage() {
     setPending(true);
     setError(null);
     try {
-      const course = await createAdminCourse({
-        title,
-        slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        description,
-        level: level as "beginner" | "intermediate" | "advanced",
-        category,
-        price: Number(price),
-        duration_minutes: Number(durationMinutes),
-        is_published: true,
-      });
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("slug", slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-"));
+      formData.append("description", description);
+      formData.append("level", level);
+      if (category) formData.append("category", category);
+      formData.append("price", price);
+      formData.append("duration_minutes", durationMinutes);
+      formData.append("is_published", "1");
+      if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+
+      const course = await createAdminCourse(formData);
 
       for (const [index, lesson] of lessons.entries()) {
         await createAdminLesson(course.id, {
@@ -147,6 +151,12 @@ export default function NewCoursePage() {
                 />
               </div>
             </div>
+            <ImageUploadInput
+              id="course-thumbnail"
+              label="Image de couverture"
+              value={thumbnailFile}
+              onChange={setThumbnailFile}
+            />
           </form>
         </CardContent>
       </Card>

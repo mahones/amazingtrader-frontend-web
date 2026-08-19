@@ -22,9 +22,21 @@ export async function register(payload: {
   password: string;
   password_confirmation: string;
 }): Promise<User> {
-  const { data } = await apiClient.post<{ data: User; token: string }>("/register", payload);
+  const { data } = await apiClient.post<{ data: User }>("/register", payload);
+  return data.data;
+}
+
+export async function verifyOtp(email: string, code: string): Promise<User> {
+  const { data } = await apiClient.post<{ data: User; token: string }>("/verify-otp", {
+    email,
+    code,
+  });
   setToken(data.token);
   return data.data;
+}
+
+export async function resendOtp(email: string): Promise<void> {
+  await apiClient.post("/resend-otp", { email });
 }
 
 export async function logout(): Promise<void> {

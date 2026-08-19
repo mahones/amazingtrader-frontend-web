@@ -1,21 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/context/AuthContext";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { createAdminAccount } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import { toast } from "@/lib/toast";
 
-export default function LoginPage() {
-  const { login } = useAuth();
+export default function NewAdminPage() {
+  useRequireRole(["developer"]);
   const router = useRouter();
-  const searchParams = useSearchParams();
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -27,28 +28,33 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await login(email, password);
-      router.push(searchParams.get("redirect") ?? "/dashboard");
+      await createAdminAccount({ name, email, password });
+      toast.success("Compte administrateur créé avec succès.");
+      router.push("/dashboard/users");
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.data?.requires_verification) {
-        const params = new URLSearchParams({ email: err.response.data.email ?? email });
-        router.push(`/verify-otp?${params.toString()}`);
-        return;
-      }
-      setError(extractApiError(err, "Identifiants incorrects."));
+      setError(extractApiError(err, "Impossible de créer le compte administrateur."));
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-12">
-      <Card className="w-full">
+    <div className="mx-auto max-w-md space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Créer un administrateur</h1>
+        <p className="text-muted-foreground">Réservé aux développeurs de la plateforme.</p>
+      </div>
+
+      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Se connecter</CardTitle>
+          <CardTitle>Informations du compte</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nom complet</Label>
+              <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -65,21 +71,16 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 required
+                minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             {error && <Alert variant="error">{error}</Alert>}
-            <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? "Connexion..." : "Se connecter"}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Création..." : "Créer l'administrateur"}
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            Pas encore de compte ?{" "}
-            <Link href="/register" className="font-medium text-primary hover:underline">
-              S&apos;inscrire
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>

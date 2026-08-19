@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useAuth } from "@/context/AuthContext";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { fetchAdminUsersPaged } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
@@ -25,12 +26,20 @@ const PURCHASE_FILTERS = [
   { value: "bot_license", label: "Bots de trading achetés" },
 ];
 
+const LICENSE_FILTERS = [
+  { value: "tout", label: "Toutes les licences" },
+  { value: "activated", label: "Licences activées" },
+  { value: "pending", label: "Licences non activées (En attente)" },
+];
+
 export default function DashboardUsersPage() {
+  const { user: currentUser } = useAuth();
   useRequireRole(["admin", "developer"]);
 
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("tout");
   const [purchase, setPurchase] = useState("tout");
+  const [licenseStatus, setLicenseStatus] = useState("tout");
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[] | null>(null);
   const [meta, setMeta] = useState<{ current_page: number; last_page: number } | null>(null);
@@ -41,6 +50,7 @@ export default function DashboardUsersPage() {
         search: search || undefined,
         role: role === "tout" ? undefined : role,
         purchase: purchase === "tout" ? undefined : purchase,
+        license_status: licenseStatus === "tout" ? undefined : (licenseStatus as "activated" | "pending"),
         page,
       }).then((res) => {
         setUsers(res.data);
@@ -48,13 +58,21 @@ export default function DashboardUsersPage() {
       });
     }, 300);
     return () => clearTimeout(timeout);
-  }, [search, role, purchase, page]);
+  }, [search, role, purchase, licenseStatus, page]);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Utilisateurs</h1>
-        <p className="text-muted-foreground">Recherchez et gérez les comptes de la plateforme.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">Utilisateurs</h1>
+          <p className="text-muted-foreground">Recherchez et gérez les comptes de la plateforme.</p>
+        </div>
+        <div className="flex gap-2">
+          {currentUser?.role === "developer" && (
+            <Button variant="outline" render={<Link href="/dashboard/admins/new">Créer un administrateur</Link>} />
+          )}
+          <Button render={<Link href="/dashboard/users/new">Créer un utilisateur</Link>} />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -99,6 +117,24 @@ export default function DashboardUsersPage() {
             {PURCHASE_FILTERS.map((p) => (
               <SelectItem key={p.value} value={p.value}>
                 {p.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={licenseStatus}
+          onValueChange={(value) => {
+            setLicenseStatus(value ?? "tout");
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-[260px]">
+            <SelectValue placeholder="Licences" />
+          </SelectTrigger>
+          <SelectContent>
+            {LICENSE_FILTERS.map((l) => (
+              <SelectItem key={l.value} value={l.value}>
+                {l.label}
               </SelectItem>
             ))}
           </SelectContent>

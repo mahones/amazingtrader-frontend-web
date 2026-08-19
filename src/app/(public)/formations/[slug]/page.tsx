@@ -34,6 +34,18 @@ export default async function CourseDetailPage({
             </Badge>
           </div>
           <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{course.title}</h1>
+
+          {course.thumbnail_url && (
+            <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
+              <img
+                src={course.thumbnail_url}
+                alt={course.title}
+                className="aspect-video w-full object-cover"
+              />
+            </div>
+          )}
+
           <div
             className="mt-4 max-w-none space-y-4 leading-relaxed text-muted-foreground [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_img]:rounded-lg [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5"
             dangerouslySetInnerHTML={{ __html: sanitizedDescription }}

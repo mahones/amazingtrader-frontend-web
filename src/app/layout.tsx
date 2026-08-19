@@ -38,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${roboto.variable} ${poppins.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <AuthProvider>{children}</AuthProvider>
           <Toaster />
         </ThemeProvider>

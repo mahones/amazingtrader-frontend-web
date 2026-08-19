@@ -1,4 +1,4 @@
-// import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -7,22 +7,22 @@ const services = [
     title: "Formations",
     description:
       "Des formations sur mésure pour rejoindre le cercle des traders d'élite.",
-    image: "/formation-trading.webp",
+    image: "/formation.webp",
     href: "/formations",
   },
   {
     title: "Trading automatisé",
     description:
       "Automatisez vos transactions avec notre plateforme de trading algorithmique sur votre compte.",
-    image: "/trading-automatisé.webp",
+    image: "/trading.webp",
     href: "/auto-trading",
-    
+
   },
   {
     title: "Expert Advisors",
     description:
       "Devenez rentable en travaillant avec nos intelligences artificielles, les meilleures du marché.",
-    image: "/expert-advisors.webp",
+    image: "/advisors.webp",
     href: "/bot-trading",
   },
 ];
@@ -47,8 +47,8 @@ export function ServicesSection() {
               href={service.href}
               className="group block"
             >
-              <Card className="h-full overflow-hidden border border-[#F2F2F2]/25 bg-neutral-800/60 py-10 px-4 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30 hover:border-amber-500">
-                {/* <div className="relative aspect-[16/9] w-full overflow-hidden">
+              <Card className="h-full overflow-hidden border border-[#F2F2F2]/25 bg-neutral-800/60 p-4 shadow-lg shadow-black/20 ring-0 backdrop-blur-md transition-colors hover:bg-[#0e0e0e]/30 hover:border-amber-500">
+                <div className="relative h-50 w-full overflow-hidden rounded-lg">
                   <Image
                     src={service.image}
                     alt={service.title}
@@ -56,7 +56,7 @@ export function ServicesSection() {
                     sizes="(min-width: 1024px) 33vw, 90vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </div> */}
+                </div>
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-slate-300">
                     {service.title}

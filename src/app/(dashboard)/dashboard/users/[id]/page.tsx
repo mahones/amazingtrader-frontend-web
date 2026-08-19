@@ -7,9 +7,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { fetchAdminUserProfile, updateAdminUserStatus } from "@/lib/api/admin";
+import {
+  activateUserBotLicense,
+  activateUserLicense,
+  fetchAdminUserProfile,
+  updateAdminUserStatus,
+} from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
 import type { UserProfile } from "@/types/user";
+
+function ActivationBadge({ isActivated }: { isActivated: boolean }) {
+  return isActivated ? (
+    <Badge className="border-transparent bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+      Activée
+    </Badge>
+  ) : (
+    <Badge variant="destructive">Non activée</Badge>
+  );
+}
 
 export default function DashboardUserProfilePage({ params }: { params: Promise<{ id: string }> }) {
   useRequireRole(["admin", "developer"]);
@@ -30,6 +45,30 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     setProfile({ ...profile, is_active: updated.is_active });
   }
 
+  async function handleActivateLicense(licenseId: number) {
+    const updated = await activateUserLicense(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_licenses: prev.user_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)),
+          }
+        : prev
+    );
+  }
+
+  async function handleActivateBotLicense(licenseId: number) {
+    const updated = await activateUserBotLicense(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_bot_licenses: prev.user_bot_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)),
+          }
+        : prev
+    );
+  }
+
   if (!profile) return <p className="text-muted-foreground">Chargement...</p>;
 
   return (
@@ -40,9 +79,6 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           <p className="text-muted-foreground">{profile.email}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant={profile.is_active ? "default" : "secondary"}>
-            {profile.is_active ? "Actif" : "Désactivé"}
-          </Badge>
           <Button variant={profile.is_active ? "destructive" : "outline"} onClick={handleToggleStatus}>
             {profile.is_active ? "Désactiver le compte" : "Activer le compte"}
           </Button>
@@ -66,9 +102,14 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
               <div className="flex items-center justify-between">
                 <p className="font-medium">{license.license_plan.name}</p>
-                <Badge variant={license.status === "active" ? "default" : "secondary"}>
-                  {license.status}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <ActivationBadge isActivated={license.is_activated} />
+                  {!license.is_activated && (
+                    <Button size="sm" onClick={() => handleActivateLicense(license.id)}>
+                      Activer
+                    </Button>
+                  )}
+                </div>
               </div>
               <LicenseExpiryGauge
                 activatedAt={license.activated_at}
@@ -100,9 +141,14 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
               <div className="flex items-center justify-between">
                 <p className="font-medium">{license.bot_license_plan.name}</p>
-                <Badge variant={license.status === "active" ? "default" : "secondary"}>
-                  {license.status}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <ActivationBadge isActivated={license.is_activated} />
+                  {!license.is_activated && (
+                    <Button size="sm" onClick={() => handleActivateBotLicense(license.id)}>
+                      Activer
+                    </Button>
+                  )}
+                </div>
               </div>
               <LicenseExpiryGauge
                 activatedAt={license.activated_at}

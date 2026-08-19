@@ -10,6 +10,14 @@ import type { Course } from "@/types/course";
 export function CourseCard({ course }: { course: Course }) {
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg hover:shadow-primary/10">
+      {course.thumbnail_url && (
+        <div className="px-(--card-spacing)">
+          <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-muted">
+            {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
+            <img src={course.thumbnail_url} alt={course.title} className="size-full object-cover" />
+          </div>
+        </div>
+      )}
       <CardHeader>
         <div className="flex items-center gap-2">
           {course.category && <Badge variant="secondary">{course.category}</Badge>}

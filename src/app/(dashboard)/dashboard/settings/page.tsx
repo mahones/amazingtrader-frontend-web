@@ -123,16 +123,6 @@ export default function SettingsPage() {
           </form>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Clés API</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          La gestion des clés API broker se fait directement depuis la page{" "}
-          <span className="font-medium text-foreground">Mes Licences</span>, pour chaque licence active.
-        </CardContent>
-      </Card>
     </div>
   );
 }

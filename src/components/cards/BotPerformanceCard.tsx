@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { stripHtml } from "@/lib/utils";
@@ -6,16 +5,13 @@ import type { TradingBot } from "@/types/bot";
 
 export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
   return (
-    <Card
-      className={cn(
-        "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg hover:shadow-primary/10",
-        bot.image_url && "pt-0"
-      )}
-    >
+    <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg hover:shadow-primary/10">
       {bot.image_url && (
-        <div className="relative aspect-video w-full overflow-hidden bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
-          <img src={bot.image_url} alt={bot.name} className="size-full object-cover" />
+        <div className="px-(--card-spacing)">
+          <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-muted">
+            {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
+            <img src={bot.image_url} alt={bot.name} className="size-full object-cover" />
+          </div>
         </div>
       )}
       <CardHeader>

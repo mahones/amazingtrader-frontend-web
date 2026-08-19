@@ -2,13 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, Bot, KeyRound, Users } from "lucide-react";
+import { AlertTriangle, BookOpen, Bot, KeyRound, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
 import { fetchMyLicenses } from "@/lib/api/licenses";
 import { fetchMyBotAssignments } from "@/lib/api/bots";
-import { fetchAdminCourses, fetchAdminLicensePlans, fetchAdminUsers } from "@/lib/api/admin";
+import {
+  fetchAdminCourses,
+  fetchAdminLicensePlans,
+  fetchAdminUsers,
+  fetchPendingActivationCount,
+} from "@/lib/api/admin";
 
 export default function DashboardOverviewPage() {
   const { user, isStaff } = useAuth();
@@ -18,15 +23,17 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     async function load() {
       if (isStaff) {
-        const [courses, plans, users] = await Promise.all([
+        const [courses, plans, users, pendingActivations] = await Promise.all([
           fetchAdminCourses(),
           fetchAdminLicensePlans(),
           fetchAdminUsers(),
+          fetchPendingActivationCount(),
         ]);
         setStats([
           { label: "Formations publiées", value: courses.length, icon: BookOpen },
           { label: "Auto-trading créés", value: plans.length, icon: KeyRound },
           { label: "Utilisateurs", value: users.length, icon: Users },
+          { label: "Attente d'activation", value: pendingActivations, icon: AlertTriangle },
         ]);
       } else {
         const [enrollments, licenses, bots] = await Promise.all([
@@ -56,9 +63,9 @@ export default function DashboardOverviewPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-3">
+      <div className={isStaff ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-4" : "grid gap-6 sm:grid-cols-3"}>
         {loading
-          ? Array.from({ length: 3 }).map((_, i) => (
+          ? Array.from({ length: isStaff ? 4 : 3 }).map((_, i) => (
               <Card key={i}>
                 <CardContent className="pt-6 text-muted-foreground">Chargement...</CardContent>
               </Card>

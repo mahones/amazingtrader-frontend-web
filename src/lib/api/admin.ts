@@ -1,6 +1,6 @@
 import { apiClient } from "./client";
 import type { Course, Lesson } from "@/types/course";
-import type { LicensePlan } from "@/types/license";
+import type { LicensePlan, UserLicense } from "@/types/license";
 import type {
   BotAssignment,
   BotAssignmentStatus,
@@ -10,6 +10,7 @@ import type {
   BotRequirement,
   BotTrade,
   TradingBot,
+  UserBotLicense,
 } from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { User, UserProfile } from "@/types/user";
@@ -25,12 +26,17 @@ export async function fetchAdminCourse(id: number) {
   return data.data;
 }
 
-export async function createAdminCourse(payload: Partial<Course>) {
+export async function createAdminCourse(payload: Partial<Course> | FormData) {
   const { data } = await apiClient.post<{ data: Course }>("/admin/courses", payload);
   return data.data;
 }
 
-export async function updateAdminCourse(id: number, payload: Partial<Course>) {
+export async function updateAdminCourse(id: number, payload: Partial<Course> | FormData) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    const { data } = await apiClient.post<{ data: Course }>(`/admin/courses/${id}`, payload);
+    return data.data;
+  }
   const { data } = await apiClient.put<{ data: Course }>(`/admin/courses/${id}`, payload);
   return data.data;
 }
@@ -276,6 +282,7 @@ export async function fetchAdminUsersPaged(params: {
   search?: string;
   role?: string;
   purchase?: string;
+  license_status?: "activated" | "pending";
   is_active?: boolean;
   page?: number;
 }) {
@@ -293,4 +300,37 @@ export async function updateAdminUserStatus(id: number, isActive: boolean) {
     is_active: isActive,
   });
   return data.data;
+}
+
+export async function createAdminUser(payload: {
+  name: string;
+  email: string;
+  password: string;
+  course_ids?: number[];
+  license_plan_ids?: number[];
+  bot_license_plan_ids?: number[];
+}) {
+  const { data } = await apiClient.post<{ data: UserProfile }>("/admin/users", payload);
+  return data.data;
+}
+
+export async function createAdminAccount(payload: { name: string; email: string; password: string }) {
+  const { data } = await apiClient.post<{ data: User }>("/admin/admins", payload);
+  return data.data;
+}
+
+// License activation
+export async function activateUserLicense(id: number) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(`/admin/user-licenses/${id}/activate`);
+  return data.data;
+}
+
+export async function activateUserBotLicense(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBotLicense }>(`/admin/user-bot-licenses/${id}/activate`);
+  return data.data;
+}
+
+export async function fetchPendingActivationCount() {
+  const { data } = await apiClient.get<{ count: number }>("/admin/licenses/pending-count");
+  return data.count;
 }

@@ -70,6 +70,7 @@ export interface BotLicensePurchaseDetails {
 export interface UserBotLicense {
   id: number;
   status: "active" | "expired" | "revoked";
+  is_activated: boolean;
   purchase_details: BotLicensePurchaseDetails | null;
   activated_at: string | null;
   expires_at: string | null;

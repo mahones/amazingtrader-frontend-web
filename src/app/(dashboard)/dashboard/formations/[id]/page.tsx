@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VideoPlayer } from "@/components/media/VideoPlayer";
+import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { EMPTY_LESSON_DRAFT, LessonFields, type LessonDraft } from "@/components/forms/LessonFields";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollment, updateEnrollmentProgress } from "@/lib/api/courses";
@@ -15,6 +16,7 @@ import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import {
   fetchAdminCourse,
+  updateAdminCourse,
   createAdminLesson,
   updateAdminLesson,
   deleteAdminLesson,
@@ -159,6 +161,8 @@ function AdminCourseView({ courseId }: { courseId: number }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [savingThumbnail, setSavingThumbnail] = useState(false);
 
   async function reload() {
     const refreshed = await fetchAdminCourse(courseId);
@@ -169,6 +173,23 @@ function AdminCourseView({ courseId }: { courseId: number }) {
     reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
+
+  async function handleSaveThumbnail() {
+    if (!thumbnailFile) return;
+    setSavingThumbnail(true);
+    try {
+      const formData = new FormData();
+      formData.append("thumbnail", thumbnailFile);
+      await updateAdminCourse(courseId, formData);
+      setThumbnailFile(null);
+      await reload();
+      toast.success("Image mise à jour.");
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de mettre à jour l'image."));
+    } finally {
+      setSavingThumbnail(false);
+    }
+  }
 
   if (!course) return <p className="text-muted-foreground">Chargement...</p>;
 
@@ -213,6 +234,24 @@ function AdminCourseView({ courseId }: { courseId: number }) {
           {course.enrollment_count ?? 0} personne(s) inscrite(s)
         </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Image de couverture</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <ImageUploadInput
+            id="course-thumbnail-edit"
+            label="Image"
+            value={thumbnailFile}
+            onChange={setThumbnailFile}
+            existingUrl={course.thumbnail_url}
+          />
+          <Button size="sm" disabled={!thumbnailFile || savingThumbnail} onClick={handleSaveThumbnail}>
+            {savingThumbnail ? "Enregistrement..." : "Enregistrer l'image"}
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

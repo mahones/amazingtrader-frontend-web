@@ -8,13 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/context/AuthContext";
 import { register as apiRegister } from "@/lib/api/auth";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 
 export default function RegisterPage() {
-  const { refresh } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
@@ -36,9 +34,11 @@ export default function RegisterPage() {
         password,
         password_confirmation: passwordConfirmation,
       });
-      await refresh();
-      toast.success("Votre compte a été créé avec succès. Bienvenue !");
-      router.push(searchParams.get("redirect") ?? "/dashboard");
+      toast.success("Un code de vérification a été envoyé à votre adresse email.");
+      const redirect = searchParams.get("redirect");
+      const params = new URLSearchParams({ email });
+      if (redirect) params.set("redirect", redirect);
+      router.push(`/verify-otp?${params.toString()}`);
     } catch (err) {
       setError(extractApiError(err, "Impossible de créer le compte. Vérifiez les informations saisies."));
     } finally {
