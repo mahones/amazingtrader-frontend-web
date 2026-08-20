@@ -15,6 +15,7 @@ import type {
 } from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { User, UserProfile } from "@/types/user";
+import type { Broker } from "@/types/broker";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -337,6 +338,27 @@ export async function assignBotLicenseToUser(
 export async function createAdminAccount(payload: { name: string; email: string; password: string }) {
   const { data } = await apiClient.post<{ data: User }>("/admin/admins", payload);
   return data.data;
+}
+
+// Brokers
+export async function fetchAdminBrokers() {
+  const { data } = await apiClient.get<{ data: Broker[] }>("/admin/brokers");
+  return data.data;
+}
+
+export async function createAdminBroker(payload: FormData) {
+  const { data } = await apiClient.post<{ data: Broker }>("/admin/brokers", payload);
+  return data.data;
+}
+
+export async function updateAdminBroker(id: number, payload: FormData) {
+  payload.append("_method", "PUT");
+  const { data } = await apiClient.post<{ data: Broker }>(`/admin/brokers/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBroker(id: number) {
+  await apiClient.delete(`/admin/brokers/${id}`);
 }
 
 // License activation
