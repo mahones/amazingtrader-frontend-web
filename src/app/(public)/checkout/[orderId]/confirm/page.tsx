@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useRef, useState } from "react";
+import { Suspense, use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
@@ -31,6 +31,14 @@ const POLL_INTERVAL_MS = 3000;
 const MAX_POLL_ATTEMPTS = 40;
 
 export default function CheckoutConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
+  return (
+    <Suspense fallback={null}>
+      <CheckoutConfirmPageContent params={params} />
+    </Suspense>
+  );
+}
+
+function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId: orderIdParam } = use(params);
   const orderId = Number(orderIdParam);
   const { user, isLoading: authLoading } = useAuth();

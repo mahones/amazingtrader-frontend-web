@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
@@ -16,6 +16,14 @@ import { toast } from "@/lib/toast";
 const RESEND_COOLDOWN_SECONDS = 30;
 
 export default function VerifyOtpPage() {
+  return (
+    <Suspense fallback={null}>
+      <VerifyOtpPageContent />
+    </Suspense>
+  );
+}
+
+function VerifyOtpPageContent() {
   const { refresh } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();

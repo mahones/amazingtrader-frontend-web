@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AxiosError } from "axios";
@@ -13,6 +13,14 @@ import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageContent() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
