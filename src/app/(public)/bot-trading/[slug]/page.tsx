@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import DOMPurify from "isomorphic-dompurify";
 import { CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BotSidebar } from "@/components/bots/BotSidebar";
 import { BotLicensePurchaseGrid } from "@/components/purchase/BotLicensePurchaseGrid";
 import { getTradingBot } from "@/lib/api/server";
+import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
 // import { formatCurrency } from "@/lib/utils";
 
 export default async function BotDetailPage({
@@ -20,7 +20,7 @@ export default async function BotDetailPage({
     notFound();
   }
 
-  const sanitizedDescription = DOMPurify.sanitize(bot.description);
+  const sanitizedDescription = sanitizeContentHtml(bot.description);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

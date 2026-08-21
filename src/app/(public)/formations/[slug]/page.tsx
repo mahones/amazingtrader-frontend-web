@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import DOMPurify from "isomorphic-dompurify";
 import { Clock, Lock, PlayCircle, Signal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { PurchaseButton } from "@/components/purchase/PurchaseButton";
 import { formatCurrency } from "@/lib/utils";
 import { getCourse } from "@/lib/api/server";
 import { LEVEL_BADGE_CLASSES, LEVEL_LABELS } from "@/lib/course-level";
+import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
 
 export default async function CourseDetailPage({
   params,
@@ -20,7 +20,7 @@ export default async function CourseDetailPage({
     notFound();
   }
 
-  const sanitizedDescription = DOMPurify.sanitize(course.description);
+  const sanitizedDescription = sanitizeContentHtml(course.description);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

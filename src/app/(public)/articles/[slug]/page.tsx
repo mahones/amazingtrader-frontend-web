@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import DOMPurify from "isomorphic-dompurify";
 import { Badge } from "@/components/ui/badge";
 import { ArticleSidebar } from "@/components/articles/ArticleSidebar";
 import { formatDate } from "@/lib/utils";
 import { getPost } from "@/lib/api/server";
+import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
 
 export default async function ArticleDetailPage({
   params,
@@ -17,7 +17,7 @@ export default async function ArticleDetailPage({
     notFound();
   }
 
-  const sanitizedContent = DOMPurify.sanitize(post.content);
+  const sanitizedContent = sanitizeContentHtml(post.content);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
