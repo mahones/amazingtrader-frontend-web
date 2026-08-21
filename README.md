@@ -73,6 +73,7 @@ Voir le backend (`admin@example.com` / `dev@example.com` / `user@example.com`, m
 - **shadcn/ui sur Base UI** : la prop polymorphique est `render`, **pas** `asChild` — ex. `<Button render={<Link href="...">Texte</Link>} />`.
 - **Messages/notifications** : utiliser `<Alert variant="success|error|warning|info">` (`src/components/ui/alert.tsx`) pour les messages inline dans les formulaires, et `toast.success/error/warning/info(...)` (`src/lib/toast.ts`) pour les notifications flottantes système. Ne pas revenir à du texte brut (`<p className="text-destructive">`) ou à `alert()`.
 - **Achat** : `usePostPurchaseFlow` gère la redirection post-achat et l'ouverture de `PostPurchaseDetailsModal` (identifiants broker) quand nécessaire.
+- **Assainissement du HTML admin** (`post.content`, `bot.description`, `course.description`) : utiliser `sanitizeContentHtml` de `src/lib/sanitize-content-html.ts` avant tout `dangerouslySetInnerHTML` dans un Server Component. **Ne pas** utiliser `isomorphic-dompurify` côté serveur — sa dépendance `jsdom` plante en production sur Vercel (`ERR_REQUIRE_ESM`) alors qu'elle fonctionne en `next dev` et même en `next build && next start` local, car le *file tracing* de Vercel ne capture pas fiablement tout l'arbre de dépendances de jsdom. `isomorphic-dompurify` reste correct dans un Client Component (`"use client"`), où il tourne dans le DOM du navigateur.
 
 ## Tests
 
