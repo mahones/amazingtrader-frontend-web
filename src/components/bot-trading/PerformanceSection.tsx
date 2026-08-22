@@ -37,7 +37,7 @@ export function PerformanceSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-1"
+          className="min-w-0 lg:col-span-1"
         >
           <h2 className="text-4xl font-bold text-slate-300 sm:text-5xl">
             Nos performances
@@ -65,7 +65,7 @@ export function PerformanceSection() {
           <div className="mt-8 flex flex-col gap-3">
             <Button
               size="lg"
-              className="w-full"
+              className="h-auto w-full whitespace-normal py-3 text-center"
               render={
                 <a href={MYFXBOOK_URL} target="_blank" rel="noopener noreferrer">
                   Vérifier nos performances sur Myfxbook
@@ -74,7 +74,7 @@ export function PerformanceSection() {
             />
             <Button
               size="lg"
-              className="w-full"
+              className="h-auto w-full whitespace-normal py-3 text-center"
               render={
                 <a href={MQL5_URL} target="_blank" rel="noopener noreferrer">
                   Vérifier nos performances sur MQL5

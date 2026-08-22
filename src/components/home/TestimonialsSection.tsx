@@ -59,7 +59,7 @@ export function TestimonialsSection() {
         onTouchEnd={() => {
           pausedRef.current = false;
         }}
-        className="mt-12 flex gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [&::-webkit-scrollbar]:hidden"
+        className="mt-12 flex gap-6 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [&::-webkit-scrollbar]:hidden"
       >
         {loop.map((src, index) => (
           <div key={index} className="w-72 shrink-0">
