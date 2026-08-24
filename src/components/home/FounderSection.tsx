@@ -24,10 +24,10 @@ export function FounderSection() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center sm:text-left"
         >
-          <span className="block text-center text-sm font-semibold">
+          <span className="text-sm font-semibold">
             Qui sommes nous ?
           </span>
-          <h2 className="mt-3 text-4xl font-bold text-primary sm:text-5xl text-center">
+          <h2 className="mt-3 text-4xl font-bold text-primary sm:text-5xl ">
             Amazing Traders
           </h2>
 
@@ -41,7 +41,7 @@ export function FounderSection() {
             et de leurs comptes.
           </p>
 
-          <h3 className="mt-8 text-xl font-bold text-primary text-center">
+          <h3 className="mt-8 text-xl font-bold text-primary">
             Nos résultats sont le fruit de son expertise
           </h3>
           <p className="mt-6 max-w-xl text-justify text-lg text-muted-foreground text-pretty">

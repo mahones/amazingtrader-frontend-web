@@ -6,7 +6,7 @@ import { BotTradingHero } from "@/components/bot-trading/BotTradingHero";
 import { PerformanceSection } from "@/components/bot-trading/PerformanceSection";
 // import { BrokersSection } from "@/components/bot-trading/BrokersSection";
 // import { FaqSection } from "@/components/bot-trading/FaqSection";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { PhotoTestimonialsSection } from "@/components/home/PhotoTestimonialsSection";
 import { ContactCtaSection } from "@/components/auto-trading/ContactCtaSection";
 
 export default async function BotTradingPage() {
@@ -71,7 +71,7 @@ export default async function BotTradingPage() {
 
       <PerformanceSection />
 
-      <TestimonialsSection />
+      <PhotoTestimonialsSection />
 
       <ContactCtaSection
         title="Prêt à démarrer l'aventure avec nos bots de trading ?"

@@ -54,20 +54,6 @@ export function BotTradingHero() {
             ))}
           </ul>
 
-          <a
-            href={MYFXBOOK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-block w-fit transition-transform duration-300 hover:scale-90"
-          >
-            <Image
-              src="/verified-logo-myfxbook.webp"
-              alt="Vérifié par Myfxbook"
-              width={200}
-              height={92}
-            />
-          </a>
-
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
               size="lg"

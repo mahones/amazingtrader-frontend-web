@@ -1,12 +1,11 @@
-import Image from "next/image";
 
 const TESTIMONIAL_VIDEOS = [
   "/testimonies/videos/testimony-video-01.mp4",
   "/testimonies/videos/testimony-video-02.mp4",
   "/testimonies/videos/testimony-video-03.mp4",
+  "/testimonies/videos/testimony-video-04.mp4",
 ];
 
-const TESTIMONIAL_IMAGE = "/testimonies/testimony-01.jpg";
 
 export function TestimonialsSection() {
   return (
@@ -30,16 +29,6 @@ export function TestimonialsSection() {
             />
           </div>
         ))}
-
-        <div className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-border bg-muted">
-          <Image
-            src={TESTIMONIAL_IMAGE}
-            alt="Témoignage client"
-            fill
-            sizes="(min-width: 1024px) 25vw, 50vw"
-            className="object-cover"
-          />
-        </div>
       </div>
     </section>
   );

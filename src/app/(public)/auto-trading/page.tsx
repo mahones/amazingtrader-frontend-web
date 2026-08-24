@@ -5,7 +5,7 @@ import { HowItWorksSection } from "@/components/auto-trading/HowItWorksSection";
 import { NoProfitSharingSection } from "@/components/auto-trading/NoProfitSharingSection";
 import { WhyChooseUsSection } from "@/components/auto-trading/WhyChooseUsSection";
 import { ContactCtaSection } from "@/components/auto-trading/ContactCtaSection";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { PhotoTestimonialsSection } from "@/components/home/PhotoTestimonialsSection";
 
 export default async function AutoTradingPage() {
   const plans = await getLicensePlans().catch(() => []);
@@ -32,7 +32,7 @@ export default async function AutoTradingPage() {
         </div>
       </div>
 
-      <TestimonialsSection />
+      <PhotoTestimonialsSection />
 
       <WhyChooseUsSection />
 
