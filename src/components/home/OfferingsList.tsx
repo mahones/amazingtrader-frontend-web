@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Cpu, TrendingUp } from "lucide-react";
+import { BookOpen, Cpu } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const STATS: {
