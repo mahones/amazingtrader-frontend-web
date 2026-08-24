@@ -73,9 +73,9 @@ export function FounderSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="flex h-full flex-col"
+          className="flex flex-col lg:h-full"
         >
-          <div className="relative w-full max-w-[450px] ml-auto flex-1 overflow-hidden rounded-2xl">
+          <div className="relative aspect-[4/5] w-full max-w-[450px] ml-auto overflow-hidden rounded-2xl lg:aspect-auto lg:flex-1">
             <Image
               src="/profil22.webp"
               alt="Rodolphe SEDJRO, CEO d'amazingtraders"
