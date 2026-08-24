@@ -183,45 +183,41 @@ export default function NewUserPage() {
                         <div className="grid gap-2 rounded-lg bg-muted/40 p-3 sm:grid-cols-2">
                           <div className="space-y-1">
                             <Label htmlFor={`license-${plan.id}-id`} className="text-xs">
-                              ID
+                              ID (optionnel)
                             </Label>
                             <Input
                               id={`license-${plan.id}-id`}
-                              required
                               value={details.id}
                               onChange={(e) => updateLicenseDetail(plan.id, "id", e.target.value)}
                             />
                           </div>
                           <div className="space-y-1">
                             <Label htmlFor={`license-${plan.id}-password`} className="text-xs">
-                              Mot de passe
+                              Mot de passe (optionnel)
                             </Label>
                             <Input
                               id={`license-${plan.id}-password`}
                               type="password"
-                              required
                               value={details.password}
                               onChange={(e) => updateLicenseDetail(plan.id, "password", e.target.value)}
                             />
                           </div>
                           <div className="space-y-1">
                             <Label htmlFor={`license-${plan.id}-server`} className="text-xs">
-                              Serveur
+                              Serveur (optionnel)
                             </Label>
                             <Input
                               id={`license-${plan.id}-server`}
-                              required
                               value={details.server}
                               onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
                             />
                           </div>
                           <div className="space-y-1">
                             <Label htmlFor={`license-${plan.id}-whatsapp`} className="text-xs">
-                              Numéro WhatsApp
+                              Numéro WhatsApp (optionnel)
                             </Label>
                             <Input
                               id={`license-${plan.id}-whatsapp`}
-                              required
                               value={details.whatsapp_number}
                               onChange={(e) => updateLicenseDetail(plan.id, "whatsapp_number", e.target.value)}
                             />
@@ -257,11 +253,10 @@ export default function NewUserPage() {
                         <div className="rounded-lg bg-muted/40 p-3">
                           <div className="space-y-1">
                             <Label htmlFor={`bot-license-${plan.id}-id`} className="text-xs">
-                              ID
+                              ID (optionnel)
                             </Label>
                             <Input
                               id={`bot-license-${plan.id}-id`}
-                              required
                               value={botLicenseDetails[plan.id] ?? ""}
                               onChange={(e) =>
                                 setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: e.target.value }))

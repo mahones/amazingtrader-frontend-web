@@ -9,20 +9,24 @@ import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
 import type { PurchasableType } from "@/lib/api/orders";
+import type { UserLicense } from "@/types/license";
+import type { UserBotLicense } from "@/types/bot";
 
 export function PostPurchaseDetailsForm({
   type,
   licenseId,
+  initialValues,
   onSubmitted,
 }: {
   type: Extract<PurchasableType, "license_plan" | "bot_license_plan">;
   licenseId: number;
-  onSubmitted: () => void;
+  initialValues?: Partial<{ id: string; password: string; server: string; whatsapp_number: string }>;
+  onSubmitted: (result: UserLicense | UserBotLicense) => void;
 }) {
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [server, setServer] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  const [id, setId] = useState(initialValues?.id ?? "");
+  const [password, setPassword] = useState(initialValues?.password ?? "");
+  const [server, setServer] = useState(initialValues?.server ?? "");
+  const [whatsapp, setWhatsapp] = useState(initialValues?.whatsapp_number ?? "");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,16 +36,17 @@ export function PostPurchaseDetailsForm({
     setError(null);
     try {
       if (type === "license_plan") {
-        await updatePurchaseDetails(licenseId, {
+        const result = await updatePurchaseDetails(licenseId, {
           id,
           password,
           server,
           whatsapp_number: whatsapp,
         });
+        onSubmitted(result);
       } else {
-        await updateBotLicensePurchaseDetails(licenseId, { id });
+        const result = await updateBotLicensePurchaseDetails(licenseId, { id });
+        onSubmitted(result);
       }
-      onSubmitted();
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer ces informations."));
     } finally {

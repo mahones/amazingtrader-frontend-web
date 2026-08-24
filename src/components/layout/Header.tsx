@@ -49,7 +49,7 @@ export function Header() {
   }
 
   return (
-    <header className="dark sticky top-0 z-50 border-b border-border/60 bg-background text-foreground">
+    <header className="dark border-b border-border/60 bg-background text-foreground">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" aria-label="amazingtraders, accueil">
           <Logo className="text-lg" />

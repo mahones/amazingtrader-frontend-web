@@ -5,15 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   activateUserBotLicense,
   activateUserLicense,
+  approveBotLicensePurchaseDetailsChange,
+  approveLicensePurchaseDetailsChange,
   fetchAdminLicensePlans,
   fetchAdminTradingBots,
   fetchAdminUserProfile,
+  rejectBotLicensePurchaseDetailsChange,
+  rejectLicensePurchaseDetailsChange,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
@@ -28,6 +33,53 @@ function ActivationBadge({ isActivated }: { isActivated: boolean }) {
     </Badge>
   ) : (
     <Badge variant="destructive">Non activée</Badge>
+  );
+}
+
+function PendingChangeReview({
+  pendingDetails,
+  submittedAt,
+  onApprove,
+  onReject,
+}: {
+  pendingDetails: Record<string, string | null>;
+  submittedAt: string | null;
+  onApprove: () => void;
+  onReject: () => void;
+}) {
+  const [pending, setPending] = useState(false);
+
+  async function handle(action: () => Promise<void>) {
+    setPending(true);
+    try {
+      await action();
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <div className="space-y-2 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm">
+      <p className="font-medium text-amber-700 dark:text-amber-400">
+        Modification en attente d&apos;approbation
+        {submittedAt && <> depuis le {formatDate(submittedAt)}</>}
+      </p>
+      <div className="grid gap-1 sm:grid-cols-2">
+        {Object.entries(pendingDetails).map(([key, value]) => (
+          <p key={key}>
+            <span className="text-muted-foreground">{key} :</span> {value}
+          </p>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" disabled={pending} onClick={() => handle(async () => onApprove())}>
+          Approuver
+        </Button>
+        <Button size="sm" variant="outline" disabled={pending} onClick={() => handle(async () => onReject())}>
+          Rejeter
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -73,6 +125,48 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
 
   async function handleActivateBotLicense(licenseId: number) {
     const updated = await activateUserBotLicense(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_bot_licenses: prev.user_bot_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)),
+          }
+        : prev
+    );
+  }
+
+  async function handleApproveLicenseChange(licenseId: number) {
+    const updated = await approveLicensePurchaseDetailsChange(licenseId);
+    setProfile((prev) =>
+      prev
+        ? { ...prev, user_licenses: prev.user_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)) }
+        : prev
+    );
+  }
+
+  async function handleRejectLicenseChange(licenseId: number) {
+    const updated = await rejectLicensePurchaseDetailsChange(licenseId);
+    setProfile((prev) =>
+      prev
+        ? { ...prev, user_licenses: prev.user_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)) }
+        : prev
+    );
+  }
+
+  async function handleApproveBotLicenseChange(licenseId: number) {
+    const updated = await approveBotLicensePurchaseDetailsChange(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_bot_licenses: prev.user_bot_licenses.map((l) => (l.id === licenseId ? { ...l, ...updated } : l)),
+          }
+        : prev
+    );
+  }
+
+  async function handleRejectBotLicenseChange(licenseId: number) {
+    const updated = await rejectBotLicensePurchaseDetailsChange(licenseId);
     setProfile((prev) =>
       prev
         ? {
@@ -151,6 +245,19 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   <p><span className="text-muted-foreground">WhatsApp :</span> {license.purchase_details.whatsapp_number}</p>
                 </div>
               )}
+              {license.pending_purchase_details && (
+                <PendingChangeReview
+                  pendingDetails={{
+                    ID: license.pending_purchase_details.id,
+                    "Mot de passe": license.pending_purchase_details.password,
+                    Serveur: license.pending_purchase_details.server,
+                    WhatsApp: license.pending_purchase_details.whatsapp_number,
+                  }}
+                  submittedAt={license.pending_purchase_details_submitted_at}
+                  onApprove={() => handleApproveLicenseChange(license.id)}
+                  onReject={() => handleRejectLicenseChange(license.id)}
+                />
+              )}
             </div>
           ))}
         </CardContent>
@@ -187,14 +294,29 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
                 </p>
               )}
+              {license.pending_purchase_details && (
+                <PendingChangeReview
+                  pendingDetails={{ ID: license.pending_purchase_details.id }}
+                  submittedAt={license.pending_purchase_details_submitted_at}
+                  onApprove={() => handleApproveBotLicenseChange(license.id)}
+                  onReject={() => handleRejectBotLicenseChange(license.id)}
+                />
+              )}
             </div>
           ))}
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle>Formations ({profile.enrollments.length})</CardTitle>
+          <AssignCourseDialog
+            userId={profile.id}
+            enrolledCourseIds={profile.enrollments.map((e) => e.course.id)}
+            onEnrollmentsAssigned={(newEnrollments) =>
+              setProfile((prev) => (prev ? { ...prev, enrollments: [...prev.enrollments, ...newEnrollments] } : prev))
+            }
+          />
         </CardHeader>
         <CardContent className="space-y-4">
           {profile.enrollments.length === 0 && (

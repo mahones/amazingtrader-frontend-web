@@ -10,6 +10,7 @@ export interface User {
   email: string;
   role: UserRole;
   is_active: boolean;
+  has_pending_credentials_change: boolean;
   created_at: string;
 }
 

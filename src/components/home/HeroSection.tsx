@@ -64,17 +64,9 @@ export function HeroSection() {
           className="max-w-2xl"
         >
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Devenez rentable à travers nos <span className="text-primary">formations</span> et <span className="text-primary">coachings</span>.
+            Devenez rentable à travers nos <span className="text-primary">formations</span> et <span className="text-primary">algorithme</span>.
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground text-pretty text-white">
-            Nous sommes une startup qui innove dans le trading algorithmique
-            et propose aux traders un système simple et rentable. Nos robots analysent
-            les marchés pour vous, nos experts vous guident jusqu&apos;à la rentabilité.
-            {/* amazingtraders combine des formations claires et des licences
-            d&apos;auto-trading transparentes : vous comprenez chaque stratégie
-            avant de lui confier votre capital, avec un vrai accompagnement,
-            pas une boîte noire. */}
-          </p>
+
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button size="lg" render={
               <Link href="/auto-trading">
@@ -92,7 +84,7 @@ export function HeroSection() {
           className="hidden lg:block"
         >
           <Image
-            src="/buy-and-sell.png"
+            src="/bot.png"
             alt="Signaux d'achat et de vente sur un graphique en chandeliers"
             width={2000}
             height={2000}

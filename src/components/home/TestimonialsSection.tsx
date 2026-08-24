@@ -1,41 +1,14 @@
-"use client";
-
-import { useEffect, useRef } from "react";
 import Image from "next/image";
 
-const TESTIMONIAL_IMAGES = Array.from(
-  { length: 26 },
-  (_, i) => `/testimonies/testimony-${String(i + 1).padStart(2, "0")}.jpg`,
-);
+const TESTIMONIAL_VIDEOS = [
+  "/testimonies/videos/testimony-video-01.mp4",
+  "/testimonies/videos/testimony-video-02.mp4",
+  "/testimonies/videos/testimony-video-03.mp4",
+];
 
-const SCROLL_SPEED_PX_PER_FRAME = 0.6;
+const TESTIMONIAL_IMAGE = "/testimonies/testimony-01.jpg";
 
 export function TestimonialsSection() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
-  const loop = [...TESTIMONIAL_IMAGES, ...TESTIMONIAL_IMAGES];
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    let frame: number;
-
-    function step() {
-      if (track && !pausedRef.current) {
-        track.scrollLeft += SCROLL_SPEED_PX_PER_FRAME;
-        const half = track.scrollWidth / 2;
-        if (track.scrollLeft >= half) {
-          track.scrollLeft -= half;
-        }
-      }
-      frame = requestAnimationFrame(step);
-    }
-
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="text-center">
@@ -45,35 +18,28 @@ export function TestimonialsSection() {
         </h2>
       </div>
 
-      <div
-        ref={trackRef}
-        onMouseEnter={() => {
-          pausedRef.current = true;
-        }}
-        onMouseLeave={() => {
-          pausedRef.current = false;
-        }}
-        onTouchStart={() => {
-          pausedRef.current = true;
-        }}
-        onTouchEnd={() => {
-          pausedRef.current = false;
-        }}
-        className="mt-12 flex gap-6 overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [&::-webkit-scrollbar]:hidden"
-      >
-        {loop.map((src, index) => (
-          <div key={index} className="w-72 shrink-0">
-            <div className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-border bg-muted">
-              <Image
-                src={src}
-                alt="Témoignage client"
-                fill
-                sizes="288px"
-                className="object-cover"
-              />
-            </div>
+      <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
+        {TESTIMONIAL_VIDEOS.map((src) => (
+          <div key={src} className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-border bg-muted">
+            <video
+              src={src}
+              controls
+              playsInline
+              preload="metadata"
+              className="size-full object-cover"
+            />
           </div>
         ))}
+
+        <div className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-border bg-muted">
+          <Image
+            src={TESTIMONIAL_IMAGE}
+            alt="Témoignage client"
+            fill
+            sizes="(min-width: 1024px) 25vw, 50vw"
+            className="object-cover"
+          />
+        </div>
       </div>
     </section>
   );

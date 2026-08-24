@@ -27,6 +27,8 @@ export interface UserLicense {
   status: LicenseStatus;
   is_activated: boolean;
   purchase_details: LicensePurchaseDetails | null;
+  pending_purchase_details: LicensePurchaseDetails | null;
+  pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
   license_plan: LicensePlan;

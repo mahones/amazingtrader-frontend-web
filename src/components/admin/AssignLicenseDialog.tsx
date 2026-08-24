@@ -104,7 +104,8 @@ export function AssignLicenseDialog({
         <DialogHeader>
           <DialogTitle>Assigner une licence</DialogTitle>
           <DialogDescription>
-            Choisissez un type de licence et renseignez les informations requises.
+            Choisissez un type de licence. Les identifiants sont facultatifs : l&apos;utilisateur pourra les
+            renseigner lui-même plus tard.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -167,10 +168,9 @@ export function AssignLicenseDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="assign-id">ID</Label>
+            <Label htmlFor="assign-id">ID (optionnel)</Label>
             <Input
               id="assign-id"
-              required
               value={form.id}
               onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
             />
@@ -179,29 +179,26 @@ export function AssignLicenseDialog({
           {type === "auto_trading" && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="assign-password">Mot de passe</Label>
+                <Label htmlFor="assign-password">Mot de passe (optionnel)</Label>
                 <Input
                   id="assign-password"
                   type="password"
-                  required
                   value={form.password}
                   onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="assign-server">Serveur</Label>
+                <Label htmlFor="assign-server">Serveur (optionnel)</Label>
                 <Input
                   id="assign-server"
-                  required
                   value={form.server}
                   onChange={(e) => setForm((f) => ({ ...f, server: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="assign-whatsapp">Numéro WhatsApp</Label>
+                <Label htmlFor="assign-whatsapp">Numéro WhatsApp (optionnel)</Label>
                 <Input
                   id="assign-whatsapp"
-                  required
                   value={form.whatsapp_number}
                   onChange={(e) => setForm((f) => ({ ...f, whatsapp_number: e.target.value }))}
                 />

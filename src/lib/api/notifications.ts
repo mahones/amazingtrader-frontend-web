@@ -5,6 +5,7 @@ import type { PaginatedResponse } from "./admin";
 export const NOTIFICATION_TYPES = {
   paidOrder: "App\\Notifications\\NewPaidOrderNotification",
   newUser: "App\\Notifications\\NewUserRegisteredNotification",
+  credentialsUpdate: "App\\Notifications\\PurchaseDetailsChangeRequestedNotification",
 } as const;
 
 export interface PaidOrderNotificationData {
@@ -22,10 +23,18 @@ export interface NewUserNotificationData {
   user_email: string;
 }
 
+export interface CredentialsChangeNotificationData {
+  license_id: number;
+  license_type: "auto_trading" | "bot_trading";
+  user_id: number;
+  user_name: string;
+  plan_name: string;
+}
+
 export interface AdminNotification {
   id: string;
   type: string;
-  data: PaidOrderNotificationData | NewUserNotificationData;
+  data: PaidOrderNotificationData | NewUserNotificationData | CredentialsChangeNotificationData;
   read_at: string | null;
   created_at: string;
 }
@@ -39,6 +48,14 @@ export function formatNotificationMessage(notification: AdminNotification): {
     return {
       title: `Nouvelle inscription : ${data.user_name}`,
       subtitle: data.user_email,
+    };
+  }
+
+  if (notification.type === NOTIFICATION_TYPES.credentialsUpdate) {
+    const data = notification.data as CredentialsChangeNotificationData;
+    return {
+      title: `Modification d'identifiants : ${data.user_name}`,
+      subtitle: data.plan_name,
     };
   }
 
@@ -59,7 +76,7 @@ export async function fetchAdminNotifications() {
 }
 
 export interface NotificationFilters {
-  type?: "purchase" | "registration";
+  type?: "purchase" | "registration" | "credentials_update";
   date_from?: string;
   date_to?: string;
 }

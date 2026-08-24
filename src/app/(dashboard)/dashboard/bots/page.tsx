@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
+import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
 import {
   downloadBotFile,
@@ -15,7 +16,7 @@ import {
   fetchMyBotLicenses,
 } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import type {
   BotAssignment,
   BotFile,
@@ -205,7 +206,13 @@ export default function DashboardBotsPage() {
             </Card>
           )}
           {botLicenses?.map((license) => (
-            <BotLicenseCard key={license.id} license={license} />
+            <BotLicenseCard
+              key={license.id}
+              license={license}
+              onUpdated={(updated) =>
+                setBotLicenses((prev) => prev?.map((l) => (l.id === updated.id ? updated : l)) ?? prev)
+              }
+            />
           ))}
         </div>
       </div>
@@ -213,7 +220,13 @@ export default function DashboardBotsPage() {
   );
 }
 
-function BotLicenseCard({ license }: { license: UserBotLicense }) {
+function BotLicenseCard({
+  license,
+  onUpdated,
+}: {
+  license: UserBotLicense;
+  onUpdated: (license: UserBotLicense) => void;
+}) {
   const bot = license.bot_license_plan.trading_bot;
   const files = bot?.bot_files ?? [];
 
@@ -237,6 +250,26 @@ function BotLicenseCard({ license }: { license: UserBotLicense }) {
           expiresAt={license.expires_at}
           status={license.status}
         />
+
+        {license.purchase_details && (
+          <p className="text-sm">
+            <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
+          </p>
+        )}
+
+        {license.pending_purchase_details && (
+          <div className="rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
+            Modification en attente d&apos;approbation
+            {license.pending_purchase_details_submitted_at && (
+              <> depuis le {formatDate(license.pending_purchase_details_submitted_at)}</>
+            )}
+            .
+          </div>
+        )}
+
+        <div className="flex justify-end">
+          <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
+        </div>
 
         {files.length > 0 && (
           <div className="space-y-2 border-t border-border pt-4">

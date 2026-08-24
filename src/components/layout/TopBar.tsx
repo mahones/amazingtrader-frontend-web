@@ -13,7 +13,7 @@ export function TopBar() {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex shrink-0 items-center gap-1.5 border-l border-border px-4 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:text-primary"
+        className="flex shrink-0 items-center gap-1.5 border-l border-border px-4 text-sm font-bold whitespace-nowrap text-foreground transition-colors hover:text-primary"
       >
         <MessageCircleMore className="size-4 text-primary" />
         (228) 79920432

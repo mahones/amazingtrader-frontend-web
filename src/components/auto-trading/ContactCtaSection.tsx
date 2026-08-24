@@ -5,7 +5,7 @@ const DEFAULT_WHATSAPP_URL =
 
 export function ContactCtaSection({
   title = "Prêt à confier vos comptes à notre équipe d'experts ?",
-  subtitle = "Contactez-nous dès maintenant pour démarrer votre auto-trading en toute sérénité.",
+  subtitle,
   buttonLabel = "Contactez-nous",
   whatsappUrl = DEFAULT_WHATSAPP_URL,
 }: {
@@ -16,9 +16,9 @@ export function ContactCtaSection({
 }) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="rounded-2xl bg-primary px-8 py-12 text-center text-primary-foreground">
+      <div className="rounded-2xl bg-primary px-6 py-4 text-center text-primary-foreground">
         <h2 className="text-3xl font-bold">{title}</h2>
-        <p className="mt-3 text-primary-foreground/80">{subtitle}</p>
+        {subtitle && <p className="mt-3 text-primary-foreground/80">{subtitle}</p>}
         <Button
           size="lg"
           variant="secondary"

@@ -21,8 +21,10 @@ export default async function BotTradingPage() {
         className="mx-auto max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">Bots de trading</h1>
-          <p className="mt-3 text-muted-foreground">
+          <h1 className="text-4xl font-bold sm:text-5xl">
+            Bots de <span className="text-primary">trading</span>
+          </h1>
+          <p className="mt-3 text-lg text-muted-foreground">
             Les Experts Advisors de Amazing Traders, sont des algorithmes
             complexes de trading, basé sur des stratégies de combinaisons
             d&apos;IA, de breakout, de dépassement de range et d&apos;une

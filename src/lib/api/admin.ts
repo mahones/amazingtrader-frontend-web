@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { Course, Lesson } from "@/types/course";
+import type { Course, Enrollment, Lesson } from "@/types/course";
 import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 import type {
   BotAssignment,
@@ -309,8 +309,8 @@ export async function createAdminUser(payload: {
   email: string;
   password: string;
   course_ids?: number[];
-  licenses?: Array<{ license_plan_id: number } & LicensePurchaseDetails>;
-  bot_licenses?: Array<{ bot_license_plan_id: number } & BotLicensePurchaseDetails>;
+  licenses?: Array<{ license_plan_id: number } & Partial<LicensePurchaseDetails>>;
+  bot_licenses?: Array<{ bot_license_plan_id: number } & Partial<BotLicensePurchaseDetails>>;
 }) {
   const { data } = await apiClient.post<{ data: UserProfile }>("/admin/users", payload);
   return data.data;
@@ -318,7 +318,7 @@ export async function createAdminUser(payload: {
 
 export async function assignLicenseToUser(
   userId: number,
-  payload: { license_plan_id: number; activate?: boolean } & LicensePurchaseDetails
+  payload: { license_plan_id: number; activate?: boolean } & Partial<LicensePurchaseDetails>
 ) {
   const { data } = await apiClient.post<{ data: UserLicense }>(`/admin/users/${userId}/licenses`, payload);
   return data.data;
@@ -326,12 +326,19 @@ export async function assignLicenseToUser(
 
 export async function assignBotLicenseToUser(
   userId: number,
-  payload: { bot_license_plan_id: number; activate?: boolean } & BotLicensePurchaseDetails
+  payload: { bot_license_plan_id: number; activate?: boolean } & Partial<BotLicensePurchaseDetails>
 ) {
   const { data } = await apiClient.post<{ data: UserBotLicense }>(
     `/admin/users/${userId}/bot-licenses`,
     payload
   );
+  return data.data;
+}
+
+export async function assignCoursesToUser(userId: number, courseIds: number[]) {
+  const { data } = await apiClient.post<{ data: Enrollment[] }>(`/admin/users/${userId}/enrollments`, {
+    course_ids: courseIds,
+  });
   return data.data;
 }
 
@@ -374,5 +381,39 @@ export async function activateUserBotLicense(id: number) {
 
 export async function fetchPendingActivationCount() {
   const { data } = await apiClient.get<{ count: number }>("/admin/licenses/pending-count");
+  return data.count;
+}
+
+// Purchase-details change approval
+export async function approveLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(
+    `/admin/user-licenses/${id}/purchase-details/approve`
+  );
+  return data.data;
+}
+
+export async function rejectLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(
+    `/admin/user-licenses/${id}/purchase-details/reject`
+  );
+  return data.data;
+}
+
+export async function approveBotLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBotLicense }>(
+    `/admin/user-bot-licenses/${id}/purchase-details/approve`
+  );
+  return data.data;
+}
+
+export async function rejectBotLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBotLicense }>(
+    `/admin/user-bot-licenses/${id}/purchase-details/reject`
+  );
+  return data.data;
+}
+
+export async function fetchPendingCredentialsChangeCount() {
+  const { data } = await apiClient.get<{ count: number }>("/admin/licenses/pending-credentials-count");
   return data.count;
 }

@@ -1,16 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { KeyRound, Users, Wallet, type LucideIcon } from "lucide-react";
 
 const STEPS: {
-  number: string;
+  icon: LucideIcon;
   title: string;
   description: string;
   linkLabel?: string;
   linkHref?: string;
 }[] = [
   {
-    number: "1",
+    icon: Wallet,
     title: "Créez et déposez des fonds sur votre compte",
     description: "Pour de meilleurs résultats, veuillez utiliser notre",
     linkLabel: "broker recommandé",
@@ -18,13 +19,13 @@ const STEPS: {
       "https://portal.fpmarkets.com/register?fpm-affiliate-utm-source=IB&fpm-affiliate-agt=65925",
   },
   {
-    number: "2",
+    icon: KeyRound,
     title: "Fournissez les détails de votre compte",
     description:
       "Fournissez-nous les informations de connexion à votre compte MT4/MT5.",
   },
   {
-    number: "3",
+    icon: Users,
     title: "Laissez nos experts cuisiner",
     description:
       "Asseyez-vous et détendez-vous pendant que nos traders assument l'entière responsabilité de votre compte.",
@@ -43,7 +44,7 @@ export function HowItWorksSection() {
       <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
         {STEPS.map((step, index) => (
           <motion.div
-            key={step.number}
+            key={step.title}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -54,8 +55,8 @@ export function HowItWorksSection() {
             }}
             className="flex flex-col items-center rounded-2xl border border-slate-100 bg-[#FDF3E7] p-6 text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-[#303030]/25 dark:bg-[#303030]/20 dark:shadow-black/20 dark:backdrop-blur-md dark:hover:bg-[#0e0e0e]/30"
           >
-            <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-amber-500/10 text-lg font-bold text-amber-500">
-              {step.number}
+            <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
+              <step.icon className="size-6" strokeWidth={2} />
             </div>
             <h3 className="font-bold text-lg text-slate-800 dark:text-white">
               {step.title}

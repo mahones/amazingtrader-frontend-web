@@ -72,6 +72,8 @@ export interface UserBotLicense {
   status: "active" | "expired" | "revoked";
   is_activated: boolean;
   purchase_details: BotLicensePurchaseDetails | null;
+  pending_purchase_details: BotLicensePurchaseDetails | null;
+  pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
   bot_license_plan: BotLicensePlan;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -172,8 +173,19 @@ export default function DashboardUsersPage() {
           {users?.map((u) => (
             <TableRow key={u.id}>
               <TableCell>
-                <Link href={`/dashboard/users/${u.id}`} className="font-medium text-primary hover:underline">
+                <Link
+                  href={`/dashboard/users/${u.id}`}
+                  className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+                >
                   {u.name}
+                  {u.has_pending_credentials_change && (
+                    <span title="Demande de modification d'identifiants en attente">
+                      <AlertTriangle
+                        className="size-4 text-destructive"
+                        aria-label="Demande de modification d'identifiants en attente"
+                      />
+                    </span>
+                  )}
                 </Link>
               </TableCell>
               <TableCell>{u.email}</TableCell>

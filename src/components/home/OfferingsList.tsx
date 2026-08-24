@@ -14,11 +14,11 @@ const STATS: {
     label: "Analyse algorithmique en temps réel",
     icon: Cpu,
   },
-  {
-    value: "Efficacité & Rentabilité",
-    label: "Optimisation continue des signaux",
-    icon: TrendingUp,
-  },
+  // {
+  //   value: "Efficacité & Rentabilité",
+  //   label: "Optimisation continue des signaux",
+  //   icon: TrendingUp,
+  // },
   {
     value: "Formation sur mesure",
     label: "Du débutant à l'expert encadré",
@@ -34,7 +34,7 @@ export function OfferingsList() {
           Votre recherche d’une rentabilité constante du trading <span className="text-amber-500"> se termine ici…. </span>
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {STATS.map((stat, index) => (
             <motion.div
               key={stat.label}

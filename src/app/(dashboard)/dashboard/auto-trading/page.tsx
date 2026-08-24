@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
+import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
+import { formatDate } from "@/lib/utils";
 import { fetchMyLicenses } from "@/lib/api/licenses";
 import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
@@ -104,14 +106,26 @@ export default function DashboardAutoTradingPage() {
           </Card>
         )}
         {licenses?.map((license) => (
-          <LicenseCard key={license.id} license={license} />
+          <LicenseCard
+            key={license.id}
+            license={license}
+            onUpdated={(updated) =>
+              setLicenses((prev) => prev?.map((l) => (l.id === updated.id ? updated : l)) ?? prev)
+            }
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function LicenseCard({ license }: { license: UserLicense }) {
+function LicenseCard({
+  license,
+  onUpdated,
+}: {
+  license: UserLicense;
+  onUpdated: (license: UserLicense) => void;
+}) {
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -137,6 +151,20 @@ function LicenseCard({ license }: { license: UserLicense }) {
             </p>
           </div>
         )}
+
+        {license.pending_purchase_details && (
+          <div className="rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
+            Modification en attente d&apos;approbation
+            {license.pending_purchase_details_submitted_at && (
+              <> depuis le {formatDate(license.pending_purchase_details_submitted_at)}</>
+            )}
+            .
+          </div>
+        )}
+
+        <div className="flex justify-end">
+          <EditPurchaseDetailsDialog type="license_plan" license={license} onUpdated={onUpdated} />
+        </div>
       </CardContent>
     </Card>
   );

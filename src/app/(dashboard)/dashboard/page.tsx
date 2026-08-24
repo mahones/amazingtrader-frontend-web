@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, BookOpen, Bot, KeyRound, Users } from "lucide-react";
+import { AlertTriangle, BookOpen, Bot, KeyRound, RefreshCw, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
@@ -13,6 +13,7 @@ import {
   fetchAdminLicensePlans,
   fetchAdminUsers,
   fetchPendingActivationCount,
+  fetchPendingCredentialsChangeCount,
 } from "@/lib/api/admin";
 
 export default function DashboardOverviewPage() {
@@ -23,17 +24,19 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     async function load() {
       if (isStaff) {
-        const [courses, plans, users, pendingActivations] = await Promise.all([
+        const [courses, plans, users, pendingActivations, pendingCredentialsChanges] = await Promise.all([
           fetchAdminCourses(),
           fetchAdminLicensePlans(),
           fetchAdminUsers(),
           fetchPendingActivationCount(),
+          fetchPendingCredentialsChangeCount(),
         ]);
         setStats([
           { label: "Formations publiées", value: courses.length, icon: BookOpen },
           { label: "Auto-trading créés", value: plans.length, icon: KeyRound },
           { label: "Utilisateurs", value: users.length, icon: Users },
           { label: "Attente d'activation", value: pendingActivations, icon: AlertTriangle },
+          { label: "Modifications à approuver", value: pendingCredentialsChanges, icon: RefreshCw },
         ]);
       } else {
         const [enrollments, licenses, bots] = await Promise.all([
@@ -63,9 +66,9 @@ export default function DashboardOverviewPage() {
         </p>
       </div>
 
-      <div className={isStaff ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-4" : "grid gap-6 sm:grid-cols-3"}>
+      <div className={isStaff ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-5" : "grid gap-6 sm:grid-cols-3"}>
         {loading
-          ? Array.from({ length: isStaff ? 4 : 3 }).map((_, i) => (
+          ? Array.from({ length: isStaff ? 5 : 3 }).map((_, i) => (
               <Card key={i}>
                 <CardContent className="pt-6 text-muted-foreground">Chargement...</CardContent>
               </Card>

@@ -5,8 +5,10 @@ import { TopBar } from "@/components/layout/TopBar";
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <TopBar />
-      <Header />
+      <div className="sticky top-0 z-50">
+        <TopBar />
+        <Header />
+      </div>
       <main className="flex-1">{children}</main>
       <Footer />
     </>

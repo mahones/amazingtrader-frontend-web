@@ -2,12 +2,18 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { PlayCircle } from "lucide-react";
+import { Check, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const VIDEO_URL = "https://www.youtube.com/watch?v=axf678yoSMQ";
 const WHATSAPP_URL =
   "https://wa.me/22879920432?text=je%20souhaite%20b%C3%A9n%C3%A9ficier%20du%20service%20auto%20trading.";
+
+const HIGHLIGHTS = [
+  "Un trading sans effort qui génère des bénéfices.",
+  "Plus besoin de deviner dans quelle direction ira le marché",
+  "Tout ce que vous avez à faire est de définir un niveau de risque acceptable.",
+];
 
 export function AutoTradingHero() {
   return (
@@ -35,12 +41,16 @@ export function AutoTradingHero() {
             croissance mensuelle,  <span className="text-primary">voir plus</span>
           </h1>
 
-          <p className="mt-5 text-lg text-pretty text-white">
-            Un trading sans effort qui génère des bénéfices. Plus besoin de
-            deviner dans quelle direction ira le marché : définissez
-            simplement un niveau de risque acceptable, nos algorithmes
-            s&apos;occupent du reste.
-          </p>
+          <ul className="mt-5 flex flex-col gap-4">
+            {HIGHLIGHTS.map((highlight) => (
+              <li key={highlight} className="flex items-start gap-3">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary">
+                  <Check className="size-4 text-white" strokeWidth={3} />
+                </span>
+                <span className="text-lg text-pretty text-white">{highlight}</span>
+              </li>
+            ))}
+          </ul>
 
           <div className="mt-8 flex flex-row flex-wrap items-center gap-4">
             <Button
@@ -61,7 +71,6 @@ export function AutoTradingHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="hidden lg:block"
         >
           <a
             href={VIDEO_URL}
@@ -79,7 +88,7 @@ export function AutoTradingHero() {
               priority
             />
             {/* <div className="absolute inset-0 bg-black/35 transition-colors group-hover:bg-black/45" /> */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute top-[58%] left-[53%] -translate-x-1/2 -translate-y-1/2">
               <span className="flex size-20 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg transition-transform group-hover:scale-110">
                 <PlayCircle className="size-9" strokeWidth={1.5} />
               </span>

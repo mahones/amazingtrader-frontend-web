@@ -2,10 +2,22 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const MYFXBOOK_URL = "https://www.myfxbook.com/members/AMAZINGTRADERS";
+
+const HIGHLIGHTS: React.ReactNode[] = [
+  <>
+    Croissance <span className="text-primary">mensuelle</span> garantie
+  </>,
+  "Plus besoin de deviner dans quelle direction ira le marché",
+  "Tout ce que vous avez à faire est de définir un niveau de risque acceptable.",
+  <>
+    Nous avons de <span className="text-primary">vrais résultats</span> vous
+    pouvez vérifier et avoir confiance en notre service.
+  </>,
+];
 
 export function BotTradingHero() {
   return (
@@ -31,12 +43,30 @@ export function BotTradingHero() {
             Expérimentez la puissance du <span className="text-primary">trading algorithmique</span>
           </h1>
 
-          <p className="mt-5 text-lg text-pretty text-white">
-            Plus besoin de deviner dans quelle direction ira le marché : définissez
-            simplement un niveau de risque acceptable, et laissez nos bots s&apos;occuper
-            du reste. Nous obtenons de vrais résultats, vérifiables et transparents,
-            pour que vous puissiez avoir confiance en notre service.
-          </p>
+          <ul className="mt-5 flex flex-col gap-4">
+            {HIGHLIGHTS.map((highlight, index) => (
+              <li key={index} className="flex items-start gap-3">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary">
+                  <Check className="size-4 text-white" strokeWidth={3} />
+                </span>
+                <span className="text-lg text-pretty text-white">{highlight}</span>
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href={MYFXBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-block w-fit transition-transform duration-300 hover:scale-90"
+          >
+            <Image
+              src="/verified-logo-myfxbook.webp"
+              alt="Vérifié par Myfxbook"
+              width={200}
+              height={92}
+            />
+          </a>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
@@ -56,9 +86,6 @@ export function BotTradingHero() {
                 </a>
               }
             />
-            <span className="inline-flex items-center rounded-full border border-border px-3 py-1 text-sm font-semibold text-white">
-              <span className="text-primary">Croissance</span>&nbsp;garantie mensuelle
-            </span>
           </div>
         </motion.div>
 
