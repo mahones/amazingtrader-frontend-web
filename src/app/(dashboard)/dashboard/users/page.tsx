@@ -178,14 +178,7 @@ export default function DashboardUsersPage() {
                   className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
                 >
                   {u.name}
-                  {u.has_pending_credentials_change && (
-                    <span title="Demande de modification d'identifiants en attente">
-                      <AlertTriangle
-                        className="size-4 text-destructive"
-                        aria-label="Demande de modification d'identifiants en attente"
-                      />
-                    </span>
-                  )}
+                  
                 </Link>
               </TableCell>
               <TableCell>{u.email}</TableCell>
@@ -196,6 +189,16 @@ export default function DashboardUsersPage() {
                 </Badge>
               </TableCell>
               <TableCell>{formatDate(u.created_at)}</TableCell>
+              <TableCell>
+                {u.has_pending_credentials_change && (
+                    <span title="Demande de modification d'identifiants en attente">
+                      <AlertTriangle
+                        className="size-4 text-destructive"
+                        aria-label="Demande de modification d'identifiants en attente"
+                      />
+                    </span>
+                  )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

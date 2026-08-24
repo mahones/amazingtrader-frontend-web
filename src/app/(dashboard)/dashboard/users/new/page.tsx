@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { createAdminUser, fetchAdminCourses, fetchAdminLicensePlans, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
@@ -212,16 +213,12 @@ export default function NewUserPage() {
                               onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
                             />
                           </div>
-                          <div className="space-y-1">
-                            <Label htmlFor={`license-${plan.id}-whatsapp`} className="text-xs">
-                              Numéro WhatsApp (optionnel)
-                            </Label>
-                            <Input
-                              id={`license-${plan.id}-whatsapp`}
-                              value={details.whatsapp_number}
-                              onChange={(e) => updateLicenseDetail(plan.id, "whatsapp_number", e.target.value)}
-                            />
-                          </div>
+                          <WhatsappNumberField
+                            idPrefix={`license-${plan.id}-whatsapp`}
+                            label="Numéro WhatsApp (optionnel)"
+                            value={details.whatsapp_number}
+                            onChange={(v) => updateLicenseDetail(plan.id, "whatsapp_number", v)}
+                          />
                         </div>
                       )}
                     </div>

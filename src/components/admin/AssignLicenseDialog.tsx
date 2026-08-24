@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
@@ -195,14 +196,12 @@ export function AssignLicenseDialog({
                   onChange={(e) => setForm((f) => ({ ...f, server: e.target.value }))}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="assign-whatsapp">Numéro WhatsApp (optionnel)</Label>
-                <Input
-                  id="assign-whatsapp"
-                  value={form.whatsapp_number}
-                  onChange={(e) => setForm((f) => ({ ...f, whatsapp_number: e.target.value }))}
-                />
-              </div>
+              <WhatsappNumberField
+                idPrefix="assign-whatsapp"
+                label="Numéro WhatsApp (optionnel)"
+                value={form.whatsapp_number}
+                onChange={(v) => setForm((f) => ({ ...f, whatsapp_number: v }))}
+              />
             </>
           )}
 

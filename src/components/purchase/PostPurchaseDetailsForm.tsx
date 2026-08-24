@@ -5,6 +5,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
@@ -77,15 +78,10 @@ export function PostPurchaseDetailsForm({
             <Label htmlFor="ppd-server">Serveur</Label>
             <Input id="ppd-server" value={server} onChange={(e) => setServer(e.target.value)} required />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="ppd-whatsapp">Numéro WhatsApp</Label>
-            <Input
-              id="ppd-whatsapp"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              required
-            />
-          </div>
+          <WhatsappNumberField idPrefix="ppd-whatsapp" value={whatsapp} onChange={setWhatsapp} required />
+          <p className="text-xs text-muted-foreground">
+            Indiquez l&apos;indicatif de votre pays afin que nous puissions vous contacter directement sur WhatsApp.
+          </p>
         </>
       )}
 

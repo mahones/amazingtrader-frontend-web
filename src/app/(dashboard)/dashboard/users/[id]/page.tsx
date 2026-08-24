@@ -181,12 +181,12 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{profile.name}</h1>
           <p className="text-muted-foreground">{profile.email}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <AssignLicenseDialog
             userId={profile.id}
             licensePlans={licensePlans}
@@ -198,6 +198,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
               setProfile((prev) =>
                 prev ? { ...prev, user_bot_licenses: [...prev.user_bot_licenses, license] } : prev
               )
+            }
+          />
+          <AssignCourseDialog
+            userId={profile.id}
+            enrolledCourseIds={profile.enrollments.map((e) => e.course.id)}
+            onEnrollmentsAssigned={(newEnrollments) =>
+              setProfile((prev) => (prev ? { ...prev, enrollments: [...prev.enrollments, ...newEnrollments] } : prev))
             }
           />
           <Button variant={profile.is_active ? "destructive" : "outline"} onClick={handleToggleStatus}>
@@ -308,15 +315,8 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
       </Card>
 
       <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
+        <CardHeader>
           <CardTitle>Formations ({profile.enrollments.length})</CardTitle>
-          <AssignCourseDialog
-            userId={profile.id}
-            enrolledCourseIds={profile.enrollments.map((e) => e.course.id)}
-            onEnrollmentsAssigned={(newEnrollments) =>
-              setProfile((prev) => (prev ? { ...prev, enrollments: [...prev.enrollments, ...newEnrollments] } : prev))
-            }
-          />
         </CardHeader>
         <CardContent className="space-y-4">
           {profile.enrollments.length === 0 && (

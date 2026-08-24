@@ -33,6 +33,7 @@ const NAV_LINKS = [
   { href: "/formations", label: "Formations" },
   { href: "/auto-trading", label: "Auto-trading" },
   { href: "/bot-trading", label: "Bots de trading" },
+  { href: "/brokers", label: "Courtiers" },
   { href: "/articles", label: "Articles" },
 ];
 
