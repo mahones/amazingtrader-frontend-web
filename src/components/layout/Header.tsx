@@ -35,6 +35,7 @@ const NAV_LINKS = [
   { href: "/bot-trading", label: "Bots de trading" },
   { href: "/brokers", label: "Courtiers" },
   { href: "/articles", label: "Articles" },
+  { href: "/lexique", label: "Lexique" },
 ];
 
 export function Header() {

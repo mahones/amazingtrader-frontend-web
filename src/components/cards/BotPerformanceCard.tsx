@@ -4,13 +4,16 @@ import { stripHtml } from "@/lib/utils";
 import type { TradingBot } from "@/types/bot";
 
 export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
+  const cardImage = bot.preview_image ?? bot.image_url;
+  const cardExcerpt = bot.excerpt ?? stripHtml(bot.description);
+
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg hover:shadow-primary/10">
-      {bot.image_url && (
+      {cardImage && (
         <div className="px-(--card-spacing)">
           <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
-            <img src={bot.image_url} alt={bot.name} className="size-full object-cover" />
+            <img src={cardImage} alt={bot.name} className="size-full object-cover" />
           </div>
         </div>
       )}
@@ -23,7 +26,7 @@ export function BotPerformanceCard({ bot }: { bot: TradingBot }) {
         <CardTitle className="mt-2 text-lg">{bot.name}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col">
-        <p className="line-clamp-3 text-sm text-muted-foreground">{stripHtml(bot.description)}</p>
+        <p className="line-clamp-3 text-sm text-muted-foreground">{cardExcerpt}</p>
 
       </CardContent>
     </Card>

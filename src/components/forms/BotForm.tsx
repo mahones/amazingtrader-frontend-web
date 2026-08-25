@@ -29,7 +29,9 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
   const [name, setName] = useState(bot?.name ?? "");
   const [slug, setSlug] = useState(bot?.slug ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
   const [description, setDescription] = useState(bot?.description ?? "");
+  const [excerpt, setExcerpt] = useState(bot?.excerpt ?? "");
   const [strategySummary, setStrategySummary] = useState(bot?.strategy_summary ?? "");
   const [pairsTraded, setPairsTraded] = useState((bot?.pairs_traded ?? []).join(", "));
   const [managedCapital, setManagedCapital] = useState(bot?.managed_capital?.toString() ?? "");
@@ -46,6 +48,7 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
     formData.append("name", name);
     formData.append("slug", slug || slugify(name));
     formData.append("description", description);
+    if (excerpt) formData.append("excerpt", excerpt);
     if (strategySummary) formData.append("strategy_summary", strategySummary);
     pairsTraded
       .split(",")
@@ -55,6 +58,7 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
     if (managedCapital) formData.append("managed_capital", managedCapital);
     formData.append("is_active", isActive ? "1" : "0");
     if (imageFile) formData.append("image", imageFile);
+    if (previewImageFile) formData.append("preview_image_file", previewImageFile);
 
     try {
       const saved =
@@ -93,15 +97,34 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
 
           <ImageUploadInput
             id="bot-image"
-            label="Image / média principal"
+            label="Image principale (page détail du bot)"
             value={imageFile}
             onChange={setImageFile}
             existingUrl={bot?.image_url}
           />
 
           <div className="space-y-2">
-            <Label>Description</Label>
+            <Label>Description (page détail du bot)</Label>
             <RichTextEditor value={description} onChange={setDescription} />
+          </div>
+
+          <ImageUploadInput
+            id="bot-preview-image"
+            label="Image de la carte (liste des bots)"
+            value={previewImageFile}
+            onChange={setPreviewImageFile}
+            existingUrl={bot?.preview_image}
+          />
+
+          <div className="space-y-2">
+            <Label htmlFor="bot-excerpt">Extrait (carte, liste des bots)</Label>
+            <Textarea
+              id="bot-excerpt"
+              rows={2}
+              maxLength={500}
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">

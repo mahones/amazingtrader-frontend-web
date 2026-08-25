@@ -59,8 +59,10 @@ export interface TradingBot {
   name: string;
   slug: string;
   image_url: string | null;
+  preview_image: string | null;
   managed_capital: number | null;
   description: string;
+  excerpt: string | null;
   strategy_summary: string | null;
   pairs_traded: string[];
   is_active: boolean;
