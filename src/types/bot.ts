@@ -12,6 +12,13 @@ export interface BotRequirement {
   position: number;
 }
 
+export interface BotInstruction {
+  id: number;
+  title: string;
+  url: string;
+  position: number;
+}
+
 export interface BotPerformanceLink {
   id: number;
   platform: PerformancePlatform;
@@ -60,7 +67,7 @@ export interface TradingBot {
   requirements?: BotRequirement[];
   performance_links?: BotPerformanceLink[];
   license_plans?: BotLicensePlan[];
-  bot_files?: BotFile[];
+  bot_instructions?: BotInstruction[];
 }
 
 export interface BotLicensePurchaseDetails {
@@ -77,6 +84,7 @@ export interface UserBotLicense {
   activated_at: string | null;
   expires_at: string | null;
   bot_license_plan: BotLicensePlan;
+  files?: BotFile[];
 }
 
 export interface BotAssignment {

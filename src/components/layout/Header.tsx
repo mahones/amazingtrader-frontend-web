@@ -44,6 +44,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   async function handleLogout() {
+    if (!window.confirm("Voulez-vous vraiment vous déconnecter ?")) return;
     await logout();
     setOpen(false);
     router.push("/");

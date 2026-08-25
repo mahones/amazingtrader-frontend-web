@@ -2,30 +2,26 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/context/AuthContext";
+import { forgotPassword } from "@/lib/api/auth";
 import { extractApiError } from "@/lib/api/client";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <Suspense fallback={null}>
-      <LoginPageContent />
+      <ForgotPasswordPageContent />
     </Suspense>
   );
 }
 
-function LoginPageContent() {
-  const { login } = useAuth();
+function ForgotPasswordPageContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -35,15 +31,11 @@ function LoginPageContent() {
     setError(null);
 
     try {
-      await login(email, password);
-      router.push(searchParams.get("redirect") ?? "/dashboard");
+      await forgotPassword(email);
+      const params = new URLSearchParams({ email });
+      router.push(`/reset-otp?${params.toString()}`);
     } catch (err) {
-      if (err instanceof AxiosError && err.response?.data?.requires_verification) {
-        const params = new URLSearchParams({ email: err.response.data.email ?? email });
-        router.push(`/verify-otp?${params.toString()}`);
-        return;
-      }
-      setError(extractApiError(err, "Identifiants incorrects."));
+      setError(extractApiError(err, "Impossible d'envoyer le code de vérification."));
     } finally {
       setPending(false);
     }
@@ -53,9 +45,13 @@ function LoginPageContent() {
     <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-12">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-2xl">Se connecter</CardTitle>
+          <CardTitle className="text-2xl">Mot de passe oublié</CardTitle>
         </CardHeader>
         <CardContent>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Saisissez l&apos;adresse email de votre compte. Si elle correspond à un compte existant, un code de
+            vérification vous sera envoyé.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -67,30 +63,14 @@ function LoginPageContent() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
-                  Mot de passe oublié ?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
             {error && <Alert variant="error">{error}</Alert>}
             <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? "Connexion..." : "Se connecter"}
+              {pending ? "Envoi..." : "Envoyer le code"}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Pas encore de compte ?{" "}
-            <Link href="/register" className="font-medium text-primary hover:underline">
-              S&apos;inscrire
+            <Link href="/login" className="font-medium text-primary hover:underline">
+              Retour à la connexion
             </Link>
           </p>
         </CardContent>

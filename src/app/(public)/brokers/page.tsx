@@ -8,7 +8,7 @@ export default async function BrokersPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="max-w-2xl">
         <h1 className="text-3xl font-bold sm:text-4xl text-primary">
-          Courtiers partenaires
+          Courtiers recommandés
         </h1>
         <p className="mt-3 text-muted-foreground">
           Ouvrez votre compte chez l&apos;un de nos courtiers recommandés
@@ -18,7 +18,7 @@ export default async function BrokersPage() {
       </div>
 
       {brokers.length > 0 ? (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
           {brokers.map((broker) => (
             <BrokerCard key={broker.id} broker={broker} />
           ))}

@@ -44,7 +44,7 @@ export function EditPurchaseDetailsDialog<T extends UserLicense | UserBotLicense
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="outline" size="sm" />}>Modifier mes identifiants</DialogTrigger>
+      <DialogTrigger render={<Button variant="destructive" size="sm" />}>Modifier mes identifiants</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Modifier mes identifiants</DialogTitle>

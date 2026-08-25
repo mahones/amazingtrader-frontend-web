@@ -26,6 +26,7 @@ export function ArticleForm({ post }: { post?: Post }) {
   const [category, setCategory] = useState(post?.category ?? CATEGORIES[0]);
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
   const [content, setContent] = useState(post?.content ?? "");
   const [isPublished, setIsPublished] = useState(post?.is_published ?? true);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +48,7 @@ export function ArticleForm({ post }: { post?: Post }) {
     formData.append("content", content);
     formData.append("is_published", isPublished ? "1" : "0");
     if (coverImageFile) formData.append("cover_image", coverImageFile);
+    if (previewImageFile) formData.append("preview_image", previewImageFile);
 
     try {
       if (isEditing && post) {
@@ -117,10 +119,20 @@ export function ArticleForm({ post }: { post?: Post }) {
               </div>
               <ImageUploadInput
                 id="cover"
-                label="Image de couverture"
+                label="Image de couverture (page détail)"
                 value={coverImageFile}
                 onChange={setCoverImageFile}
                 existingUrl={post?.cover_image_url}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <ImageUploadInput
+                id="preview"
+                label="Image d'aperçu (carte article)"
+                value={previewImageFile}
+                onChange={setPreviewImageFile}
+                existingUrl={post?.preview_image_url}
               />
             </div>
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { useAuth } from "@/context/AuthContext";
 import { apiClient, extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
@@ -14,6 +15,7 @@ export default function SettingsPage() {
   const { user, refresh } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
+  const [whatsappNumber, setWhatsappNumber] = useState(user?.whatsapp_number ?? "");
   const [profileSaved, setProfileSaved] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
@@ -27,7 +29,7 @@ export default function SettingsPage() {
     e.preventDefault();
     setProfileError(null);
     try {
-      await apiClient.patch("/me", { name, email });
+      await apiClient.patch("/me", { name, email, whatsapp_number: whatsappNumber });
       await refresh();
       toast.success("Vos informations ont été mises à jour.");
       setProfileSaved(true);
@@ -77,6 +79,7 @@ export default function SettingsPage() {
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
+            <WhatsappNumberField idPrefix="whatsapp" value={whatsappNumber} onChange={setWhatsappNumber} />
             {profileError && <Alert variant="error">{profileError}</Alert>}
             <Button type="submit">{profileSaved ? "Enregistré ✓" : "Enregistrer"}</Button>
           </form>

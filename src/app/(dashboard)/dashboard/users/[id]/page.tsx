@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
+import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
@@ -19,10 +20,12 @@ import {
   fetchAdminUserProfile,
   rejectBotLicensePurchaseDetailsChange,
   rejectLicensePurchaseDetailsChange,
+  requestCredentialsUpdate,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
-import type { BotLicensePlan } from "@/types/bot";
+import { toast } from "@/lib/toast";
+import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
 import type { LicensePlan } from "@/types/license";
 import type { UserProfile } from "@/types/user";
 
@@ -135,6 +138,22 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
+  async function handleRequestCredentialsUpdate(licenseId: number) {
+    await requestCredentialsUpdate(licenseId);
+    toast.success("Un email a été envoyé à l'utilisateur pour mettre à jour ses identifiants.");
+  }
+
+  function handleBotLicenseFilesChanged(licenseId: number, files: UserBotLicense["files"]) {
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_bot_licenses: prev.user_bot_licenses.map((l) => (l.id === licenseId ? { ...l, files } : l)),
+          }
+        : prev
+    );
+  }
+
   async function handleApproveLicenseChange(licenseId: number) {
     const updated = await approveLicensePurchaseDetailsChange(licenseId);
     setProfile((prev) =>
@@ -185,10 +204,14 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
         <div>
           <h1 className="text-2xl font-bold">{profile.name}</h1>
           <p className="text-muted-foreground">{profile.email}</p>
+          {profile.whatsapp_number && (
+            <p className="text-muted-foreground">WhatsApp : {profile.whatsapp_number}</p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <AssignLicenseDialog
             userId={profile.id}
+            whatsappNumber={profile.whatsapp_number}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
             onLicenseAssigned={(license) =>
@@ -237,6 +260,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                       Activer
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleRequestCredentialsUpdate(license.id)}
+                  >
+                    Mise à jour des accès
+                  </Button>
                 </div>
               </div>
               <LicenseExpiryGauge
@@ -249,7 +279,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
                   <p><span className="text-muted-foreground">Mot de passe :</span> {license.purchase_details.password}</p>
                   <p><span className="text-muted-foreground">Serveur :</span> {license.purchase_details.server}</p>
-                  <p><span className="text-muted-foreground">WhatsApp :</span> {license.purchase_details.whatsapp_number}</p>
+                  {profile.whatsapp_number && (
+                    <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
+                  )}
                 </div>
               )}
               {license.pending_purchase_details && (
@@ -258,7 +290,6 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                     ID: license.pending_purchase_details.id,
                     "Mot de passe": license.pending_purchase_details.password,
                     Serveur: license.pending_purchase_details.server,
-                    WhatsApp: license.pending_purchase_details.whatsapp_number,
                   }}
                   submittedAt={license.pending_purchase_details_submitted_at}
                   onApprove={() => handleApproveLicenseChange(license.id)}
@@ -297,9 +328,12 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                 status={license.status}
               />
               {license.purchase_details && (
-                <p className="text-sm">
-                  <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
-                </p>
+                <div className="grid gap-1.5 text-sm sm:grid-cols-2">
+                  <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
+                  {profile.whatsapp_number && (
+                    <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
+                  )}
+                </div>
               )}
               {license.pending_purchase_details && (
                 <PendingChangeReview
@@ -309,6 +343,11 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   onReject={() => handleRejectBotLicenseChange(license.id)}
                 />
               )}
+              <BotFilesManager
+                userBotLicenseId={license.id}
+                files={license.files ?? []}
+                onChange={(files) => handleBotLicenseFilesChanged(license.id, files)}
+              />
             </div>
           ))}
         </CardContent>

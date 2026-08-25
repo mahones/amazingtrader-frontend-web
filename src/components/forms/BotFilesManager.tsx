@@ -18,11 +18,11 @@ function formatSize(bytes: number | null) {
 }
 
 export function BotFilesManager({
-  botId,
+  userBotLicenseId,
   files,
   onChange,
 }: {
-  botId: number;
+  userBotLicenseId: number;
   files: BotFile[];
   onChange: (next: BotFile[]) => void;
 }) {
@@ -44,7 +44,7 @@ export function BotFilesManager({
         formData.append(`files[${index}]`, file);
         formData.append(`labels[${index}]`, label || file.name);
       });
-      const created = await createAdminBotFiles(botId, formData);
+      const created = await createAdminBotFiles(userBotLicenseId, formData);
       onChange(created);
       setLabel("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -63,7 +63,7 @@ export function BotFilesManager({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Fichiers du bot ({files.length})</CardTitle>
+        <CardTitle>Fichiers de la licence ({files.length})</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <ul className="divide-y divide-border">
@@ -76,7 +76,7 @@ export function BotFilesManager({
                 </p>
               </div>
               <Button
-                variant="outline"
+                variant="destructive"
                 size="sm"
                 onClick={() => {
                   if (window.confirm("Supprimer ce fichier ?")) handleDelete(file.id);

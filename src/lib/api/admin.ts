@@ -5,6 +5,7 @@ import type {
   BotAssignment,
   BotAssignmentStatus,
   BotFile,
+  BotInstruction,
   BotLicensePlan,
   BotLicensePurchaseDetails,
   BotPerformanceLink,
@@ -151,6 +152,24 @@ export async function deleteAdminBotRequirement(id: number) {
   await apiClient.delete(`/admin/bot-requirements/${id}`);
 }
 
+// Bot instructions
+export async function createAdminBotInstruction(botId: number, payload: Partial<BotInstruction>) {
+  const { data } = await apiClient.post<{ data: BotInstruction }>(
+    `/admin/trading-bots/${botId}/instructions`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBotInstruction(id: number, payload: Partial<BotInstruction>) {
+  const { data } = await apiClient.put<{ data: BotInstruction }>(`/admin/bot-instructions/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBotInstruction(id: number) {
+  await apiClient.delete(`/admin/bot-instructions/${id}`);
+}
+
 // Bot performance links
 export async function createAdminBotPerformanceLink(
   botId: number,
@@ -242,15 +261,17 @@ export async function deleteAdminPost(id: number) {
   await apiClient.delete(`/admin/posts/${id}`);
 }
 
-// Bot files
-export async function fetchAdminBotFiles(botId: number) {
-  const { data } = await apiClient.get<{ data: BotFile[] }>(`/admin/trading-bots/${botId}/files`);
+// Bot files (per user bot license)
+export async function fetchAdminBotFiles(userBotLicenseId: number) {
+  const { data } = await apiClient.get<{ data: BotFile[] }>(
+    `/admin/user-bot-licenses/${userBotLicenseId}/files`
+  );
   return data.data;
 }
 
-export async function createAdminBotFiles(botId: number, formData: FormData) {
+export async function createAdminBotFiles(userBotLicenseId: number, formData: FormData) {
   const { data } = await apiClient.post<{ data: BotFile[] }>(
-    `/admin/trading-bots/${botId}/files`,
+    `/admin/user-bot-licenses/${userBotLicenseId}/files`,
     formData
   );
   return data.data;
@@ -284,7 +305,7 @@ export async function fetchAdminUsersPaged(params: {
   search?: string;
   role?: string;
   purchase?: string;
-  license_status?: "activated" | "pending";
+  license_status?: "activated" | "pending" | "pending_changes";
   is_active?: boolean;
   page?: number;
 }) {
@@ -377,6 +398,10 @@ export async function activateUserLicense(id: number) {
 export async function activateUserBotLicense(id: number) {
   const { data } = await apiClient.patch<{ data: UserBotLicense }>(`/admin/user-bot-licenses/${id}/activate`);
   return data.data;
+}
+
+export async function requestCredentialsUpdate(userLicenseId: number) {
+  await apiClient.post(`/admin/user-licenses/${userLicenseId}/request-update`);
 }
 
 export async function fetchPendingActivationCount() {

@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { BotForm } from "@/components/forms/BotForm";
 import { BotRequirementsManager } from "@/components/forms/BotRequirementsManager";
+import { BotInstructionsManager } from "@/components/forms/BotInstructionsManager";
 import { BotPerformanceLinksManager } from "@/components/forms/BotPerformanceLinksManager";
 import { BotLicensePlansManager } from "@/components/forms/BotLicensePlansManager";
-import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminTradingBot, fetchAdminTradingBot } from "@/lib/api/admin";
 import type { TradingBot } from "@/types/bot";
@@ -52,6 +52,12 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         onChange={(requirements) => setBot({ ...bot, requirements })}
       />
 
+      <BotInstructionsManager
+        botId={bot.id}
+        instructions={bot.bot_instructions ?? []}
+        onChange={(bot_instructions) => setBot({ ...bot, bot_instructions })}
+      />
+
       <BotPerformanceLinksManager
         botId={bot.id}
         links={bot.performance_links ?? []}
@@ -62,12 +68,6 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         botId={bot.id}
         plans={bot.license_plans ?? []}
         onChange={(license_plans) => setBot({ ...bot, license_plans })}
-      />
-
-      <BotFilesManager
-        botId={bot.id}
-        files={bot.bot_files ?? []}
-        onChange={(bot_files) => setBot({ ...bot, bot_files })}
       />
 
       <BotForm bot={bot} onSaved={setBot} />

@@ -227,8 +227,9 @@ function BotLicenseCard({
   license: UserBotLicense;
   onUpdated: (license: UserBotLicense) => void;
 }) {
+  const { user } = useAuth();
   const bot = license.bot_license_plan.trading_bot;
-  const files = bot?.bot_files ?? [];
+  const files = license.files ?? [];
 
   return (
     <Card>
@@ -257,6 +258,12 @@ function BotLicenseCard({
           </p>
         )}
 
+        {user?.whatsapp_number && (
+          <p className="text-sm">
+            <span className="text-muted-foreground">WhatsApp :</span> {user.whatsapp_number}
+          </p>
+        )}
+
         {license.pending_purchase_details && (
           <div className="rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
             Modification en attente d&apos;approbation
@@ -267,13 +274,27 @@ function BotLicenseCard({
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-2">
+            {bot?.bot_instructions?.map((instruction) => (
+              <Button
+                key={instruction.id}
+                size="sm"
+                className="bg-foreground text-background hover:bg-foreground/80"
+                render={
+                  <a href={instruction.url} target="_blank" rel="noopener noreferrer">
+                    {instruction.title}
+                  </a>
+                }
+              />
+            ))}
+          </div>
           <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
         </div>
 
         {files.length > 0 && (
           <div className="space-y-2 border-t border-border pt-4">
-            <p className="text-sm font-medium">Fichiers du bot</p>
+            <p className="text-sm font-medium">Mes fichiers</p>
             <ul className="space-y-1.5">
               {files.map((file: BotFile) => (
                 <li
@@ -282,8 +303,8 @@ function BotLicenseCard({
                 >
                   <span>{file.label}</span>
                   <Button
-                    variant="outline"
                     size="sm"
+                    className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30"
                     onClick={() => downloadBotFile(file)}
                   >
                     <Download className="mr-1 size-3.5" /> Télécharger

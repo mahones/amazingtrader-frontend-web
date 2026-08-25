@@ -7,11 +7,15 @@ import type { Post } from "@/types/post";
 export function ArticleCard({ post }: { post: Post }) {
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg hover:shadow-primary/10">
-      {post.cover_image_url && (
+      {(post.preview_image_url ?? post.cover_image_url) && (
         <div className="px-(--card-spacing)">
           <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-muted">
             {/* eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time */}
-            <img src={post.cover_image_url} alt={post.title} className="size-full object-cover" />
+            <img
+              src={post.preview_image_url ?? post.cover_image_url ?? undefined}
+              alt={post.title}
+              className="size-full object-cover"
+            />
           </div>
         </div>
       )}

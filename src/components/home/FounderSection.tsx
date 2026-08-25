@@ -55,17 +55,6 @@ export function FounderSection() {
             capacité adaptative aux perpétuels changements des marchés
             financiers.
           </p>
-
-          {/* <Button
-            size="lg"
-            className="mt-8 w-full bg-neutral-900 text-white hover:bg-neutral-800 sm:w-auto sm:min-w-[240px] dark:bg-white dark:text-neutral-900 dark:hover:bg-white/90"
-          >
-            Mon Histoire
-          </Button> */}
-
-          {/* <div className="mt-6">
-            <Eyebrow>J&apos;étais comme toi</Eyebrow>
-          </div> */}
         </motion.div>
 
         <motion.div
@@ -86,13 +75,9 @@ export function FounderSection() {
             />
           </div>
           <div className="mt-4 flex w-full max-w-[450px] ml-auto flex-col items-center gap-1 text-center">
-            <Eyebrow>CEO</Eyebrow>
-            <p className="font-semibold text-foreground">Rodolphe SEDJRO</p>
+            <Eyebrow>Fondateur</Eyebrow>
             <p className="font-semibold text-foreground">
               Expert en trading algorithmique
-            </p>
-            <p className="font-semibold text-foreground">
-              7 ans d&apos;expérience
             </p>
           </div>
         </motion.div>

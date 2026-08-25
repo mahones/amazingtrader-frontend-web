@@ -8,9 +8,11 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  whatsapp_number: string | null;
   role: UserRole;
   is_active: boolean;
   has_pending_credentials_change: boolean;
+  has_unactivated_license: boolean;
   created_at: string;
 }
 

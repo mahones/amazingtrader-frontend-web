@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
+import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
@@ -24,10 +25,10 @@ export function PostPurchaseDetailsForm({
   initialValues?: Partial<{ id: string; password: string; server: string; whatsapp_number: string }>;
   onSubmitted: (result: UserLicense | UserBotLicense) => void;
 }) {
+  const { user } = useAuth();
   const [id, setId] = useState(initialValues?.id ?? "");
   const [password, setPassword] = useState(initialValues?.password ?? "");
   const [server, setServer] = useState(initialValues?.server ?? "");
-  const [whatsapp, setWhatsapp] = useState(initialValues?.whatsapp_number ?? "");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +42,7 @@ export function PostPurchaseDetailsForm({
           id,
           password,
           server,
-          whatsapp_number: whatsapp,
+          whatsapp_number: user?.whatsapp_number ?? "",
         });
         onSubmitted(result);
       } else {
@@ -78,10 +79,17 @@ export function PostPurchaseDetailsForm({
             <Label htmlFor="ppd-server">Serveur</Label>
             <Input id="ppd-server" value={server} onChange={(e) => setServer(e.target.value)} required />
           </div>
-          <WhatsappNumberField idPrefix="ppd-whatsapp" value={whatsapp} onChange={setWhatsapp} required />
-          <p className="text-xs text-muted-foreground">
-            Indiquez l&apos;indicatif de votre pays afin que nous puissions vous contacter directement sur WhatsApp.
-          </p>
+          <div className="space-y-2">
+            <Label htmlFor="ppd-whatsapp">Numéro WhatsApp</Label>
+            <Input id="ppd-whatsapp" value={user?.whatsapp_number ?? ""} disabled />
+            <p className="text-xs text-muted-foreground">
+              Numéro associé à votre compte. Modifiable depuis{" "}
+              <Link href="/dashboard/settings" className="font-medium text-primary hover:underline">
+                vos paramètres
+              </Link>
+              .
+            </p>
+          </div>
         </>
       )}
 

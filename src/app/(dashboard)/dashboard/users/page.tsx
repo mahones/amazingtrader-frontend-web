@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { AlertTriangle, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,16 +32,26 @@ const LICENSE_FILTERS = [
   { value: "tout", label: "Toutes les licences" },
   { value: "activated", label: "Licences activées" },
   { value: "pending", label: "Licences non activées (En attente)" },
+  { value: "pending_changes", label: "Modifications en attente d'approbation" },
 ];
 
 export default function DashboardUsersPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardUsersPageContent />
+    </Suspense>
+  );
+}
+
+function DashboardUsersPageContent() {
   const { user: currentUser } = useAuth();
   useRequireRole(["admin", "developer"]);
+  const searchParams = useSearchParams();
 
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("tout");
   const [purchase, setPurchase] = useState("tout");
-  const [licenseStatus, setLicenseStatus] = useState("tout");
+  const [licenseStatus, setLicenseStatus] = useState(() => searchParams.get("license_status") ?? "tout");
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[] | null>(null);
   const [meta, setMeta] = useState<{ current_page: number; last_page: number } | null>(null);
@@ -51,7 +62,8 @@ export default function DashboardUsersPage() {
         search: search || undefined,
         role: role === "tout" ? undefined : role,
         purchase: purchase === "tout" ? undefined : purchase,
-        license_status: licenseStatus === "tout" ? undefined : (licenseStatus as "activated" | "pending"),
+        license_status:
+          licenseStatus === "tout" ? undefined : (licenseStatus as "activated" | "pending" | "pending_changes"),
         page,
       }).then((res) => {
         setUsers(res.data);
@@ -190,14 +202,24 @@ export default function DashboardUsersPage() {
               </TableCell>
               <TableCell>{formatDate(u.created_at)}</TableCell>
               <TableCell>
-                {u.has_pending_credentials_change && (
+                <div className="flex items-center gap-1.5">
+                  {u.has_unactivated_license && (
+                    <span title="Licence non activée">
+                      <Lock
+                        className="size-6 text-destructive"
+                        aria-label="Licence non activée"
+                      />
+                    </span>
+                  )}
+                  {u.has_pending_credentials_change && (
                     <span title="Demande de modification d'identifiants en attente">
                       <AlertTriangle
-                        className="size-4 text-destructive"
+                        className="size-6 text-destructive"
                         aria-label="Demande de modification d'identifiants en attente"
                       />
                     </span>
                   )}
+                </div>
               </TableCell>
             </TableRow>
           ))}
