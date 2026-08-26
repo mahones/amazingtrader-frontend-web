@@ -14,11 +14,7 @@ const STATS: {
     label: "Analyse algorithmique en temps réel",
     icon: Cpu,
   },
-  // {
-  //   value: "Efficacité & Rentabilité",
-  //   label: "Optimisation continue des signaux",
-  //   icon: TrendingUp,
-  // },
+
   {
     value: "Formation sur mesure",
     label: "Du débutant à l'expert encadré",
@@ -34,7 +30,7 @@ export function OfferingsList() {
           Votre recherche d’une rentabilité constante du trading <span className="text-amber-500"> se termine ici…. </span>
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {STATS.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -46,14 +42,16 @@ export function OfferingsList() {
                 delay: index * 0.08,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="bg-[#FDF3E7] p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition-all flex flex-col items-center dark:bg-[#303030]/20 dark:border-[#303030]/25 dark:backdrop-blur-md dark:shadow-black/20 dark:hover:bg-[#0e0e0e]/30"
+              className="relative overflow-hidden bg-[#F2F2F2] p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all flex items-center gap-4 dark:bg-[#0E0E0E]/40 dark:border-white/10 dark:backdrop-blur-md dark:shadow-black/20 dark:hover:bg-[#0E0E0E]/60"
             >
-                <div className="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center mb-4">
-                  {/* Icône IA */}<stat.icon className="text-primary" />
+                <span className="absolute inset-x-0 bottom-0 h-1 bg-primary" aria-hidden="true" />
+                <div className="w-14 h-14 shrink-0 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center">
+                  {/* Icône IA */}<stat.icon className="text-primary size-7" />
                 </div>
-                <h3 className="font-bold text-lg text-slate-800 dark:text-white">{stat.value}</h3>
-                <p className="text-sm text-slate-500 mt-1 dark:text-white/70">{stat.label}</p>
-              
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 dark:text-white">{stat.value}</h3>
+                  <p className="text-sm text-slate-500 mt-1 dark:text-white/70">{stat.label}</p>
+                </div>
             </motion.div>
           ))}
         </div>

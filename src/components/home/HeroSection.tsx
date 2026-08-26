@@ -45,9 +45,9 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-background">
+    <section className="relative overflow-hidden bg-background py-5">
       <Image
-        src="/banniere 1-1.png"
+        src="/banniere 1-2.png"
         alt=""
         aria-hidden
         fill
@@ -81,15 +81,30 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="relative mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-[#0E0E0E]/60 p-10 backdrop-blur-sm"
         >
+          <span
+            aria-hidden
+            className="absolute -top-1 -left-1 h-10 w-10 rounded-tl-3xl border-t-2 border-l-2 border-white/40"
+          />
+          <span
+            aria-hidden
+            className="absolute -bottom-1 -right-1 h-10 w-10 rounded-br-3xl border-r-2 border-b-2 border-white/40"
+          />
+
           <Image
-            src="/bot.png"
+            src="/logo-whitebcc.png"
             alt="Signaux d'achat et de vente sur un graphique en chandeliers"
             width={2000}
             height={2000}
             priority
-            className="mx-auto h-auto w-full max-w-md"
+            className="mx-auto h-auto w-full"
           />
+
+          <p className="mt-6 text-right text-xs font-medium tracking-[0.3em] text-white/50 uppercase">
+            Signal <span className="text-primary">/</span> Strategy{" "}
+            <span className="text-primary">/</span> Support
+          </p>
         </motion.div>
       </div>
     </section>

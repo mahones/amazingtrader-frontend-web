@@ -53,30 +53,33 @@ export function HowItWorksSection() {
               delay: index * 0.08,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="flex flex-col items-center rounded-2xl border border-slate-100 bg-[#FDF3E7] p-6 text-center shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-[#303030]/25 dark:bg-[#303030]/20 dark:shadow-black/20 dark:backdrop-blur-md dark:hover:bg-[#0e0e0e]/30"
+            className="relative overflow-hidden flex items-center gap-4 rounded-2xl border border-slate-100 bg-[#F2F2F2] p-6 shadow-md transition-all hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-[#0E0E0E]/40 dark:shadow-black/20 dark:backdrop-blur-md dark:hover:bg-[#0E0E0E]/60"
           >
-            <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
-              <step.icon className="size-6" strokeWidth={2} />
+            <span className="absolute inset-x-0 bottom-0 h-1 bg-primary" aria-hidden="true" />
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
+              <step.icon className="size-7" strokeWidth={2} />
             </div>
-            <h3 className="font-bold text-lg text-slate-800 dark:text-white">
-              {step.title}
-            </h3>
-            <p className="mt-1 text-sm text-slate-500 dark:text-white/70">
-              {step.description}
-              {step.linkHref && (
-                <>
-                  {" "}
-                  <a
-                    href={step.linkHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-primary hover:underline"
-                  >
-                    {step.linkLabel}
-                  </a>
-                </>
-              )}
-            </p>
+            <div>
+              <h3 className="font-bold text-lg text-slate-800 dark:text-white">
+                {step.title}
+              </h3>
+              <p className="mt-1 text-sm text-slate-500 dark:text-white/70">
+                {step.description}
+                {step.linkHref && (
+                  <>
+                    {" "}
+                    <a
+                      href={step.linkHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-primary hover:underline"
+                    >
+                      {step.linkLabel}
+                    </a>
+                  </>
+                )}
+              </p>
+            </div>
           </motion.div>
         ))}
       </div>
