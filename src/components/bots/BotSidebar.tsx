@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { Bot as BotIcon, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getBrokers, getTradingBots } from "@/lib/api/server";
+import { getTradingBots } from "@/lib/api/server";
+import type { Broker } from "@/types/broker";
 
-export async function BotSidebar({ currentSlug }: { currentSlug: string }) {
-  const [bots, brokers] = await Promise.all([
-    getTradingBots().catch(() => []),
-    getBrokers().catch(() => []),
-  ]);
+export async function BotSidebar({
+  currentSlug,
+  brokers,
+}: {
+  currentSlug: string;
+  brokers: Broker[];
+}) {
+  const bots = await getTradingBots().catch(() => []);
 
   const otherBots = bots.filter((bot) => bot.slug !== currentSlug);
 
@@ -48,37 +52,36 @@ export async function BotSidebar({ currentSlug }: { currentSlug: string }) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Courtiers recommandés</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            {brokers.map((broker) => (
-              <li key={broker.id}>
-                <a
-                  href={broker.affiliate_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2.5 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
-                >
-                  <span className="flex items-center gap-2">
-                    {broker.logo_url && (
-                      // eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time
-                      <img src={broker.logo_url} alt={broker.name} className="h-5 w-auto object-contain" />
-                    )}
-                    {broker.name}
-                  </span>
-                  <ExternalLink className="size-3.5 text-muted-foreground" />
-                </a>
-              </li>
-            ))}
-            {brokers.length === 0 && (
-              <p className="text-sm text-muted-foreground">Aucun courtier recommandé pour le moment.</p>
-            )}
-          </ul>
-        </CardContent>
-      </Card>
+      {brokers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Courtiers recommandés</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {brokers.map((broker) => (
+                <li key={broker.id}>
+                  <a
+                    href={broker.affiliate_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-2 rounded-md border border-border px-3 py-2.5 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
+                  >
+                    <span className="flex items-center gap-2">
+                      {broker.logo_url && (
+                        // eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time
+                        <img src={broker.logo_url} alt={broker.name} className="h-5 w-auto object-contain" />
+                      )}
+                      {broker.name}
+                    </span>
+                    <ExternalLink className="size-3.5 text-muted-foreground" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
     </aside>
   );
 }

@@ -13,9 +13,9 @@ export default async function FormationsPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="max-w-2xl">
-        <h1 className="text-3xl font-bold sm:text-4xl">Nos formations en trading</h1>
-        <p className="mt-3 text-muted-foreground">
-          Des parcours conçus par des traders professionnels, du niveau débutant à avancé.
+        <h1 className="text-4xl font-bold sm:text-5xl">Nos <span className="text-primary">formations</span> en trading</h1>
+        <p className="mt-3 text-lg text-muted-foreground">
+          Deviens un trader rentable et régulier sur le marché boursier en utilisant des strategies pratiques testées
         </p>
       </div>
 

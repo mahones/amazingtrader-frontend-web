@@ -51,11 +51,13 @@ Le trading comporte des risques élevés  et ne convient pas à tout le monde. V
 
 
         <div>
-          <h3 className="text-sm font-semibold">COMPTE</h3>
+          <h3 className="text-sm font-semibold">LIEN RAPIDE</h3>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><Link href="/login" className="hover:text-primary text-primary">Se connecter</Link></li>
             <li><Link href="/register" className="hover:text-primary text-primary">S&apos;inscrire</Link></li>
             <li><Link href="/dashboard" className="hover:text-primary text-primary">Tableau de bord</Link></li>
+            <li><Link href="/brokers" className="hover:text-primary text-primary">Courtiers</Link></li>
+            <li><Link href="/lexique" className="hover:text-primary text-primary">Lexique</Link></li>
           </ul>
         </div>
 

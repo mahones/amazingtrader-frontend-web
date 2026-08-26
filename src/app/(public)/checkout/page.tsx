@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -44,8 +45,29 @@ function CheckoutPageContent() {
   const [recap, setRecap] = useState<Recap | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [method, setMethod] = useState<CheckoutPaymentMethod | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedContract, setAcceptedContract] = useState(false);
   const [pending, setPending] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+
+  const requiresContract = type === "license_plan" || type === "bot_license_plan";
+  const contractLabel =
+    type === "license_plan" ? (
+      <>
+        J&apos;accepte le{" "}
+        <Link href="/contrat-du-trading-automatique" target="_blank" className="text-primary hover:underline">
+          Contrat du trading automatique
+        </Link>
+      </>
+    ) : (
+      <>
+        J&apos;accepte le{" "}
+        <Link href="/contrat-dutilisation" target="_blank" className="text-primary hover:underline">
+          Contrat d&apos;utilisation
+        </Link>
+      </>
+    );
+  const canPay = acceptedTerms && (!requiresContract || acceptedContract);
 
   useEffect(() => {
     if (authLoading || user || !isValidTarget) return;
@@ -109,7 +131,7 @@ function CheckoutPageContent() {
   }, [type, id, isValidTarget]);
 
   async function handlePay() {
-    if (!type || !method) return;
+    if (!type || !method || !canPay) return;
     setPending(true);
     setPayError(null);
     try {
@@ -177,9 +199,37 @@ function CheckoutPageContent() {
             <PaymentMethodSelector value={method} onChange={setMethod} />
           </div>
 
+          <div className="space-y-2 rounded-lg border border-border p-4 text-sm">
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                className="mt-0.5 accent-primary"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+              />
+              <span>
+                J&apos;accepte les{" "}
+                <Link href="/termes-et-conditions" target="_blank" className="text-primary hover:underline">
+                  Termes et conditions
+                </Link>
+              </span>
+            </label>
+            {requiresContract && (
+              <label className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 accent-primary"
+                  checked={acceptedContract}
+                  onChange={(e) => setAcceptedContract(e.target.checked)}
+                />
+                <span>{contractLabel}</span>
+              </label>
+            )}
+          </div>
+
           {payError && <Alert variant="error">{payError}</Alert>}
 
-          <Button onClick={handlePay} disabled={!method || pending} className="w-full" size="lg">
+          <Button onClick={handlePay} disabled={!method || !canPay || pending} className="w-full" size="lg">
             {pending ? "Traitement..." : "Payer maintenant"}
           </Button>
         </>

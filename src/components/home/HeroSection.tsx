@@ -45,16 +45,17 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-background">
+    <section className="relative overflow-hidden bg-background ">
+      <div className="pointer-events-none absolute inset-0 bg-[#0E0E0E]" />
       <Image
-        src="/banniere 1-1.png"
+        src="/Background-AMEZING-TRADERS04.webp"
         alt=""
         aria-hidden
         fill
         priority
         className="object-cover"
       />
-      <div className="pointer-events-none absolute inset-0 bg-[#0E0E0E]/30" />
+      
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
         <motion.div
@@ -81,16 +82,15 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="hidden lg:block"
         >
-          <Image
+          {/* <Image
             src="/bot.png"
             alt="Signaux d'achat et de vente sur un graphique en chandeliers"
             width={2000}
             height={2000}
             priority
             className="mx-auto h-auto w-full max-w-md"
-          />
+          /> */}
         </motion.div>
       </div>
     </section>

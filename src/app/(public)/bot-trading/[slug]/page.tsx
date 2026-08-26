@@ -106,7 +106,7 @@ export default async function BotDetailPage({
           </div>
         </article>
 
-        <BotSidebar currentSlug={bot.slug} />
+        <BotSidebar currentSlug={bot.slug} brokers={bot.brokers ?? []} />
       </div>
     </div>
   );

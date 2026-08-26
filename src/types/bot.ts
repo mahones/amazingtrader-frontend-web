@@ -1,3 +1,4 @@
+import type { Broker } from "./broker";
 import type { LicenseDurationUnit } from "./license";
 import type { User } from "./user";
 
@@ -70,6 +71,7 @@ export interface TradingBot {
   performance_links?: BotPerformanceLink[];
   license_plans?: BotLicensePlan[];
   bot_instructions?: BotInstruction[];
+  brokers?: Broker[];
 }
 
 export interface BotLicensePurchaseDetails {

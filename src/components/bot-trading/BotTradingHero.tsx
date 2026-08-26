@@ -79,10 +79,10 @@ export function BotTradingHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="relative hidden aspect-[4/3] w-full overflow-hidden rounded-2xl lg:block"
+          className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl"
         >
           <Image
-            src="/bots-de-trading.webp"
+            src="/jsoej.png"
             alt="Algorithmes de trading amazingtraders en action"
             fill
             sizes="(min-width: 1024px) 45vw, 90vw"

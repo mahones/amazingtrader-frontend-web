@@ -22,7 +22,7 @@ export default async function BotTradingPage() {
       >
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-4xl font-bold sm:text-5xl">
-            Bots de <span className="text-primary">trading</span>
+             <span className="text-primary">Bots</span>  de trading
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
             Les Experts Advisors de Amazing Traders, sont des algorithmes

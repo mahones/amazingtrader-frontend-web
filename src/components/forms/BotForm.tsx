@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { extractApiError } from "@/lib/api/client";
-import { createAdminTradingBot, updateAdminTradingBot } from "@/lib/api/admin";
+import { createAdminTradingBot, fetchAdminBrokers, updateAdminTradingBot } from "@/lib/api/admin";
 import type { TradingBot } from "@/types/bot";
+import type { Broker } from "@/types/broker";
 
 function slugify(value: string) {
   return value
@@ -21,6 +22,10 @@ function slugify(value: string) {
     .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function toggleId(ids: number[], id: number): number[] {
+  return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id];
 }
 
 export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: TradingBot) => void }) {
@@ -36,8 +41,14 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
   const [pairsTraded, setPairsTraded] = useState((bot?.pairs_traded ?? []).join(", "));
   const [managedCapital, setManagedCapital] = useState(bot?.managed_capital?.toString() ?? "");
   const [isActive, setIsActive] = useState(bot?.is_active ?? true);
+  const [brokers, setBrokers] = useState<Broker[]>([]);
+  const [brokerIds, setBrokerIds] = useState<number[]>(bot?.brokers?.map((b) => b.id) ?? []);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    fetchAdminBrokers().then(setBrokers);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -57,6 +68,7 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
       .forEach((pair) => formData.append("pairs_traded[]", pair));
     if (managedCapital) formData.append("managed_capital", managedCapital);
     formData.append("is_active", isActive ? "1" : "0");
+    brokerIds.forEach((id) => formData.append("broker_ids[]", String(id)));
     if (imageFile) formData.append("image", imageFile);
     if (previewImageFile) formData.append("preview_image_file", previewImageFile);
 
@@ -157,6 +169,26 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
               value={managedCapital}
               onChange={(e) => setManagedCapital(e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Courtiers recommandés</Label>
+            <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border p-3">
+              {brokers.length === 0 && (
+                <p className="text-sm text-muted-foreground">Aucun courtier enregistré.</p>
+              )}
+              {brokers.map((broker) => (
+                <label key={broker.id} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="accent-primary"
+                    checked={brokerIds.includes(broker.id)}
+                    onChange={() => setBrokerIds((ids) => toggleId(ids, broker.id))}
+                  />
+                  {broker.name}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
