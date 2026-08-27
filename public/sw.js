@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAME = `amazingtraders-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
@@ -7,7 +7,7 @@ const PRECACHE_URLS = [
   OFFLINE_URL,
   "/manifest.json",
   "/logo-whitebcc.png",
-  "/logo-white.svg",
+  "/logo.png",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
 ];

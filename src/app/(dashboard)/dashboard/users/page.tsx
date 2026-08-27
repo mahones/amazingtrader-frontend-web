@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AlertTriangle, Lock } from "lucide-react";
+import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -203,6 +204,9 @@ function DashboardUsersPageContent() {
               <TableCell>{formatDate(u.created_at)}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-1.5">
+                  {u.whatsapp_number && (
+                    <WhatsappButton name={u.name} whatsappNumber={u.whatsapp_number} variant="icon" />
+                  )}
                   {u.has_unactivated_license && (
                     <span title="Licence non activée">
                       <Lock

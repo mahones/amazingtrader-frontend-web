@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
+import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
@@ -209,6 +210,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          {profile.whatsapp_number && (
+            <WhatsappButton name={profile.name} whatsappNumber={profile.whatsapp_number} />
+          )}
           <AssignLicenseDialog
             userId={profile.id}
             whatsappNumber={profile.whatsapp_number}

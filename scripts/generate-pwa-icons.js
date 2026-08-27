@@ -1,3 +1,6 @@
+// Regenerates the PWA icon set from public/logo-whitebcc.png.
+// Run via `npm run pwa:icons` whenever the logo changes; output is committed
+// to public/icons/, not generated at build time.
 const sharp = require("sharp");
 const path = require("path");
 

@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/context/AuthContext";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
-import { InstallPrompt } from "@/components/pwa/install-prompt";
+import { PwaInstallPrompts } from "@/components/pwa/PwaInstallPrompts";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AuthProvider>{children}</AuthProvider>
           <Toaster />
           <ServiceWorkerRegister />
-          <InstallPrompt />
+          <PwaInstallPrompts />
         </ThemeProvider>
       </body>
     </html>
