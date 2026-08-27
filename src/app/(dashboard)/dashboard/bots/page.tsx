@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
 import { Download, Plus } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -12,24 +11,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
-import {
-  downloadBotFile,
-  fetchMyBotAssignments,
-  fetchMyBotLicenses,
-} from "@/lib/api/bots";
+import { downloadBotFile, fetchMyBotLicenses } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import type {
-  BotAssignment,
-  BotFile,
-  TradingBot,
-  UserBotLicense,
-} from "@/types/bot";
+import type { BotFile, TradingBot, UserBotLicense } from "@/types/bot";
 
 export default function DashboardBotsPage() {
   const { isStaff } = useAuth();
-  const [assignments, setAssignments] = useState<BotAssignment[] | null>(null);
   const [botLicenses, setBotLicenses] = useState<UserBotLicense[] | null>(null);
   const [bots, setBots] = useState<TradingBot[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -52,13 +41,9 @@ export default function DashboardBotsPage() {
           return;
         }
 
-        const [userAssignments, userLicenses] = await Promise.all([
-          fetchMyBotAssignments(),
-          fetchMyBotLicenses(),
-        ]);
+        const userLicenses = await fetchMyBotLicenses();
 
         if (isActive) {
-          setAssignments(userAssignments);
           setBotLicenses(userLicenses);
         }
       } catch (error) {
@@ -176,43 +161,6 @@ export default function DashboardBotsPage() {
 
   return (
     <div className="space-y-8">
-      {/* <div>
-        <h1 className="text-2xl font-bold">Mes bots</h1>
-        <p className="text-muted-foreground">Suivez les performances des bots qui vous sont attribués.</p>
-      </div>
-
-      <div className="grid gap-4">
-        {assignments === null && <p className="text-muted-foreground">Chargement...</p>}
-        {assignments?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucun bot ne vous a été attribué pour le moment.
-            </CardContent>
-          </Card>
-        )}
-        {assignments?.map((assignment) => (
-          <Card key={assignment.id}>
-            <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-lg">{assignment.trading_bot.name}</CardTitle>
-              <Badge variant={assignment.status === "active" ? "default" : "secondary"}>
-                {assignment.status}
-              </Badge>
-            </CardHeader>
-            <CardContent>
-              <div
-                className="line-clamp-3 text-sm text-muted-foreground [&_p]:inline"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(assignment.trading_bot.description) }}
-              />
-              <Button
-                variant="outline"
-                className="mt-3"
-                render={<Link href={`/dashboard/bots/${assignment.id}`}>Voir l&apos;historique</Link>}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </div> */}
-
       <div className="space-y-4">
         <div>
           <h2 className="text-xl font-bold">Mes licences de bot</h2>
