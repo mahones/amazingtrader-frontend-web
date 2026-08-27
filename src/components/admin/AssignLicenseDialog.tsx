@@ -25,7 +25,7 @@ import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/l
 
 type LicenseType = "auto_trading" | "bot_trading";
 
-const emptyForm: LicensePurchaseDetails = { id: "", password: "", server: "", whatsapp_number: "" };
+const emptyForm: LicensePurchaseDetails = { id: "", password: "", server: "" };
 
 export function AssignLicenseDialog({
   userId,

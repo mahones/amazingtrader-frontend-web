@@ -20,7 +20,6 @@ export interface LicensePurchaseDetails {
   id: string;
   password: string;
   server: string;
-  whatsapp_number: string;
 }
 
 export interface UserLicense {

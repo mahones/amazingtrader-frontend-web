@@ -17,8 +17,8 @@ import { OTHER_COUNTRIES, PRIORITY_COUNTRIES, combineWhatsappNumber, splitWhatsa
 
 /**
  * Numéro WhatsApp saisi en deux parties (indicatif pays + numéro local) mais
- * exposé au parent comme une seule chaîne combinée (même format que la donnée
- * stockée côté API dans purchase_details.whatsapp_number).
+ * exposé au parent comme une seule chaîne combinée (même format que
+ * `User.whatsapp_number` côté API).
  */
 export function WhatsappNumberField({
   idPrefix,

@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
-import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { createAdminUser, fetchAdminCourses, fetchAdminLicensePlans, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
@@ -22,7 +21,7 @@ function toggleId(ids: number[], id: number): number[] {
   return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
 }
 
-const emptyLicenseDetails: LicensePurchaseDetails = { id: "", password: "", server: "", whatsapp_number: "" };
+const emptyLicenseDetails: LicensePurchaseDetails = { id: "", password: "", server: "" };
 
 export default function NewUserPage() {
   useRequireRole(["admin", "developer"]);
@@ -215,12 +214,6 @@ export default function NewUserPage() {
                               onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
                             />
                           </div>
-                          <WhatsappNumberField
-                            idPrefix={`license-${plan.id}-whatsapp`}
-                            label="Numéro WhatsApp (optionnel)"
-                            value={details.whatsapp_number}
-                            onChange={(v) => updateLicenseDetail(plan.id, "whatsapp_number", v)}
-                          />
                         </div>
                       )}
                     </div>
