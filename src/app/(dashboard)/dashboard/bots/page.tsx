@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
 import { Download, Plus } from "lucide-react";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
@@ -16,6 +18,7 @@ import {
   fetchMyBotLicenses,
 } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type {
   BotAssignment,
@@ -29,6 +32,7 @@ export default function DashboardBotsPage() {
   const [assignments, setAssignments] = useState<BotAssignment[] | null>(null);
   const [botLicenses, setBotLicenses] = useState<UserBotLicense[] | null>(null);
   const [bots, setBots] = useState<TradingBot[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function reloadBots() {
     const refreshed = await fetchAdminTradingBots();
@@ -70,8 +74,14 @@ export default function DashboardBotsPage() {
   }, [isStaff]);
 
   async function handleDeleteBot(id: number) {
-    await deleteAdminTradingBot(id);
-    await reloadBots();
+    if (!window.confirm("Supprimer définitivement ce bot ?")) return;
+    setError(null);
+    try {
+      await deleteAdminTradingBot(id);
+      await reloadBots();
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de supprimer ce bot."));
+    }
   }
 
   if (isStaff) {
@@ -93,6 +103,8 @@ export default function DashboardBotsPage() {
           />
         </div>
 
+        {error && <Alert variant="error">{error}</Alert>}
+
         <div className="grid gap-4">
           {bots === null && (
             <p className="text-muted-foreground">Chargement...</p>
@@ -109,10 +121,15 @@ export default function DashboardBotsPage() {
                       : "-"}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Badge variant={bot.is_active ? "default" : "secondary"}>
                     {bot.is_active ? "Actif" : "Inactif"}
                   </Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/bot-trading/${bot.slug}`}>Voir la page</Link>}
+                  />
                   <Button
                     variant="outline"
                     size="sm"
@@ -131,13 +148,23 @@ export default function DashboardBotsPage() {
                       </Link>
                     }
                   />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDeleteBot(bot.id)}
-                  >
-                    Supprimer
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger render={<span tabIndex={bot.has_active_subscribers ? 0 : undefined} />}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={bot.has_active_subscribers}
+                        onClick={() => handleDeleteBot(bot.id)}
+                      >
+                        Supprimer
+                      </Button>
+                    </TooltipTrigger>
+                    {bot.has_active_subscribers && (
+                      <TooltipContent>
+                        Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 </div>
               </CardContent>
             </Card>
@@ -233,17 +260,30 @@ function BotLicenseCard({
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between space-y-0">
+      <CardHeader>
         <CardTitle className="text-lg">
           {license.bot_license_plan.name}
         </CardTitle>
-        <Badge variant={license.status === "active" ? "default" : "secondary"}>
-          {license.status === "active"
-            ? "Active"
-            : license.status === "expired"
-              ? "Expirée"
-              : "Révoquée"}
-        </Badge>
+        <CardAction className="flex items-center gap-3">
+          {bot?.slug && (
+            <Link
+              href={`/bot-trading/${bot.slug}#plan-${license.bot_license_plan.id}`}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Voir la page
+            </Link>
+          )}
+          {license.status === "expired" || license.status === "revoked" ? (
+            <Badge variant="secondary">{license.status === "expired" ? "Expirée" : "Révoquée"}</Badge>
+          ) : license.is_activated ? (
+            <Badge variant="success">Activé</Badge>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Badge variant="pending">En attente d&apos;activation</Badge>
+              <span className="text-xs text-muted-foreground">Le bot sera envoyé dans moins de 24h</span>
+            </div>
+          )}
+        </CardAction>
       </CardHeader>
       <CardContent className="space-y-4">
         <LicenseExpiryGauge

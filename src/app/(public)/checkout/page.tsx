@@ -6,13 +6,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { PaymentMethodSelector, type CheckoutPaymentMethod } from "@/components/purchase/PaymentMethodSelector";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { fetchCourses } from "@/lib/api/courses";
 import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
-import { createOrder, payOrder, payOrderWithPayerUrl, payOrderWithPayPal, type PurchasableType } from "@/lib/api/orders";
+import {
+  createOrder,
+  payOrder,
+  payOrderWithPayerUrl,
+  payOrderWithPayPal,
+  validatePromoCode,
+  type PurchasableType,
+} from "@/lib/api/orders";
 import { formatCurrency, formatDuration, stripHtml } from "@/lib/utils";
 
 type Recap = {
@@ -49,6 +57,16 @@ function CheckoutPageContent() {
   const [acceptedContract, setAcceptedContract] = useState(false);
   const [pending, setPending] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discountPercentage: number;
+    discountAmount: number;
+    total: number;
+  } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoPending, setPromoPending] = useState(false);
 
   const requiresContract = type === "license_plan" || type === "bot_license_plan";
   const contractLabel =
@@ -130,12 +148,38 @@ function CheckoutPageContent() {
     };
   }, [type, id, isValidTarget]);
 
+  async function handleApplyPromo() {
+    if (!type || !promoCodeInput.trim()) return;
+    setPromoPending(true);
+    setPromoError(null);
+    try {
+      const result = await validatePromoCode({ code: promoCodeInput.trim(), type, id });
+      setAppliedPromo({
+        code: result.code,
+        discountPercentage: result.discount_percentage,
+        discountAmount: result.discount_amount,
+        total: result.total,
+      });
+    } catch (err) {
+      setAppliedPromo(null);
+      setPromoError(extractApiError(err, "Ce code promo n'est pas valide."));
+    } finally {
+      setPromoPending(false);
+    }
+  }
+
+  function handleRemovePromo() {
+    setAppliedPromo(null);
+    setPromoCodeInput("");
+    setPromoError(null);
+  }
+
   async function handlePay() {
     if (!type || !method || !canPay) return;
     setPending(true);
     setPayError(null);
     try {
-      const order = await createOrder([{ type, id }]);
+      const order = await createOrder([{ type, id }], appliedPromo?.code);
       if (method === "payerurl") {
         window.location.href = await payOrderWithPayerUrl(order.id);
         return;
@@ -187,9 +231,56 @@ function CheckoutPageContent() {
                   <span>{recap.durationLabel}</span>
                 </div>
               )}
+
+              <div className="space-y-1.5 border-t border-border pt-2">
+                <label htmlFor="promo-code" className="text-muted-foreground">
+                  Code promo
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    id="promo-code"
+                    value={promoCodeInput}
+                    onChange={(e) => {
+                      setPromoCodeInput(e.target.value);
+                      setPromoError(null);
+                    }}
+                    placeholder="ex. PROMO20"
+                    disabled={!!appliedPromo}
+                    className="uppercase"
+                  />
+                  {appliedPromo ? (
+                    <Button type="button" variant="outline" size="sm" onClick={handleRemovePromo}>
+                      Retirer
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={promoPending || !promoCodeInput.trim()}
+                      onClick={handleApplyPromo}
+                    >
+                      {promoPending ? "..." : "Appliquer"}
+                    </Button>
+                  )}
+                </div>
+                {promoError && <p className="text-sm text-destructive">{promoError}</p>}
+                {appliedPromo && (
+                  <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                    Code {appliedPromo.code} appliqué (-{appliedPromo.discountPercentage}%)
+                  </p>
+                )}
+              </div>
+
+              {appliedPromo && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Réduction</span>
+                  <span>-{formatCurrency(appliedPromo.discountAmount)}</span>
+                </div>
+              )}
               <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
                 <span>Total</span>
-                <span>{formatCurrency(recap.price)}</span>
+                <span>{formatCurrency(appliedPromo ? appliedPromo.total : recap.price)}</span>
               </div>
             </CardContent>
           </Card>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Cpu } from "lucide-react";
+import { BookOpen, Cpu, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const STATS: {
@@ -13,6 +13,12 @@ const STATS: {
     value: "Intelligence Artificielle",
     label: "Analyse algorithmique en temps réel",
     icon: Cpu,
+  },
+
+  {
+    value: "Efficacité & Rentabilité",
+    label: "Des stratégies de trading optimisées",
+    icon: Users,
   },
 
   {
@@ -30,7 +36,7 @@ export function OfferingsList() {
           Votre recherche d’une rentabilité constante du trading <span className="text-amber-500"> se termine ici…. </span>
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {STATS.map((stat, index) => (
             <motion.div
               key={stat.label}

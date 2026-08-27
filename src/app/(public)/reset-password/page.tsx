@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
@@ -68,9 +68,8 @@ function ResetPasswordPageContent() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">Nouveau mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 required
                 minLength={8}
                 value={password}
@@ -79,9 +78,8 @@ function ResetPasswordPageContent() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password_confirmation">Confirmer le mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="password_confirmation"
-                type="password"
                 required
                 minLength={8}
                 value={passwordConfirmation}

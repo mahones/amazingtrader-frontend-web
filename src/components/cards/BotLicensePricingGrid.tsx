@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency, formatDuration } from "@/lib/utils";
 import type { BotLicenseOfferType, BotLicensePlan } from "@/types/bot";
+
+function getPlanIdFromHash(): number | null {
+  if (typeof window === "undefined") return null;
+  const match = window.location.hash.match(/^#plan-(\d+)$/);
+  return match ? Number(match[1]) : null;
+}
 
 function PlanCard({
   plan,
@@ -18,7 +24,10 @@ function PlanCard({
   isPending?: number | null;
 }) {
   return (
-    <Card className={`flex flex-col ${plan.is_featured ? "border-primary shadow-lg shadow-primary/10" : ""}`}>
+    <Card
+      id={`plan-${plan.id}`}
+      className={`flex flex-col ${plan.is_featured ? "border-primary shadow-lg shadow-primary/10" : ""}`}
+    >
       <CardHeader>
         {plan.is_featured && (
           <span className="mb-2 inline-block w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
@@ -73,6 +82,16 @@ export function BotLicensePricingGrid({
   const timeLimited = plans.filter((p) => p.offer_type === "time_limited");
   const lifetime = plans.filter((p) => p.offer_type === "lifetime");
 
+  const targetPlanId = getPlanIdFromHash();
+  const initialOffer: BotLicenseOfferType = lifetime.some((p) => p.id === targetPlanId)
+    ? "lifetime"
+    : "time_limited";
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.location.hash) return;
+    document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   if (timeLimited.length === 0 && lifetime.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -98,6 +117,7 @@ export function BotLicensePricingGrid({
       lifetime={lifetime}
       onSelect={onSelect}
       isPending={isPending}
+      initialOffer={initialOffer}
     />
   );
 }
@@ -110,13 +130,15 @@ function OfferTabs({
   lifetime,
   onSelect,
   isPending,
+  initialOffer,
 }: {
   timeLimited: BotLicensePlan[];
   lifetime: BotLicensePlan[];
   onSelect: (plan: BotLicensePlan) => void;
   isPending?: number | null;
+  initialOffer: BotLicenseOfferType;
 }) {
-  const [activeOffer, setActiveOffer] = useState<BotLicenseOfferType>("time_limited");
+  const [activeOffer, setActiveOffer] = useState<BotLicenseOfferType>(initialOffer);
   const plans = activeOffer === "time_limited" ? timeLimited : lifetime;
 
   return (

@@ -47,7 +47,10 @@ export default function DashboardArticlesPage() {
                   {post.author?.name ?? "Auteur inconnu"} · {formatDate(post.published_at)}
                 </p>
               </div>
-              <Button variant="outline" render={<Link href={`/dashboard/articles/${post.id}`}>Gérer</Link>} />
+              <div className="flex items-center gap-2">
+                <Button variant="outline" render={<Link href={`/articles/${post.slug}`}>Voir la page</Link>} />
+                <Button variant="outline" render={<Link href={`/dashboard/articles/${post.id}`}>Gérer</Link>} />
+              </div>
             </CardContent>
           </Card>
         ))}

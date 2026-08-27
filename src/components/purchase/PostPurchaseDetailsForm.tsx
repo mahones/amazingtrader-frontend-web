@@ -5,12 +5,14 @@ import Link from "next/link";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
 import type { PurchasableType } from "@/lib/api/orders";
+import { digitsOnly } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
 import type { UserBotLicense } from "@/types/bot";
 
@@ -60,16 +62,22 @@ export function PostPurchaseDetailsForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="ppd-id">ID</Label>
-        <Input id="ppd-id" value={id} onChange={(e) => setId(e.target.value)} required />
+        <Input
+          id="ppd-id"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={id}
+          onChange={(e) => setId(digitsOnly(e.target.value))}
+          required
+        />
       </div>
 
       {type === "license_plan" && (
         <>
           <div className="space-y-2">
             <Label htmlFor="ppd-password">Mot de passe</Label>
-            <Input
+            <PasswordInput
               id="ppd-password"
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

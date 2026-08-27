@@ -6,12 +6,14 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { createAdminUser, fetchAdminCourses, fetchAdminLicensePlans, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
+import { digitsOnly } from "@/lib/utils";
 import type { Course } from "@/types/course";
 import type { LicensePlan, LicensePurchaseDetails } from "@/types/license";
 import type { BotLicensePlan } from "@/types/bot";
@@ -133,9 +135,8 @@ export default function NewUserPage() {
               </div>
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="password">Mot de passe</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   required
                   minLength={8}
                   value={password}
@@ -188,17 +189,18 @@ export default function NewUserPage() {
                             </Label>
                             <Input
                               id={`license-${plan.id}-id`}
+                              inputMode="numeric"
+                              pattern="[0-9]*"
                               value={details.id}
-                              onChange={(e) => updateLicenseDetail(plan.id, "id", e.target.value)}
+                              onChange={(e) => updateLicenseDetail(plan.id, "id", digitsOnly(e.target.value))}
                             />
                           </div>
                           <div className="space-y-1">
                             <Label htmlFor={`license-${plan.id}-password`} className="text-xs">
                               Mot de passe (optionnel)
                             </Label>
-                            <Input
+                            <PasswordInput
                               id={`license-${plan.id}-password`}
-                              type="password"
                               value={details.password}
                               onChange={(e) => updateLicenseDetail(plan.id, "password", e.target.value)}
                             />
@@ -254,9 +256,11 @@ export default function NewUserPage() {
                             </Label>
                             <Input
                               id={`bot-license-${plan.id}-id`}
+                              inputMode="numeric"
+                              pattern="[0-9]*"
                               value={botLicenseDetails[plan.id] ?? ""}
                               onChange={(e) =>
-                                setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: e.target.value }))
+                                setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: digitsOnly(e.target.value) }))
                               }
                             />
                           </div>

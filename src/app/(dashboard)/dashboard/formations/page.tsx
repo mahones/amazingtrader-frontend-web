@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Plus } from "lucide-react";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
-import { fetchAdminCourses } from "@/lib/api/admin";
+import { deleteAdminCourse, fetchAdminCourses } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import { formatCurrency } from "@/lib/utils";
 import type { Enrollment } from "@/types/course";
 import type { Course } from "@/types/course";
@@ -18,6 +21,7 @@ export default function DashboardFormationsPage() {
   const { isStaff } = useAuth();
   const [enrollments, setEnrollments] = useState<Enrollment[] | null>(null);
   const [adminCourses, setAdminCourses] = useState<Course[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isStaff) {
@@ -26,6 +30,17 @@ export default function DashboardFormationsPage() {
       fetchMyEnrollments().then(setEnrollments);
     }
   }, [isStaff]);
+
+  async function handleDeleteCourse(id: number) {
+    if (!window.confirm("Supprimer définitivement cette formation ?")) return;
+    setError(null);
+    try {
+      await deleteAdminCourse(id);
+      setAdminCourses((prev) => prev?.filter((c) => c.id !== id) ?? prev);
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de supprimer cette formation."));
+    }
+  }
 
   if (isStaff) {
     return (
@@ -44,6 +59,8 @@ export default function DashboardFormationsPage() {
           />
         </div>
 
+        {error && <Alert variant="error">{error}</Alert>}
+
         <div className="grid gap-4">
           {adminCourses === null && <p className="text-muted-foreground">Chargement...</p>}
           {adminCourses?.length === 0 && <p className="text-muted-foreground">Aucune formation créée.</p>}
@@ -61,7 +78,31 @@ export default function DashboardFormationsPage() {
                     {formatCurrency(course.price)} · {course.enrollment_count ?? 0} inscrits
                   </p>
                 </div>
-                <Button variant="outline" render={<Link href={`/dashboard/formations/${course.id}`}>Gérer</Link>} />
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/formations/${course.slug}`}>Voir la page</Link>}
+                  />
+                  <Button variant="outline" size="sm" render={<Link href={`/dashboard/formations/${course.id}`}>Gérer</Link>} />
+                  <Tooltip>
+                    <TooltipTrigger render={<span tabIndex={course.has_active_subscribers ? 0 : undefined} />}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={course.has_active_subscribers}
+                        onClick={() => handleDeleteCourse(course.id)}
+                      >
+                        Supprimer
+                      </Button>
+                    </TooltipTrigger>
+                    {course.has_active_subscribers && (
+                      <TooltipContent>
+                        Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -107,10 +148,13 @@ export default function DashboardFormationsPage() {
                 <Progress value={enrollment.progress_percent} className="flex-1" />
                 <span className="text-sm text-muted-foreground">{enrollment.progress_percent}%</span>
               </div>
-              <Button
-                className="mt-4"
-                render={<Link href={`/dashboard/formations/${enrollment.id}`}>Continuer la formation</Link>}
-              />
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button render={<Link href={`/dashboard/formations/${enrollment.id}`}>Continuer la formation</Link>} />
+                <Button
+                  variant="outline"
+                  render={<Link href={`/formations/${enrollment.course.slug}`}>Voir la page</Link>}
+                />
+              </div>
             </CardContent>
           </Card>
         ))}

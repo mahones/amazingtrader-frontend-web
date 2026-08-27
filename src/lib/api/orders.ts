@@ -4,9 +4,26 @@ import type { Order } from "@/types/order";
 export type PurchasableType = "course" | "license_plan" | "bot_license_plan";
 export type PaymentGateway = "simulated" | "moneyfusion";
 
-export async function createOrder(items: { type: PurchasableType; id: number; quantity?: number }[]) {
-  const { data } = await apiClient.post<{ data: Order }>("/orders", { items });
+export async function createOrder(
+  items: { type: PurchasableType; id: number; quantity?: number }[],
+  promoCode?: string
+) {
+  const { data } = await apiClient.post<{ data: Order }>("/orders", { items, promo_code: promoCode });
   return data.data;
+}
+
+export interface PromoCodeValidationResult {
+  valid: boolean;
+  code: string;
+  discount_percentage: number;
+  subtotal: number;
+  discount_amount: number;
+  total: number;
+}
+
+export async function validatePromoCode(payload: { code: string; type: PurchasableType; id: number }) {
+  const { data } = await apiClient.post<PromoCodeValidationResult>("/promo-codes/validate", payload);
+  return data;
 }
 
 export async function payOrder(orderId: number, gateway?: PaymentGateway) {

@@ -13,11 +13,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
+import { digitsOnly } from "@/lib/utils";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
 import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 
@@ -172,8 +174,10 @@ export function AssignLicenseDialog({
             <Label htmlFor="assign-id">ID (optionnel)</Label>
             <Input
               id="assign-id"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={form.id}
-              onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
+              onChange={(e) => setForm((f) => ({ ...f, id: digitsOnly(e.target.value) }))}
             />
           </div>
 
@@ -181,9 +185,8 @@ export function AssignLicenseDialog({
             <>
               <div className="space-y-2">
                 <Label htmlFor="assign-password">Mot de passe (optionnel)</Label>
-                <Input
+                <PasswordInput
                   id="assign-password"
-                  type="password"
                   value={form.password}
                   onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                 />

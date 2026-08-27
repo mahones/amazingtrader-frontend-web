@@ -13,6 +13,7 @@ export interface LicensePlan {
   price: number;
   is_active: boolean;
   purchase_count?: number;
+  has_active_subscribers?: boolean;
 }
 
 export interface LicensePurchaseDetails {
@@ -31,5 +32,6 @@ export interface UserLicense {
   pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
+  product_snapshot?: Record<string, unknown> | null;
   license_plan: LicensePlan;
 }

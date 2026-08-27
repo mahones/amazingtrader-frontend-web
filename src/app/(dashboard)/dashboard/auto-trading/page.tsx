@@ -3,15 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { fetchMyLicenses } from "@/lib/api/licenses";
 import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import { formatCurrency } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
 import type { LicensePlan } from "@/types/license";
@@ -20,6 +23,7 @@ export default function DashboardAutoTradingPage() {
   const { isStaff } = useAuth();
   const [licenses, setLicenses] = useState<UserLicense[] | null>(null);
   const [plans, setPlans] = useState<LicensePlan[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function reloadPlans() {
     const refreshed = await fetchAdminLicensePlans();
@@ -33,8 +37,13 @@ export default function DashboardAutoTradingPage() {
 
   async function handleDeletePlan(id: number) {
     if (!window.confirm("Supprimer définitivement cette licence ?")) return;
-    await deleteAdminLicensePlan(id);
-    await reloadPlans();
+    setError(null);
+    try {
+      await deleteAdminLicensePlan(id);
+      await reloadPlans();
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de supprimer cette licence."));
+    }
   }
 
   if (isStaff) {
@@ -54,6 +63,8 @@ export default function DashboardAutoTradingPage() {
           />
         </div>
 
+        {error && <Alert variant="error">{error}</Alert>}
+
         <div className="grid gap-4">
           {plans === null && <p className="text-muted-foreground">Chargement...</p>}
           {plans?.map((plan) => (
@@ -65,18 +76,37 @@ export default function DashboardAutoTradingPage() {
                     {formatCurrency(plan.price)} · {plan.purchase_count ?? 0} achetée(s)
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Badge variant={plan.is_active ? "default" : "secondary"}>
                     {plan.is_active ? "Active" : "Inactive"}
                   </Badge>
                   <Button
                     variant="outline"
                     size="sm"
+                    render={<Link href={`/auto-trading#${plan.slug}`}>Voir la page</Link>}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
                     render={<Link href={`/dashboard/auto-trading/${plan.id}/edit`}>Modifier</Link>}
                   />
-                  <Button variant="outline" size="sm" onClick={() => handleDeletePlan(plan.id)}>
-                    Supprimer
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger render={<span tabIndex={plan.has_active_subscribers ? 0 : undefined} />}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={plan.has_active_subscribers}
+                        onClick={() => handleDeletePlan(plan.id)}
+                      >
+                        Supprimer
+                      </Button>
+                    </TooltipTrigger>
+                    {plan.has_active_subscribers && (
+                      <TooltipContent>
+                        Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 </div>
               </CardContent>
             </Card>
@@ -128,11 +158,26 @@ function LicenseCard({
 }) {
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between space-y-0">
+      <CardHeader>
         <CardTitle className="text-lg">{license.license_plan.name}</CardTitle>
-        <Badge variant={license.status === "active" ? "default" : "secondary"}>
-          {license.status === "active" ? "Active" : license.status === "expired" ? "Expirée" : "Révoquée"}
-        </Badge>
+        <CardAction className="flex items-center gap-3">
+          <Link
+            href={`/auto-trading#${license.license_plan.slug}`}
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Voir la page
+          </Link>
+          {license.status === "expired" || license.status === "revoked" ? (
+            <Badge variant="secondary">{license.status === "expired" ? "Expirée" : "Révoquée"}</Badge>
+          ) : license.is_activated ? (
+            <Badge variant="success">Activé</Badge>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Badge variant="pending">En attente d&apos;activation</Badge>
+              <span className="text-xs text-muted-foreground">Votre licence sera activée dans moins de 24h</span>
+            </div>
+          )}
+        </CardAction>
       </CardHeader>
       <CardContent className="space-y-4">
         <LicenseExpiryGauge

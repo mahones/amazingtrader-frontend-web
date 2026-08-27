@@ -10,7 +10,10 @@ export interface OrderItem {
 
 export interface Order {
   id: number;
+  subtotal_amount: number;
+  discount_amount: number;
   total_amount: number;
+  promo_code?: string | null;
   currency: string;
   status: OrderStatus;
   gateway: string;

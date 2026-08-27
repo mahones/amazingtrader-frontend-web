@@ -224,7 +224,7 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm text-muted-foreground">
-              Renseignez un identifiant pour activer l&apos;accès à ce bot de trading.
+              Renseignez l&apos;identifiant de votre compte MT5 sur lequel le bot sera installé.
             </p>
             <PostPurchaseDetailsForm
               type="bot_license_plan"
@@ -242,7 +242,7 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm text-muted-foreground">
-              Renseignez vos identifiants de trading pour activer votre licence auto-trading.
+              Renseignez vos identifiants de connexion de votre compte mt5 pour activer votre licence d&apos;auto-trading.
             </p>
             <PostPurchaseDetailsForm
               type="license_plan"

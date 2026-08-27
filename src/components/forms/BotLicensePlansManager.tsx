@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { extractApiError } from "@/lib/api/client";
 import {
   createAdminBotLicensePlan,
@@ -194,10 +196,12 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
 
 export function BotLicensePlansManager({
   botId,
+  botSlug,
   plans,
   onChange,
 }: {
   botId: number;
+  botSlug: string;
   plans: BotLicensePlan[];
   onChange: (next: BotLicensePlan[]) => void;
 }) {
@@ -241,8 +245,14 @@ export function BotLicensePlansManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBotLicensePlan(id);
-    onChange(plans.filter((p) => p.id !== id));
+    if (!window.confirm("Supprimer définitivement cette licence ?")) return;
+    setError(null);
+    try {
+      await deleteAdminBotLicensePlan(id);
+      onChange(plans.filter((p) => p.id !== id));
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de supprimer cette licence."));
+    }
   }
 
   return (
@@ -280,6 +290,11 @@ export function BotLicensePlansManager({
                   <Button
                     variant="outline"
                     size="sm"
+                    render={<Link href={`/bot-trading/${botSlug}#plan-${plan.id}`}>Voir la page</Link>}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
                       setEditingId(plan.id);
                       setEditingDraft(planToDraft(plan));
@@ -287,9 +302,23 @@ export function BotLicensePlansManager({
                   >
                     Modifier
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleDelete(plan.id)}>
-                    Supprimer
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger render={<span tabIndex={plan.has_active_subscribers ? 0 : undefined} />}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={plan.has_active_subscribers}
+                        onClick={() => handleDelete(plan.id)}
+                      >
+                        Supprimer
+                      </Button>
+                    </TooltipTrigger>
+                    {plan.has_active_subscribers && (
+                      <TooltipContent>
+                        Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 </div>
               </li>
             )

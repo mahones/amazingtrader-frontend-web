@@ -3,7 +3,9 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { BotForm } from "@/components/forms/BotForm";
 import { BotRequirementsManager } from "@/components/forms/BotRequirementsManager";
 import { BotInstructionsManager } from "@/components/forms/BotInstructionsManager";
@@ -11,6 +13,7 @@ import { BotPerformanceLinksManager } from "@/components/forms/BotPerformanceLin
 import { BotLicensePlansManager } from "@/components/forms/BotLicensePlansManager";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminTradingBot, fetchAdminTradingBot } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import type { TradingBot } from "@/types/bot";
 
 export default function EditBotPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,6 +21,7 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
   const { id } = use(params);
   const router = useRouter();
   const [bot, setBot] = useState<TradingBot | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAdminTradingBot(Number(id)).then(setBot);
@@ -26,8 +30,13 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
   async function handleDelete() {
     if (!bot) return;
     if (!window.confirm("Supprimer définitivement ce bot ?")) return;
-    await deleteAdminTradingBot(bot.id);
-    router.push("/dashboard/bots");
+    setError(null);
+    try {
+      await deleteAdminTradingBot(bot.id);
+      router.push("/dashboard/bots");
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de supprimer ce bot."));
+    }
   }
 
   if (!bot) return <p className="text-muted-foreground">Chargement...</p>;
@@ -41,10 +50,21 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
             Voir les attributions et transactions →
           </Link>
         </div>
-        <Button type="button" variant="destructive" onClick={handleDelete}>
-          Supprimer
-        </Button>
+        <Tooltip>
+          <TooltipTrigger render={<span tabIndex={bot.has_active_subscribers ? 0 : undefined} />}>
+            <Button type="button" variant="destructive" disabled={bot.has_active_subscribers} onClick={handleDelete}>
+              Supprimer
+            </Button>
+          </TooltipTrigger>
+          {bot.has_active_subscribers && (
+            <TooltipContent>
+              Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+            </TooltipContent>
+          )}
+        </Tooltip>
       </div>
+
+      {error && <Alert variant="error">{error}</Alert>}
 
       <BotRequirementsManager
         botId={bot.id}
@@ -66,6 +86,7 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
 
       <BotLicensePlansManager
         botId={bot.id}
+        botSlug={bot.slug}
         plans={bot.license_plans ?? []}
         onChange={(license_plans) => setBot({ ...bot, license_plans })}
       />

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
@@ -87,9 +88,8 @@ function RegisterPageContent() {
             />
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 required
                 minLength={8}
                 value={password}
@@ -98,9 +98,8 @@ function RegisterPageContent() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password_confirmation">Confirmer le mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="password_confirmation"
-                type="password"
                 required
                 minLength={8}
                 value={passwordConfirmation}

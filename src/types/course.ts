@@ -30,6 +30,7 @@ export interface Course {
   is_published: boolean;
   lessons?: Lesson[];
   enrollment_count?: number;
+  has_active_subscribers?: boolean;
   created_at: string;
 }
 
@@ -38,5 +39,6 @@ export interface Enrollment {
   progress_percent: number;
   completed_lessons: number[];
   enrolled_at: string | null;
+  product_snapshot?: Record<string, unknown> | null;
   course: Course;
 }

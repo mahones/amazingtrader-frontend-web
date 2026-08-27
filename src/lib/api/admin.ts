@@ -17,6 +17,7 @@ import type {
 import type { Post } from "@/types/post";
 import type { User, UserProfile } from "@/types/user";
 import type { Broker } from "@/types/broker";
+import type { PromoCode } from "@/types/promo-code";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -387,6 +388,26 @@ export async function updateAdminBroker(id: number, payload: FormData) {
 
 export async function deleteAdminBroker(id: number) {
   await apiClient.delete(`/admin/brokers/${id}`);
+}
+
+// Promo codes
+export async function fetchAdminPromoCodes() {
+  const { data } = await apiClient.get<{ data: PromoCode[] }>("/admin/promo-codes");
+  return data.data;
+}
+
+export async function createAdminPromoCode(payload: Partial<PromoCode>) {
+  const { data } = await apiClient.post<{ data: PromoCode }>("/admin/promo-codes", payload);
+  return data.data;
+}
+
+export async function updateAdminPromoCode(id: number, payload: Partial<PromoCode>) {
+  const { data } = await apiClient.put<{ data: PromoCode }>(`/admin/promo-codes/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminPromoCode(id: number) {
+  await apiClient.delete(`/admin/promo-codes/${id}`);
 }
 
 // License activation

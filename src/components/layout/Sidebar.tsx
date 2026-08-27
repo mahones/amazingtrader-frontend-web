@@ -11,6 +11,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  Percent,
   Settings,
   Users,
 } from "lucide-react";
@@ -30,6 +31,7 @@ export function Sidebar() {
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
     ...(isStaff ? [{ href: "/dashboard/articles", label: "Articles", icon: FileText }] : []),
     ...(isStaff ? [{ href: "/dashboard/brokers", label: "Courtiers", icon: Building2 }] : []),
+    ...(isStaff ? [{ href: "/dashboard/promo-codes", label: "Codes promo", icon: Percent }] : []),
     ...(isStaff ? [{ href: "/dashboard/users", label: "Utilisateurs", icon: Users }] : []),
     ...(isStaff ? [{ href: "/dashboard/historique", label: "Historique", icon: History }] : []),
     { href: "/dashboard/settings", label: "Paramètres", icon: Settings },

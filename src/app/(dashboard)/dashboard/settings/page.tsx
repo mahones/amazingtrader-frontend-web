@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WhatsappNumberField } from "@/components/shared/WhatsappNumberField";
@@ -94,18 +95,16 @@ export default function SettingsPage() {
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="current_password">Mot de passe actuel</Label>
-              <Input
+              <PasswordInput
                 id="current_password"
-                type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="new_password">Nouveau mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="new_password"
-                type="password"
                 minLength={8}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -113,9 +112,8 @@ export default function SettingsPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="new_password_confirmation">Confirmer le nouveau mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="new_password_confirmation"
-                type="password"
                 minLength={8}
                 value={newPasswordConfirmation}
                 onChange={(e) => setNewPasswordConfirmation(e.target.value)}

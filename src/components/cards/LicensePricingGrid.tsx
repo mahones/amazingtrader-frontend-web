@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,11 +16,17 @@ export function LicensePricingGrid({
   onSelect: (plan: LicensePlan) => void;
   isPending?: number | null;
 }) {
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.location.hash) return;
+    document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {plans.map((plan, index) => (
         <Card
           key={plan.id}
+          id={plan.slug}
           className={`flex flex-col ${index === 1 ? "border-primary shadow-lg shadow-primary/10" : ""}`}
         >
           <CardHeader>

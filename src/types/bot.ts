@@ -42,6 +42,7 @@ export interface BotLicensePlan {
   is_active: boolean;
   position: number;
   purchase_count?: number;
+  has_active_subscribers?: boolean;
   trading_bot?: TradingBot;
 }
 
@@ -67,6 +68,7 @@ export interface TradingBot {
   strategy_summary: string | null;
   pairs_traded: string[];
   is_active: boolean;
+  has_active_subscribers?: boolean;
   requirements?: BotRequirement[];
   performance_links?: BotPerformanceLink[];
   license_plans?: BotLicensePlan[];
@@ -87,6 +89,7 @@ export interface UserBotLicense {
   pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
+  product_snapshot?: Record<string, unknown> | null;
   bot_license_plan: BotLicensePlan;
   files?: BotFile[];
 }
