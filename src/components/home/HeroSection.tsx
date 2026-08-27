@@ -56,7 +56,7 @@ export function HeroSection() {
       />
       <div className="pointer-events-none absolute inset-0 bg-[#0E0E0E]/30" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-5 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
