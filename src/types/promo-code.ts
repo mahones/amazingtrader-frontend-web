@@ -1,4 +1,9 @@
-export type PromoCodeApplicability = "courses" | "bot_licenses" | "auto_trading_licenses" | "all";
+export type PromoCodeProductType = "course" | "license_plan" | "bot_license_plan";
+
+export interface PromoCodeProduct {
+  id: number;
+  name: string;
+}
 
 export interface PromoCode {
   id: number;
@@ -6,5 +11,7 @@ export interface PromoCode {
   discount_percentage: number;
   expires_at: string | null;
   is_active: boolean;
-  applicable_to: PromoCodeApplicability;
+  product_type: PromoCodeProductType | null;
+  product_ids: number[];
+  products: PromoCodeProduct[];
 }

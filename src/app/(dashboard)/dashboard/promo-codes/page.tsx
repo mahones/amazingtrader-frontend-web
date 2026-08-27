@@ -10,14 +10,20 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminPromoCode, fetchAdminPromoCodes } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
 import { toast } from "@/lib/toast";
-import type { PromoCode, PromoCodeApplicability } from "@/types/promo-code";
+import type { PromoCode, PromoCodeProductType } from "@/types/promo-code";
 
-const applicabilityLabels: Record<PromoCodeApplicability, string> = {
-  courses: "Formations",
-  bot_licenses: "Licences Bots",
-  auto_trading_licenses: "Licences Auto-Trading",
-  all: "Toutes",
+const productTypeLabels: Record<PromoCodeProductType, string> = {
+  course: "Formation",
+  bot_license_plan: "Licence de Bot",
+  license_plan: "Licence Auto-Trading",
 };
+
+function productsSummary(promoCode: PromoCode): string {
+  if (!promoCode.product_type || promoCode.products.length === 0) return "Aucun produit";
+  const label = productTypeLabels[promoCode.product_type];
+  const names = promoCode.products.map((p) => p.name).join(", ");
+  return `${label} : ${names}`;
+}
 
 export default function DashboardPromoCodesPage() {
   useRequireRole(["admin", "developer"]);
@@ -87,7 +93,7 @@ export default function DashboardPromoCodesPage() {
                   <Badge variant="outline">-{promoCode.discount_percentage}%</Badge>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {applicabilityLabels[promoCode.applicable_to]} ·{" "}
+                  {productsSummary(promoCode)} ·{" "}
                   {promoCode.expires_at ? `Expire le ${formatDate(promoCode.expires_at)}` : "Sans expiration"}
                 </p>
               </div>

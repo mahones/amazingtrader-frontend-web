@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,16 +16,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { createAdminPromoCode, updateAdminPromoCode } from "@/lib/api/admin";
+import {
+  createAdminPromoCode,
+  fetchAdminCourses,
+  fetchAdminLicensePlans,
+  fetchAdminTradingBots,
+  updateAdminPromoCode,
+} from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
-import type { PromoCode, PromoCodeApplicability } from "@/types/promo-code";
+import type { Course } from "@/types/course";
+import type { LicensePlan } from "@/types/license";
+import type { TradingBot } from "@/types/bot";
+import type { PromoCode, PromoCodeProductType } from "@/types/promo-code";
 
-const applicabilityOptions: { value: PromoCodeApplicability; label: string }[] = [
-  { value: "courses", label: "Formations" },
-  { value: "bot_licenses", label: "Licences Bots" },
-  { value: "auto_trading_licenses", label: "Licences Auto-Trading" },
-  { value: "all", label: "Toutes" },
+function toggleId(ids: number[], id: number): number[] {
+  return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id];
+}
+
+const productTypeOptions: { value: PromoCodeProductType; label: string }[] = [
+  { value: "course", label: "Formation" },
+  { value: "bot_license_plan", label: "Licence de Bot de Trading" },
+  { value: "license_plan", label: "Licence d'Auto-Trading" },
 ];
 
 export function PromoCodeDialog({
@@ -44,21 +56,63 @@ export function PromoCodeDialog({
   const [discountPercentage, setDiscountPercentage] = useState(promoCode?.discount_percentage?.toString() ?? "10");
   const [expiresAt, setExpiresAt] = useState(promoCode?.expires_at?.slice(0, 10) ?? "");
   const [isActive, setIsActive] = useState(promoCode?.is_active ?? true);
-  const [applicableTo, setApplicableTo] = useState<PromoCodeApplicability>(promoCode?.applicable_to ?? "all");
+  const [productType, setProductType] = useState<PromoCodeProductType>(promoCode?.product_type ?? "course");
+  const [productIds, setProductIds] = useState<number[]>(promoCode?.product_ids ?? []);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
+  const [bots, setBots] = useState<TradingBot[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!open || productsLoaded) return;
+    Promise.all([fetchAdminCourses(), fetchAdminLicensePlans(), fetchAdminTradingBots()]).then(
+      ([fetchedCourses, fetchedLicensePlans, fetchedBots]) => {
+        setCourses(fetchedCourses);
+        setLicensePlans(fetchedLicensePlans);
+        setBots(fetchedBots);
+        setProductsLoaded(true);
+      }
+    );
+  }, [open, productsLoaded]);
+
+  const productOptions = useMemo(() => {
+    if (productType === "course") {
+      return courses.map((course) => ({ id: course.id, label: course.title }));
+    }
+    if (productType === "license_plan") {
+      return licensePlans.map((plan) => ({ id: plan.id, label: plan.name }));
+    }
+    return bots.flatMap((bot) =>
+      (bot.license_plans ?? []).map((plan) => ({ id: plan.id, label: `${bot.name} — ${plan.name}` }))
+    );
+  }, [productType, courses, licensePlans, bots]);
 
   function reset() {
     setCode(promoCode?.code ?? "");
     setDiscountPercentage(promoCode?.discount_percentage?.toString() ?? "10");
     setExpiresAt(promoCode?.expires_at?.slice(0, 10) ?? "");
     setIsActive(promoCode?.is_active ?? true);
-    setApplicableTo(promoCode?.applicable_to ?? "all");
+    setProductType(promoCode?.product_type ?? "course");
+    setProductIds(promoCode?.product_ids ?? []);
     setError(null);
+  }
+
+  function handleProductTypeChange(value: PromoCodeProductType) {
+    setProductType(value);
+    setProductIds([]);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (productIds.length === 0) {
+      setError("Sélectionnez au moins un produit auquel ce code s'applique.");
+      return;
+    }
+
     setPending(true);
     setError(null);
 
@@ -67,7 +121,8 @@ export function PromoCodeDialog({
       discount_percentage: Number(discountPercentage),
       expires_at: expiresAt || null,
       is_active: isActive,
-      applicable_to: applicableTo,
+      product_type: productType,
+      product_ids: productIds,
     };
 
     try {
@@ -98,7 +153,7 @@ export function PromoCodeDialog({
         <DialogHeader>
           <DialogTitle>{isEditing ? "Modifier le code promo" : "Nouveau code promo"}</DialogTitle>
           <DialogDescription>
-            Ce code pourra être appliqué au paiement s&apos;il est actif et non expiré.
+            Ce code pourra être appliqué au paiement des produits sélectionnés s&apos;il est actif et non expiré.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -128,23 +183,44 @@ export function PromoCodeDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Applicable à</Label>
+            <Label>Type de produit</Label>
             <Select
-              items={applicabilityOptions}
-              value={applicableTo}
-              onValueChange={(v) => setApplicableTo((v as PromoCodeApplicability) ?? "all")}
+              items={productTypeOptions}
+              value={productType}
+              onValueChange={(v) => handleProductTypeChange((v as PromoCodeProductType) ?? "course")}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Sélectionner une catégorie" />
+                <SelectValue placeholder="Sélectionner un type de produit" />
               </SelectTrigger>
               <SelectContent>
-                {applicabilityOptions.map((option) => (
+                {productTypeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Produits éligibles</Label>
+            <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border p-3">
+              {!productsLoaded && <p className="text-sm text-muted-foreground">Chargement...</p>}
+              {productsLoaded && productOptions.length === 0 && (
+                <p className="text-sm text-muted-foreground">Aucun produit disponible pour ce type.</p>
+              )}
+              {productOptions.map((option) => (
+                <label key={option.id} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="accent-primary"
+                    checked={productIds.includes(option.id)}
+                    onChange={() => setProductIds((ids) => toggleId(ids, option.id))}
+                  />
+                  {option.label}
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">

@@ -6,14 +6,27 @@ import { Plus } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { useAuth } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { fetchMyLicenses } from "@/lib/api/licenses";
-import { deleteAdminLicensePlan, fetchAdminLicensePlans } from "@/lib/api/admin";
+import {
+  deleteAdminLicensePlan,
+  fetchAdminLicensePlans,
+} from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { formatCurrency } from "@/lib/utils";
 import type { UserLicense } from "@/types/license";
@@ -31,8 +44,22 @@ export default function DashboardAutoTradingPage() {
   }
 
   useEffect(() => {
-    if (isStaff) reloadPlans();
-    else fetchMyLicenses().then(setLicenses);
+    let cancelled = false;
+
+    async function load() {
+      if (isStaff) {
+        const refreshed = await fetchAdminLicensePlans();
+        if (!cancelled) setPlans(refreshed);
+      } else {
+        const fetched = await fetchMyLicenses();
+        if (!cancelled) setLicenses(fetched);
+      }
+    }
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
   }, [isStaff]);
 
   async function handleDeletePlan(id: number) {
@@ -52,7 +79,9 @@ export default function DashboardAutoTradingPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Licences auto-trading</h1>
-            <p className="text-muted-foreground">Gérez les formules disponibles à la vente.</p>
+            <p className="text-muted-foreground">
+              Gérez les formules disponibles à la vente.
+            </p>
           </div>
           <Button
             render={
@@ -66,14 +95,17 @@ export default function DashboardAutoTradingPage() {
         {error && <Alert variant="error">{error}</Alert>}
 
         <div className="grid gap-4">
-          {plans === null && <p className="text-muted-foreground">Chargement...</p>}
+          {plans === null && (
+            <p className="text-muted-foreground">Chargement...</p>
+          )}
           {plans?.map((plan) => (
             <Card key={plan.id}>
               <CardContent className="flex items-center justify-between pt-6">
                 <div>
                   <h3 className="font-semibold">{plan.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {formatCurrency(plan.price)} · {plan.purchase_count ?? 0} achetée(s)
+                    {formatCurrency(plan.price)} · {plan.purchase_count ?? 0}{" "}
+                    achetée(s)
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -83,15 +115,29 @@ export default function DashboardAutoTradingPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/auto-trading#${plan.slug}`}>Voir la page</Link>}
+                    render={
+                      <Link href={`/auto-trading#${plan.slug}`}>
+                        Voir la page
+                      </Link>
+                    }
                   />
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/dashboard/auto-trading/${plan.id}/edit`}>Modifier</Link>}
+                    render={
+                      <Link href={`/dashboard/auto-trading/${plan.id}/edit`}>
+                        Modifier
+                      </Link>
+                    }
                   />
                   <Tooltip>
-                    <TooltipTrigger render={<span tabIndex={plan.has_active_subscribers ? 0 : undefined} />}>
+                    <TooltipTrigger
+                      render={
+                        <span
+                          tabIndex={plan.has_active_subscribers ? 0 : undefined}
+                        />
+                      }
+                    >
                       <Button
                         variant="outline"
                         size="sm"
@@ -103,7 +149,8 @@ export default function DashboardAutoTradingPage() {
                     </TooltipTrigger>
                     {plan.has_active_subscribers && (
                       <TooltipContent>
-                        Ce produit ne peut pas être supprimé car des utilisateurs y sont inscrits.
+                        Ce produit ne peut pas être supprimé car des
+                        utilisateurs y sont inscrits.
                       </TooltipContent>
                     )}
                   </Tooltip>
@@ -120,16 +167,23 @@ export default function DashboardAutoTradingPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Mon auto-trading</h1>
-        <p className="text-muted-foreground">Retrouvez vos licences d&apos;auto-trading actives.</p>
+        <p className="text-muted-foreground">
+          Retrouvez vos licences d&apos;auto-trading actives.
+        </p>
       </div>
 
       <div className="grid gap-4">
-        {licenses === null && <p className="text-muted-foreground">Chargement...</p>}
+        {licenses === null && (
+          <p className="text-muted-foreground">Chargement...</p>
+        )}
         {licenses?.length === 0 && (
           <Card>
             <CardContent className="pt-6 text-center text-muted-foreground">
               Vous n&apos;avez pas encore de licence.{" "}
-              <Link href="/auto-trading" className="font-medium text-primary hover:underline">
+              <Link
+                href="/auto-trading"
+                className="font-medium text-primary hover:underline"
+              >
                 Voir les offres
               </Link>
             </CardContent>
@@ -140,7 +194,10 @@ export default function DashboardAutoTradingPage() {
             key={license.id}
             license={license}
             onUpdated={(updated) =>
-              setLicenses((prev) => prev?.map((l) => (l.id === updated.id ? updated : l)) ?? prev)
+              setLicenses(
+                (prev) =>
+                  prev?.map((l) => (l.id === updated.id ? updated : l)) ?? prev,
+              )
             }
           />
         ))}
@@ -168,13 +225,17 @@ function LicenseCard({
             Voir la page
           </Link>
           {license.status === "expired" || license.status === "revoked" ? (
-            <Badge variant="secondary">{license.status === "expired" ? "Expirée" : "Révoquée"}</Badge>
+            <Badge variant="secondary">
+              {license.status === "expired" ? "Expirée" : "Révoquée"}
+            </Badge>
           ) : license.is_activated ? (
             <Badge variant="success">Activé</Badge>
           ) : (
             <div className="flex items-center gap-2">
               <Badge variant="pending">En attente d&apos;activation</Badge>
-              <span className="text-xs text-muted-foreground">Votre licence sera activée dans moins de 24h</span>
+              <span className="text-xs text-muted-foreground">
+                Votre licence sera activée dans moins de 24h
+              </span>
             </div>
           )}
         </CardAction>
@@ -187,13 +248,26 @@ function LicenseCard({
         />
 
         {license.purchase_details && (
-          <div className="grid gap-2 rounded-lg border border-border p-3 text-sm sm:grid-cols-2">
-            <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
-            <p><span className="text-muted-foreground">Serveur :</span> {license.purchase_details.server}</p>
-            <p>
-              <span className="text-muted-foreground">WhatsApp :</span>{" "}
-              {license.purchase_details.whatsapp_number}
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <p>
+                <span className="text-muted-foreground">ID :</span>{" "}
+                {license.purchase_details.id}
+              </p>
+              <p>
+                <span className="text-muted-foreground">Serveur :</span>{" "}
+                {license.purchase_details.server}
+              </p>
+              <p>
+                <span className="text-muted-foreground">WhatsApp :</span>{" "}
+                {license.purchase_details.whatsapp_number}
+              </p>
+            </div>
+            <EditPurchaseDetailsDialog
+              type="license_plan"
+              license={license}
+              onUpdated={onUpdated}
+            />
           </div>
         )}
 
@@ -201,15 +275,25 @@ function LicenseCard({
           <div className="rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-400">
             Modification en attente d&apos;approbation
             {license.pending_purchase_details_submitted_at && (
-              <> depuis le {formatDate(license.pending_purchase_details_submitted_at)}</>
+              <>
+                {" "}
+                depuis le{" "}
+                {formatDate(license.pending_purchase_details_submitted_at)}
+              </>
             )}
             .
           </div>
         )}
 
-        <div className="flex justify-end">
-          <EditPurchaseDetailsDialog type="license_plan" license={license} onUpdated={onUpdated} />
-        </div>
+        {!license.purchase_details && (
+          <div className="flex justify-end">
+            <EditPurchaseDetailsDialog
+              type="license_plan"
+              license={license}
+              onUpdated={onUpdated}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );

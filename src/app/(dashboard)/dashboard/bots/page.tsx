@@ -292,16 +292,22 @@ function BotLicenseCard({
           status={license.status}
         />
 
-        {license.purchase_details && (
-          <p className="text-sm">
-            <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
-          </p>
-        )}
-
-        {user?.whatsapp_number && (
-          <p className="text-sm">
-            <span className="text-muted-foreground">WhatsApp :</span> {user.whatsapp_number}
-          </p>
+        {(license.purchase_details || user?.whatsapp_number) && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
+            <div className="flex flex-wrap gap-x-6 gap-y-1">
+              {license.purchase_details && (
+                <p>
+                  <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
+                </p>
+              )}
+              {user?.whatsapp_number && (
+                <p>
+                  <span className="text-muted-foreground">WhatsApp :</span> {user.whatsapp_number}
+                </p>
+              )}
+            </div>
+            <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
+          </div>
         )}
 
         {license.pending_purchase_details && (
@@ -314,9 +320,9 @@ function BotLicenseCard({
           </div>
         )}
 
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        {bot?.bot_instructions && bot.bot_instructions.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {bot?.bot_instructions?.map((instruction) => (
+            {bot.bot_instructions.map((instruction) => (
               <Button
                 key={instruction.id}
                 size="sm"
@@ -329,8 +335,13 @@ function BotLicenseCard({
               />
             ))}
           </div>
-          <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
-        </div>
+        )}
+
+        {!license.purchase_details && !user?.whatsapp_number && (
+          <div className="flex justify-end">
+            <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
+          </div>
+        )}
 
         {files.length > 0 && (
           <div className="space-y-2 border-t border-border pt-4">
