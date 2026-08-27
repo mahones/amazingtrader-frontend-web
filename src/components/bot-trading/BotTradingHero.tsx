@@ -82,7 +82,7 @@ export function BotTradingHero() {
           className="relative aspect-[6/5] w-full overflow-hidden rounded-2xl"
         >
           <Image
-            src="/jsoej.png"
+            src="/amezing-traders-robot.png"
             alt="Algorithmes de trading amazingtraders en action"
             fill
             sizes="(min-width: 1024px) 45vw, 90vw"

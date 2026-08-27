@@ -44,7 +44,7 @@ Le trading comporte des risques élevés  et ne convient pas à tout le monde. V
               Contrat du trading automatique
             </Link></li>
             <li><Link href="/contrat-dutilisation" className="hover:text-primary text-primary">
-              Contrat d&apos;utilisation
+              Contrat d&apos;utilisation d&apos;un bot
             </Link></li>
           </ul>
         </div>

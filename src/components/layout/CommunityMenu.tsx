@@ -26,29 +26,57 @@ function YoutubeIcon() {
   );
 }
 
+function TiktokIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+      <path d="M16.6 5.82a4.28 4.28 0 0 1-3.14-1.39 4.28 4.28 0 0 1-1.11-2.93h-3.4v13.75a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 0 1-2.59-2.59 2.59 2.59 0 0 1 2.59-2.59c.24 0 .48.03.7.1v-3.45a5.94 5.94 0 0 0-.7-.04A5.99 5.99 0 0 0 .38 17.68a5.99 5.99 0 0 0 5.99 5.99 5.99 5.99 0 0 0 5.99-5.99V9.42a7.63 7.63 0 0 0 4.46 1.43V7.4a4.25 4.25 0 0 1-.22-1.58z" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+      <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z" />
+    </svg>
+  );
+}
+
 const COMMUNITY_LINKS = [
   {
     name: "whatsapp",
-    label: "Groupe WhatsApp VIP",
-    href: "https://wa.me/22879920432",
+    label: "Chaîne WhatsApp",
+    href: "https://whatsapp.com/channel/0029VbBOvS55a240W5cVIb1w",
     icon: <MessageCircleMore className="size-4" />,
   },
   {
-    name: "instagram",
-    label: "Page Instagram Officielle",
-    href: "https://www.instagram.com/amazing.traders",
-    icon: <InstagramIcon />,
-  },
-  {
     name: "telegram",
-    label: "Canal Telegram",
+    label: "Canal Télégram",
     href: "https://t.me/+Y27TJtoHhdNlZDQ0",
     icon: <Send className="size-4" />,
   },
   {
+    name: "tiktok",
+    label: "Compte TikTok Officiel",
+    href: "https://www.tiktok.com/@amazing.traders?_r=1&_t=ZT-993CCX6yqzN",
+    icon: <TiktokIcon />,
+  },
+  {
+    name: "facebook",
+    label: "Page Facebook Officielle",
+    href: "https://www.facebook.com/share/198CW4nHsa/",
+    icon: <FacebookIcon />,
+  },
+  {
+    name: "instagram",
+    label: "Compte Instagram Officiel",
+    href: "https://www.instagram.com/amazing.traders?igsi=MWpvdmVrdTV3amN2bA==",
+    icon: <InstagramIcon />,
+  },
+  {
     name: "youtube",
     label: "Chaîne YouTube",
-    href: "https://www.youtube.com/@amazing.traders",
+    href: "https://youtube.com/@amazing.traders?si=r3hhCYyr25zWNHG6",
     icon: <YoutubeIcon />,
   },
 ];
