@@ -47,7 +47,7 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background py-5">
       <Image
-        src="/banniere 1-2.png"
+        src="/banniere 1-1.png"
         alt=""
         aria-hidden
         fill
@@ -64,7 +64,7 @@ export function HeroSection() {
           className="max-w-2xl"
         >
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Devenez rentable à travers nos <span className="text-primary">formations</span> et <span className="text-primary">algorithme</span>.
+            Elevez votre trading au rang <span className="text-primary">d’expert</span> grâce à nos <span className="text-primary">algorithme</span> propulsés par l’IA.
           </h1>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -81,19 +81,19 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="relative mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-[#0E0E0E]/60 p-10 backdrop-blur-sm"
+          className="relative mx-auto w-full max-w-md border border-white/10 bg-[#0E0E0E]/60 p-10 backdrop-blur-sm"
         >
           <span
             aria-hidden
-            className="absolute -top-1 -left-1 h-10 w-10 rounded-tl-3xl border-t-2 border-l-2 border-white/40"
+            className="absolute -top-1 -left-1 h-10 w-10 border-t-2 border-l-2 border-primary"
           />
           <span
             aria-hidden
-            className="absolute -bottom-1 -right-1 h-10 w-10 rounded-br-3xl border-r-2 border-b-2 border-white/40"
+            className="absolute -bottom-1 -right-1 h-10 w-10 border-r-2 border-b-2 border-primary"
           />
 
           <Image
-            src="/logo-whitebcc.png"
+            src="/bougies.gif"
             alt="Signaux d'achat et de vente sur un graphique en chandeliers"
             width={2000}
             height={2000}

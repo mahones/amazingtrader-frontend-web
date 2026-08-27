@@ -79,7 +79,7 @@ export function BotTradingHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="relative aspect-[6/5] w-full overflow-hidden rounded-2xl"
+          className="relative aspect-[9/10] w-full overflow-hidden rounded-2xl lg:aspect-[6/5]"
         >
           <Image
             src="/amezing-traders-robot.png"
