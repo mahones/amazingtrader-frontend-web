@@ -19,12 +19,12 @@ export function AutoTradingHero() {
   return (
     <section className="relative overflow-hidden bg-background">
       <Image
-        src="/AMAZING-TRADING-background-auto-trading.webp"
+        src="/BACK.png"
         alt=""
         aria-hidden
         fill
         priority
-        className="object-cover"
+        className="object-fit"
       />
       <div className="pointer-events-none absolute inset-0 bg-[#0E0E0E]/30" />
 
