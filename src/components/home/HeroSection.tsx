@@ -93,7 +93,7 @@ export function HeroSection() {
           />
 
           <Image
-            src="/bougies.gif"
+            src="/ROBO2-minim.png"
             alt="Signaux d'achat et de vente sur un graphique en chandeliers"
             width={2000}
             height={2000}

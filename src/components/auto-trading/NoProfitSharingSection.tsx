@@ -77,7 +77,7 @@ export function NoProfitSharingSection() {
           className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl lg:col-span-2"
         >
           <Image
-            src="/Capture-decran-234.webp"
+            src="/miracolo.png"
             alt="Analyse de données financières en temps réel"
             fill
             sizes="(min-width: 1024px) 45vw, 90vw"
