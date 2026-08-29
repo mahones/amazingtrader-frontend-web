@@ -101,10 +101,10 @@ export function HeroSection() {
             className="mx-auto h-auto w-full"
           />
 
-          <p className="mt-6 text-right text-xs font-medium tracking-[0.3em] text-white/50 uppercase">
+          {/* <p className="mt-6 text-right text-xs font-medium tracking-[0.3em] text-white/50 uppercase">
             Signal <span className="text-primary">/</span> Strategy{" "}
             <span className="text-primary">/</span> Support
-          </p>
+          </p> */}
         </motion.div>
       </div>
     </section>

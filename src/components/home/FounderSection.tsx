@@ -36,7 +36,7 @@ export function FounderSection() {
             offrant ainsi aux traders un système commercial simple et rentable.
           </p>
           <p className="mt-6 max-w-xl text-justify text-lg text-muted-foreground text-pretty">
-            Avec un taux de réussite de 87,55&nbsp;%, nous accompagnons les
+            Nous accompagnons également les
             entreprises et les particuliers dans la gestion de leur portefeuille
             et de leurs comptes.
           </p>
@@ -66,19 +66,17 @@ export function FounderSection() {
         >
           <div className="relative aspect-[4/5] w-full max-w-[450px] ml-auto overflow-hidden rounded-2xl lg:aspect-auto lg:flex-1">
             <Image
-              src="/profil22.webp"
+              src="/Rodolphe-SEDJRO.webp"
               alt="Rodolphe SEDJRO, CEO d'amazingtraders"
               fill
               sizes="(min-width: 1024px) 40vw, 90vw"
-              className="object-cover object-top"
+              className="object-cover"
               priority
             />
-          </div>
-          <div className="mt-4 flex w-full max-w-[450px] ml-auto flex-col items-center gap-1 text-center">
-            <Eyebrow>Fondateur</Eyebrow>
-            <p className="font-semibold text-foreground">
-              Expert en trading algorithmique
-            </p>
+            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 bg-gradient-to-t from-black/85 via-black/50 to-transparent pb-6 pt-20 text-center text-white">
+              <Eyebrow>Fondateur</Eyebrow>
+              <p className="font-semibold">Expert en trading algorithmique</p>
+            </div>
           </div>
         </motion.div>
       </div>
