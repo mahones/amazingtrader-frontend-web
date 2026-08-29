@@ -7,7 +7,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-center gap-3">
       <span className="h-0.5 w-8 rounded-full bg-primary" />
-      <span className="text-sm font-semibold">{children}</span>
+      <span className="text-base ">{children}</span>
       <span className="h-0.5 w-8 rounded-full bg-primary" />
     </div>
   );
@@ -75,7 +75,7 @@ export function FounderSection() {
             />
             <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 bg-gradient-to-t from-black/85 via-black/50 to-transparent pb-3 pt-20 text-center text-white">
               <Eyebrow>Fondateur</Eyebrow>
-              <p className="font-semibold">Expert en trading algorithmique</p>
+              <p className="text-lg ">Expert en trading algorithmique</p>
             </div>
           </div>
         </motion.div>
