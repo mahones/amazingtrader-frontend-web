@@ -73,7 +73,7 @@ export function FounderSection() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 bg-gradient-to-t from-black/85 via-black/50 to-transparent pb-6 pt-20 text-center text-white">
+            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1 bg-gradient-to-t from-black/85 via-black/50 to-transparent pb-3 pt-20 text-center text-white">
               <Eyebrow>Fondateur</Eyebrow>
               <p className="font-semibold">Expert en trading algorithmique</p>
             </div>
