@@ -41,11 +41,11 @@ export function LexiqueBanner() {
       </div>
 
       <div className="relative flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
+        <div className="flex min-w-0 flex-1 items-start gap-4">
           <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
             <BookOpen className="size-6" />
           </div>
-          <div className="max-w-xl">
+          <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold text-balance text-white sm:text-3xl">
               Vous débutez ? Apprenez le vocabulaire avant de choisir votre formation
             </h2>
