@@ -316,7 +316,12 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           {profile.user_bot_licenses.map((license) => (
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
               <div className="flex items-center justify-between">
-                <p className="font-medium">{license.bot_license_plan.name}</p>
+                <div>
+                  <p className="font-medium">
+                    {license.bot_license_plan.trading_bot?.name ?? "Bot inconnu"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{license.bot_license_plan.name}</p>
+                </div>
                 <div className="flex items-center gap-2">
                   <ActivationBadge isActivated={license.is_activated} />
                   {!license.is_activated && (
