@@ -3,6 +3,7 @@ import type { LicensePlan } from "@/types/license";
 import type { TradingBot } from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { Broker } from "@/types/broker";
+import type { Faq } from "@/types/faq";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -59,5 +60,14 @@ export async function getPosts(params?: { category?: string }) {
 
 export async function getPost(slug: string) {
   const { data } = await getJson<{ data: Post }>(`/posts/${slug}`);
+  return data;
+}
+
+export async function getFaqs(params?: { category?: string; featured?: boolean }) {
+  const query = new URLSearchParams();
+  if (params?.category) query.set("category", params.category);
+  if (params?.featured) query.set("featured", "1");
+  const qs = query.toString();
+  const { data } = await getJson<{ data: Faq[] }>(`/faqs${qs ? `?${qs}` : ""}`);
   return data;
 }

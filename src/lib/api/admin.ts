@@ -15,6 +15,7 @@ import type {
   UserBotLicense,
 } from "@/types/bot";
 import type { Post } from "@/types/post";
+import type { Faq } from "@/types/faq";
 import type { User, UserProfile } from "@/types/user";
 import type { Broker } from "@/types/broker";
 import type { PromoCode } from "@/types/promo-code";
@@ -408,6 +409,26 @@ export async function updateAdminPromoCode(id: number, payload: Partial<PromoCod
 
 export async function deleteAdminPromoCode(id: number) {
   await apiClient.delete(`/admin/promo-codes/${id}`);
+}
+
+// FAQ
+export async function fetchAdminFaqs() {
+  const { data } = await apiClient.get<{ data: Faq[] }>("/admin/faqs");
+  return data.data;
+}
+
+export async function createAdminFaq(payload: Partial<Faq>) {
+  const { data } = await apiClient.post<{ data: Faq }>("/admin/faqs", payload);
+  return data.data;
+}
+
+export async function updateAdminFaq(id: number, payload: Partial<Faq>) {
+  const { data } = await apiClient.put<{ data: Faq }>(`/admin/faqs/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminFaq(id: number) {
+  await apiClient.delete(`/admin/faqs/${id}`);
 }
 
 // License activation
