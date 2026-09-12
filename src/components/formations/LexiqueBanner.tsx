@@ -47,11 +47,10 @@ export function LexiqueBanner() {
           </div>
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold text-balance text-white sm:text-3xl">
-              Vous débutez ? Apprenez le vocabulaire avant de choisir votre formation
+              Lexique du trading
             </h2>
             <p className="mt-2 text-pretty text-white/60">
-              Pip, spread, effet de levier, take profit... Notre lexique du trading explique chaque terme
-              simplement, avec des exemples concrets.
+              Plus de 1000 définitions claires et illustrées: forex, analyse, gestion du risque, prop firm, crypto...
             </p>
           </div>
         </div>

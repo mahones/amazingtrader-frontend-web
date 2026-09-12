@@ -16,15 +16,15 @@ const STATS: {
   },
 
   {
-    value: "Efficacité & Rentabilité",
-    label: "Des stratégies de trading optimisées",
-    icon: Users,
-  },
-
-  {
     value: "Formation sur mesure",
     label: "Du débutant à l'expert encadré",
     icon: BookOpen,
+  },
+
+  {
+    value: "Suivie personnalisé",
+    label: "accompagnement adapté à ton niveau pour progresser plus vite",
+    icon: Users,
   },
 ];
 

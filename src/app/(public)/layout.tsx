@@ -1,6 +1,8 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingContactButton } from "@/components/layout/FloatingContactButton";
 import { TopBar } from "@/components/layout/TopBar";
+import { WhatsappChannelPopup } from "@/components/marketing/WhatsappChannelPopup";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +13,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       </div>
       <main className="flex-1">{children}</main>
       <Footer />
+      <WhatsappChannelPopup />
+      <FloatingContactButton />
     </>
   );
 }
