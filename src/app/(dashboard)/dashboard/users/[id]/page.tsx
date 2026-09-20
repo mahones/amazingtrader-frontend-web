@@ -4,7 +4,9 @@ import { use, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
@@ -22,6 +24,7 @@ import {
   rejectBotLicensePurchaseDetailsChange,
   rejectLicensePurchaseDetailsChange,
   requestCredentialsUpdate,
+  setUserCommunityAccess,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
 import { formatDate } from "@/lib/utils";
@@ -113,6 +116,16 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     }
     const updated = await updateAdminUserStatus(profile.id, nextActive);
     setProfile({ ...profile, is_active: updated.is_active });
+  }
+
+  async function handleToggleCommunityAccess(granted: boolean) {
+    if (!profile) return;
+    const updated = await setUserCommunityAccess(profile.id, granted);
+    setProfile((prev) =>
+      prev
+        ? { ...prev, community_access_granted: updated.community_access_granted, is_community_member: updated.is_community_member }
+        : prev
+    );
   }
 
   async function handleActivateLicense(licenseId: number) {
@@ -243,6 +256,18 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
       <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
         <p>Rôle : <span className="capitalize text-foreground">{profile.role}</span></p>
         <p>Inscrit le : <span className="text-foreground">{formatDate(profile.created_at)}</span></p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border p-4">
+        <Switch
+          id="community-access"
+          checked={profile.community_access_granted}
+          onCheckedChange={handleToggleCommunityAccess}
+        />
+        <Label htmlFor="community-access">Accès Communauté VIP</Label>
+        {profile.is_community_member && !profile.community_access_granted && (
+          <Badge variant="outline">Accès déjà actif (achat ou rôle)</Badge>
+        )}
       </div>
 
       <Card>

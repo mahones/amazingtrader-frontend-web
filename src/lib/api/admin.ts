@@ -1,4 +1,5 @@
 import { apiClient } from "./client";
+import type { Announcement } from "@/types/announcement";
 import type { Course, Enrollment, Lesson } from "@/types/course";
 import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 import type {
@@ -15,6 +16,7 @@ import type {
   UserBotLicense,
 } from "@/types/bot";
 import type { Post } from "@/types/post";
+import type { Event } from "@/types/event";
 import type { Faq } from "@/types/faq";
 import type { User, UserProfile } from "@/types/user";
 import type { Broker } from "@/types/broker";
@@ -263,6 +265,36 @@ export async function deleteAdminPost(id: number) {
   await apiClient.delete(`/admin/posts/${id}`);
 }
 
+// Events
+export async function fetchAdminEvents() {
+  const { data } = await apiClient.get<{ data: Event[] }>("/admin/events");
+  return data.data;
+}
+
+export async function fetchAdminEvent(id: number) {
+  const { data } = await apiClient.get<{ data: Event }>(`/admin/events/${id}`);
+  return data.data;
+}
+
+export async function createAdminEvent(payload: Partial<Event> | FormData) {
+  const { data } = await apiClient.post<{ data: Event }>("/admin/events", payload);
+  return data.data;
+}
+
+export async function updateAdminEvent(id: number, payload: Partial<Event> | FormData) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    const { data } = await apiClient.post<{ data: Event }>(`/admin/events/${id}`, payload);
+    return data.data;
+  }
+  const { data } = await apiClient.put<{ data: Event }>(`/admin/events/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminEvent(id: number) {
+  await apiClient.delete(`/admin/events/${id}`);
+}
+
 // Bot files (per user bot license)
 export async function fetchAdminBotFiles(userBotLicenseId: number) {
   const { data } = await apiClient.get<{ data: BotFile[] }>(
@@ -323,6 +355,13 @@ export async function fetchAdminUserProfile(id: number) {
 export async function updateAdminUserStatus(id: number, isActive: boolean) {
   const { data } = await apiClient.patch<{ data: User }>(`/admin/users/${id}/status`, {
     is_active: isActive,
+  });
+  return data.data;
+}
+
+export async function setUserCommunityAccess(id: number, granted: boolean) {
+  const { data } = await apiClient.patch<{ data: UserProfile }>(`/admin/users/${id}/community-access`, {
+    granted,
   });
   return data.data;
 }
@@ -429,6 +468,26 @@ export async function updateAdminFaq(id: number, payload: Partial<Faq>) {
 
 export async function deleteAdminFaq(id: number) {
   await apiClient.delete(`/admin/faqs/${id}`);
+}
+
+// Announcements
+export async function fetchAdminAnnouncements() {
+  const { data } = await apiClient.get<{ data: Announcement[] }>("/admin/announcements");
+  return data.data;
+}
+
+export async function createAdminAnnouncement(payload: Partial<Announcement>) {
+  const { data } = await apiClient.post<{ data: Announcement }>("/admin/announcements", payload);
+  return data.data;
+}
+
+export async function updateAdminAnnouncement(id: number, payload: Partial<Announcement>) {
+  const { data } = await apiClient.put<{ data: Announcement }>(`/admin/announcements/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminAnnouncement(id: number) {
+  await apiClient.delete(`/admin/announcements/${id}`);
 }
 
 // License activation

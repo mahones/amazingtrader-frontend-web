@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ProgressRing } from "@/components/ui/progress-ring";
+import { AnnouncementsBanner } from "@/components/announcements/AnnouncementsBanner";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
@@ -239,6 +240,8 @@ export default function DashboardOverviewPage() {
           {isStaff ? "Voici un aperçu de l'activité de la plateforme." : "Voici un aperçu de votre activité."}
         </p>
       </div>
+
+      <AnnouncementsBanner />
 
       <div
         className={cn(
