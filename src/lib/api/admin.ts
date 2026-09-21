@@ -21,6 +21,8 @@ import type { Faq } from "@/types/faq";
 import type { User, UserProfile } from "@/types/user";
 import type { Broker } from "@/types/broker";
 import type { PromoCode } from "@/types/promo-code";
+import type { Partner, PartnerLevelConfig } from "@/types/partner";
+import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -541,5 +543,61 @@ export async function rejectBotLicensePurchaseDetailsChange(id: number) {
 
 export async function fetchPendingCredentialsChangeCount() {
   const { data } = await apiClient.get<{ count: number }>("/admin/licenses/pending-credentials-count");
+  return data.count;
+}
+
+// Partner levels
+export async function fetchPartnerLevels() {
+  const { data } = await apiClient.get<{ data: PartnerLevelConfig[] }>("/admin/partner-levels");
+  return data.data;
+}
+
+export async function updatePartnerLevel(
+  id: number,
+  payload: { name: string; gain_percentage: number; discount_percentage: number; min_cumulative_purchases: number }
+) {
+  const { data } = await apiClient.put<{ data: PartnerLevelConfig }>(`/admin/partner-levels/${id}`, payload);
+  return data.data;
+}
+
+// Partner applications
+export async function fetchPartnerApplications() {
+  const { data } = await apiClient.get<{ data: Partner[] }>("/admin/partner-applications");
+  return data.data;
+}
+
+export async function approvePartnerApplication(id: number) {
+  const { data } = await apiClient.patch<{ data: Partner }>(`/admin/partner-applications/${id}/approve`);
+  return data.data;
+}
+
+export async function rejectPartnerApplication(id: number) {
+  const { data } = await apiClient.patch<{ data: Partner }>(`/admin/partner-applications/${id}/reject`);
+  return data.data;
+}
+
+export async function fetchPendingPartnerApplicationCount() {
+  const { data } = await apiClient.get<{ count: number }>("/admin/partner-applications/pending-count");
+  return data.count;
+}
+
+// Withdrawals
+export async function fetchAdminWithdrawals(params?: { status?: WithdrawalStatus }) {
+  const { data } = await apiClient.get<{ data: Withdrawal[] }>("/admin/withdrawals", { params });
+  return data.data;
+}
+
+export async function approveWithdrawal(id: number) {
+  const { data } = await apiClient.patch<{ data: Withdrawal }>(`/admin/withdrawals/${id}/approve`);
+  return data.data;
+}
+
+export async function rejectWithdrawal(id: number) {
+  const { data } = await apiClient.patch<{ data: Withdrawal }>(`/admin/withdrawals/${id}/reject`);
+  return data.data;
+}
+
+export async function fetchPendingWithdrawalCount() {
+  const { data } = await apiClient.get<{ count: number }>("/admin/withdrawals/pending-count");
   return data.count;
 }

@@ -14,6 +14,8 @@ export interface User {
   has_pending_credentials_change: boolean;
   has_unactivated_license: boolean;
   is_community_member: boolean;
+  is_partner?: boolean;
+  partner_status?: "pending" | "approved" | "rejected" | null;
   created_at: string;
 }
 

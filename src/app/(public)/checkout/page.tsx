@@ -18,6 +18,7 @@ import {
   payOrder,
   payOrderWithPayerUrl,
   payOrderWithPayPal,
+  validatePartnerCode,
   validatePromoCode,
   type PurchasableType,
 } from "@/lib/api/orders";
@@ -67,6 +68,16 @@ function CheckoutPageContent() {
   } | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [promoPending, setPromoPending] = useState(false);
+
+  const [partnerCodeInput, setPartnerCodeInput] = useState("");
+  const [appliedPartner, setAppliedPartner] = useState<{
+    code: string;
+    discountPercentage: number;
+    discountAmount: number;
+    total: number;
+  } | null>(null);
+  const [partnerError, setPartnerError] = useState<string | null>(null);
+  const [partnerPending, setPartnerPending] = useState(false);
 
   const requiresContract = type === "license_plan" || type === "bot_license_plan";
   const contractLabel =
@@ -174,12 +185,38 @@ function CheckoutPageContent() {
     setPromoError(null);
   }
 
+  async function handleApplyPartner() {
+    if (!type || !partnerCodeInput.trim()) return;
+    setPartnerPending(true);
+    setPartnerError(null);
+    try {
+      const result = await validatePartnerCode({ code: partnerCodeInput.trim(), type, id });
+      setAppliedPartner({
+        code: result.code,
+        discountPercentage: result.discount_percentage,
+        discountAmount: result.discount_amount,
+        total: result.total,
+      });
+    } catch (err) {
+      setAppliedPartner(null);
+      setPartnerError(extractApiError(err, "Ce code partenaire n'est pas valide."));
+    } finally {
+      setPartnerPending(false);
+    }
+  }
+
+  function handleRemovePartner() {
+    setAppliedPartner(null);
+    setPartnerCodeInput("");
+    setPartnerError(null);
+  }
+
   async function handlePay() {
     if (!type || !method || !canPay) return;
     setPending(true);
     setPayError(null);
     try {
-      const order = await createOrder([{ type, id }], appliedPromo?.code);
+      const order = await createOrder([{ type, id }], appliedPromo?.code, appliedPartner?.code);
       if (method === "payerurl") {
         window.location.href = await payOrderWithPayerUrl(order.id);
         return;
@@ -245,7 +282,7 @@ function CheckoutPageContent() {
                       setPromoError(null);
                     }}
                     placeholder="ex. PROMO20"
-                    disabled={!!appliedPromo}
+                    disabled={!!appliedPromo || !!appliedPartner}
                     className="uppercase"
                   />
                   {appliedPromo ? (
@@ -257,7 +294,7 @@ function CheckoutPageContent() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled={promoPending || !promoCodeInput.trim()}
+                      disabled={promoPending || !promoCodeInput.trim() || !!appliedPartner}
                       onClick={handleApplyPromo}
                     >
                       {promoPending ? "..." : "Appliquer"}
@@ -272,15 +309,63 @@ function CheckoutPageContent() {
                 )}
               </div>
 
+              <div className="space-y-1.5 border-t border-border pt-2">
+                <label htmlFor="partner-code" className="text-muted-foreground">
+                  Code partenaire
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    id="partner-code"
+                    value={partnerCodeInput}
+                    onChange={(e) => {
+                      setPartnerCodeInput(e.target.value);
+                      setPartnerError(null);
+                    }}
+                    placeholder="ex. ABC12345"
+                    disabled={!!appliedPartner || !!appliedPromo}
+                    className="uppercase"
+                  />
+                  {appliedPartner ? (
+                    <Button type="button" variant="outline" size="sm" onClick={handleRemovePartner}>
+                      Retirer
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={partnerPending || !partnerCodeInput.trim() || !!appliedPromo}
+                      onClick={handleApplyPartner}
+                    >
+                      {partnerPending ? "..." : "Appliquer"}
+                    </Button>
+                  )}
+                </div>
+                {partnerError && <p className="text-sm text-destructive">{partnerError}</p>}
+                {appliedPartner && (
+                  <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                    Code {appliedPartner.code} appliqué (-{appliedPartner.discountPercentage}%)
+                  </p>
+                )}
+              </div>
+
               {appliedPromo && (
                 <div className="flex justify-between text-muted-foreground">
                   <span>Réduction</span>
                   <span>-{formatCurrency(appliedPromo.discountAmount)}</span>
                 </div>
               )}
+              {appliedPartner && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Réduction</span>
+                  <span>-{formatCurrency(appliedPartner.discountAmount)}</span>
+                </div>
+              )}
               <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
                 <span>Total</span>
-                <span>{formatCurrency(appliedPromo ? appliedPromo.total : recap.price)}</span>
+                <span>
+                  {formatCurrency(appliedPromo ? appliedPromo.total : appliedPartner ? appliedPartner.total : recap.price)}
+                </span>
               </div>
             </CardContent>
           </Card>

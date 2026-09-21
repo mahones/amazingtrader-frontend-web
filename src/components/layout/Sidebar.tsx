@@ -9,6 +9,7 @@ import {
   CalendarDays,
   Crown,
   FileText,
+  Handshake,
   HelpCircle,
   History,
   KeyRound,
@@ -18,6 +19,7 @@ import {
   Percent,
   Settings,
   Users,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
@@ -34,6 +36,7 @@ export function Sidebar() {
     { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
     { href: "/dashboard/events", label: "Événements", icon: CalendarDays },
+    { href: "/dashboard/partenaire", label: "Espace Partenaire", icon: Handshake },
     ...(isStaff || user?.is_community_member
       ? [{ href: "/dashboard/community", label: "Communauté VIP", icon: Crown }]
       : []),
@@ -42,6 +45,8 @@ export function Sidebar() {
     ...(isStaff ? [{ href: "/dashboard/faq", label: "FAQ", icon: HelpCircle }] : []),
     ...(isStaff ? [{ href: "/dashboard/brokers", label: "Courtiers", icon: Building2 }] : []),
     ...(isStaff ? [{ href: "/dashboard/promo-codes", label: "Codes promo", icon: Percent }] : []),
+    ...(isStaff ? [{ href: "/dashboard/partenaires", label: "Partenaires", icon: Handshake }] : []),
+    ...(isStaff ? [{ href: "/dashboard/retraits", label: "Demandes de retrait", icon: Wallet }] : []),
     ...(isStaff ? [{ href: "/dashboard/users", label: "Utilisateurs", icon: Users }] : []),
     ...(isStaff ? [{ href: "/dashboard/historique", label: "Historique", icon: History }] : []),
     { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
@@ -54,12 +59,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden w-64 shrink-0 self-start border-r border-border/60 bg-background md:sticky md:top-0 md:flex md:h-screen md:flex-col">
-      <Link href="/" className="px-6 py-5" aria-label="amazingtraders, accueil">
+    <aside className="hidden w-64 shrink-0 border-r border-border/60 bg-background md:flex md:h-screen md:flex-col">
+      <Link href="/" className="shrink-0 px-6 py-5" aria-label="amazingtraders, accueil">
         <Logo themed />
       </Link>
 
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3">
         {navItems.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
@@ -81,7 +86,7 @@ export function Sidebar() {
       </nav>
 
       {user && (
-        <div className="border-t border-border/60 px-6 py-4 text-xs text-muted-foreground">
+        <div className="shrink-0 border-t border-border/60 px-6 py-4 text-xs text-muted-foreground">
           Connecté en tant que <span className="font-medium text-foreground">{user.name}</span>
           <div className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-primary">
             {user.role === "user" ? "Membre" : user.role === "admin" ? "Administrateur" : "Développeur"}

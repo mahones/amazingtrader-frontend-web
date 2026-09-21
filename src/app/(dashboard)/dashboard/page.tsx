@@ -8,9 +8,11 @@ import {
   ArrowUpRight,
   BookOpen,
   Bot,
+  Handshake,
   KeyRound,
   RefreshCw,
   Users,
+  Wallet,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,6 +30,8 @@ import {
   fetchAdminUsers,
   fetchPendingActivationCount,
   fetchPendingCredentialsChangeCount,
+  fetchPendingPartnerApplicationCount,
+  fetchPendingWithdrawalCount,
 } from "@/lib/api/admin";
 
 type Stat = {
@@ -158,12 +162,22 @@ export default function DashboardOverviewPage() {
   useEffect(() => {
     async function load() {
       if (isStaff) {
-        const [courses, plans, users, pendingActivations, pendingCredentialsChanges] = await Promise.all([
+        const [
+          courses,
+          plans,
+          users,
+          pendingActivations,
+          pendingCredentialsChanges,
+          pendingWithdrawals,
+          pendingPartnerApplications,
+        ] = await Promise.all([
           fetchAdminCourses(),
           fetchAdminLicensePlans(),
           fetchAdminUsers(),
           fetchPendingActivationCount(),
           fetchPendingCredentialsChangeCount(),
+          fetchPendingWithdrawalCount(),
+          fetchPendingPartnerApplicationCount(),
         ]);
         setStats([
           { label: "Formations publiées", value: courses.length, icon: BookOpen },
@@ -184,6 +198,22 @@ export default function DashboardOverviewPage() {
             href: "/dashboard/users?license_status=pending_changes",
             sublabel: "À traiter",
             attention: pendingCredentialsChanges > 0,
+          },
+          {
+            label: "Retraits en attente",
+            value: pendingWithdrawals,
+            icon: Wallet,
+            href: "/dashboard/retraits",
+            sublabel: "À traiter",
+            attention: pendingWithdrawals > 0,
+          },
+          {
+            label: "Demandes partenaires",
+            value: pendingPartnerApplications,
+            icon: Handshake,
+            href: "/dashboard/partenaires",
+            sublabel: "À traiter",
+            attention: pendingPartnerApplications > 0,
           },
         ]);
       } else {
@@ -246,12 +276,12 @@ export default function DashboardOverviewPage() {
       <div
         className={cn(
           "grid gap-5",
-          isStaff ? "sm:grid-cols-2 lg:grid-cols-5" : "sm:grid-cols-2 lg:grid-cols-4"
+          "sm:grid-cols-2 lg:grid-cols-4"
         )}
       >
         {loading ? (
           <>
-            {Array.from({ length: isStaff ? 5 : 3 }).map((_, i) => (
+            {Array.from({ length: isStaff ? 7 : 3 }).map((_, i) => (
               <StatTileSkeleton key={i} />
             ))}
             {!isStaff && <StatTileSkeleton />}

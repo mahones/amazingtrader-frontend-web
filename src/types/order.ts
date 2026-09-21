@@ -14,6 +14,7 @@ export interface Order {
   discount_amount: number;
   total_amount: number;
   promo_code?: string | null;
+  partner_code?: string | null;
   currency: string;
   status: OrderStatus;
   gateway: string;

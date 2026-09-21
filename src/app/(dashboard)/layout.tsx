@@ -37,10 +37,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between gap-4 border-b border-border/60 px-6">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border/60 px-6">
           <div className="flex min-w-0 items-center gap-1">
             <Button
               variant="ghost"
@@ -69,7 +69,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <CommunityMenu />
           </div>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   );

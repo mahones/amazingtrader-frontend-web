@@ -6,9 +6,14 @@ export type PaymentGateway = "simulated" | "moneyfusion";
 
 export async function createOrder(
   items: { type: PurchasableType; id: number; quantity?: number }[],
-  promoCode?: string
+  promoCode?: string,
+  partnerCode?: string
 ) {
-  const { data } = await apiClient.post<{ data: Order }>("/orders", { items, promo_code: promoCode });
+  const { data } = await apiClient.post<{ data: Order }>("/orders", {
+    items,
+    promo_code: promoCode,
+    partner_code: partnerCode,
+  });
   return data.data;
 }
 
@@ -23,6 +28,11 @@ export interface PromoCodeValidationResult {
 
 export async function validatePromoCode(payload: { code: string; type: PurchasableType; id: number }) {
   const { data } = await apiClient.post<PromoCodeValidationResult>("/promo-codes/validate", payload);
+  return data;
+}
+
+export async function validatePartnerCode(payload: { code: string; type: PurchasableType; id: number }) {
+  const { data } = await apiClient.post<PromoCodeValidationResult>("/partner-codes/validate", payload);
   return data;
 }
 

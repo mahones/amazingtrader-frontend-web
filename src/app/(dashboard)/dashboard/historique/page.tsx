@@ -18,6 +18,8 @@ const TYPE_FILTERS = [
   { value: "tout", label: "Tous les évènements" },
   { value: "purchase", label: "Achats" },
   { value: "registration", label: "Inscriptions" },
+  { value: "partner_application", label: "Demandes partenaires" },
+  { value: "withdrawal_request", label: "Demandes de retrait" },
 ];
 
 function formatDateTime(date: string) {
@@ -25,7 +27,10 @@ function formatDateTime(date: string) {
 }
 
 function eventLabel(type: string) {
-  return type === NOTIFICATION_TYPES.newUser ? "Inscription" : "Achat";
+  if (type === NOTIFICATION_TYPES.newUser) return "Inscription";
+  if (type === NOTIFICATION_TYPES.partnerApplication) return "Partenariat";
+  if (type === NOTIFICATION_TYPES.withdrawalRequested) return "Retrait";
+  return "Achat";
 }
 
 export default function DashboardHistoriquePage() {
@@ -40,7 +45,10 @@ export default function DashboardHistoriquePage() {
 
   useEffect(() => {
     fetchAdminNotificationsPaged(page, {
-      type: type === "tout" ? undefined : (type as "purchase" | "registration"),
+      type:
+        type === "tout"
+          ? undefined
+          : (type as "purchase" | "registration" | "partner_application" | "withdrawal_request"),
       date_from: dateFrom || undefined,
       date_to: dateTo || undefined,
     }).then((res) => {

@@ -6,6 +6,8 @@ export const NOTIFICATION_TYPES = {
   paidOrder: "App\\Notifications\\NewPaidOrderNotification",
   newUser: "App\\Notifications\\NewUserRegisteredNotification",
   credentialsUpdate: "App\\Notifications\\PurchaseDetailsChangeRequestedNotification",
+  partnerApplication: "App\\Notifications\\NewPartnerApplicationNotification",
+  withdrawalRequested: "App\\Notifications\\WithdrawalRequestedNotification",
 } as const;
 
 export interface PaidOrderNotificationData {
@@ -31,10 +33,32 @@ export interface CredentialsChangeNotificationData {
   plan_name: string;
 }
 
+export interface PartnerApplicationNotificationData {
+  partner_id: number;
+  user_id: number;
+  user_name: string;
+  user_email: string;
+}
+
+export interface WithdrawalRequestedNotificationData {
+  withdrawal_id: number;
+  partner_id: number;
+  user_id: number;
+  user_name: string;
+  amount: number;
+  payment_method: string;
+  receiving_identifier: string;
+}
+
 export interface AdminNotification {
   id: string;
   type: string;
-  data: PaidOrderNotificationData | NewUserNotificationData | CredentialsChangeNotificationData;
+  data:
+    | PaidOrderNotificationData
+    | NewUserNotificationData
+    | CredentialsChangeNotificationData
+    | PartnerApplicationNotificationData
+    | WithdrawalRequestedNotificationData;
   read_at: string | null;
   created_at: string;
 }
@@ -59,6 +83,22 @@ export function formatNotificationMessage(notification: AdminNotification): {
     };
   }
 
+  if (notification.type === NOTIFICATION_TYPES.partnerApplication) {
+    const data = notification.data as PartnerApplicationNotificationData;
+    return {
+      title: `Demande de partenariat : ${data.user_name}`,
+      subtitle: data.user_email,
+    };
+  }
+
+  if (notification.type === NOTIFICATION_TYPES.withdrawalRequested) {
+    const data = notification.data as WithdrawalRequestedNotificationData;
+    return {
+      title: `Demande de retrait : ${data.user_name}`,
+      subtitle: formatCurrency(data.amount),
+    };
+  }
+
   const data = notification.data as PaidOrderNotificationData;
   return {
     title: `Nouveau paiement de ${data.user_name}`,
@@ -76,7 +116,7 @@ export async function fetchAdminNotifications() {
 }
 
 export interface NotificationFilters {
-  type?: "purchase" | "registration" | "credentials_update";
+  type?: "purchase" | "registration" | "credentials_update" | "partner_application" | "withdrawal_request";
   date_from?: string;
   date_to?: string;
 }
