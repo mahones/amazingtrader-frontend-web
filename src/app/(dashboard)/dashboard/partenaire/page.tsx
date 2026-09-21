@@ -134,7 +134,7 @@ export default function DashboardPartnerPage() {
                 <p className="font-mono text-2xl font-bold tracking-wider">{partner.code}</p>
               </div>
               <div className="flex items-center gap-3">
-                <Badge>{partner.level_name ?? "-"}</Badge>
+                <Badge>{partner.type === "assigned" ? "Partenaire sous contrat" : (partner.level_name ?? "-")}</Badge>
                 <Button variant="outline" size="sm" onClick={() => handleCopyCode(partner.code!)}>
                   <Copy className="mr-1 size-4" /> Copier
                 </Button>
@@ -167,8 +167,12 @@ export default function DashboardPartnerPage() {
             </Card>
             <Card>
               <CardContent className="flex h-full flex-col justify-center gap-1 pt-6">
-                <p className="text-sm text-muted-foreground">Votre niveau</p>
-                <p className="text-lg font-semibold">{partner.level_name ?? "-"}</p>
+                <p className="text-sm text-muted-foreground">
+                  {partner.type === "assigned" ? "Type de partenariat" : "Votre niveau"}
+                </p>
+                <p className="text-lg font-semibold">
+                  {partner.type === "assigned" ? "Sous contrat" : (partner.level_name ?? "-")}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {partner.gain_percentage}% de gain · {partner.discount_percentage}% de réduction offerte
                 </p>
@@ -176,7 +180,9 @@ export default function DashboardPartnerPage() {
             </Card>
             <Card>
               <CardContent className="flex h-full flex-col items-center justify-center gap-2 pt-6 text-center">
-                {partner.next_level ? (
+                {partner.type === "assigned" ? (
+                  <p className="text-sm text-muted-foreground">Pourcentages fixes définis par contrat</p>
+                ) : partner.next_level ? (
                   <>
                     <div className="relative flex items-center justify-center">
                       <ProgressRing

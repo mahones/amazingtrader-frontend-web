@@ -581,6 +581,29 @@ export async function fetchPendingPartnerApplicationCount() {
   return data.count;
 }
 
+// Approved partners (self-service + assigned/contract)
+export async function fetchApprovedPartners() {
+  const { data } = await apiClient.get<{ data: Partner[] }>("/admin/partners");
+  return data.data;
+}
+
+// Contract (admin-assigned) partner codes
+export async function assignPartnerToUser(
+  userId: number,
+  payload: { gain_percentage: number; discount_percentage: number }
+) {
+  const { data } = await apiClient.post<{ data: Partner }>(`/admin/users/${userId}/partner`, payload);
+  return data.data;
+}
+
+export async function updateAssignedPartner(
+  userId: number,
+  payload: { gain_percentage: number; discount_percentage: number }
+) {
+  const { data } = await apiClient.patch<{ data: Partner }>(`/admin/users/${userId}/partner`, payload);
+  return data.data;
+}
+
 // Withdrawals
 export async function fetchAdminWithdrawals(params?: { status?: WithdrawalStatus }) {
   const { data } = await apiClient.get<{ data: Withdrawal[] }>("/admin/withdrawals", { params });

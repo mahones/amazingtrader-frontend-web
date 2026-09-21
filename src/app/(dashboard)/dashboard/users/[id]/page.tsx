@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
+import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
@@ -31,6 +32,7 @@ import { formatDate } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
 import type { LicensePlan } from "@/types/license";
+import type { Partner } from "@/types/partner";
 import type { UserProfile } from "@/types/user";
 
 function ActivationBadge({ isActivated }: { isActivated: boolean }) {
@@ -198,6 +200,10 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
+  function handlePartnerSaved(partner: Partner) {
+    setProfile((prev) => (prev ? { ...prev, partner } : prev));
+  }
+
   async function handleRejectBotLicenseChange(licenseId: number) {
     const updated = await rejectBotLicensePurchaseDetailsChange(licenseId);
     setProfile((prev) =>
@@ -269,6 +275,63 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           <Badge variant="outline">Accès déjà actif (achat ou rôle)</Badge>
         )}
       </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Partenariat</CardTitle>
+          {profile.partner?.type === "assigned" && (
+            <AssignPartnerDialog
+              userId={profile.id}
+              existingPartner={profile.partner}
+              onSaved={handlePartnerSaved}
+              trigger={
+                <Button variant="outline" size="sm">
+                  Modifier
+                </Button>
+              }
+            />
+          )}
+        </CardHeader>
+        <CardContent>
+          {!profile.partner && (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Cet utilisateur n&apos;a pas de code partenaire. Vous pouvez lui assigner un code sous contrat, avec
+                des pourcentages fixes définis par vous, dans le cadre d&apos;un accord conclu hors plateforme.
+              </p>
+              <AssignPartnerDialog
+                userId={profile.id}
+                onSaved={handlePartnerSaved}
+                trigger={<Button size="sm">Assigner un code partenaire</Button>}
+              />
+            </div>
+          )}
+          {profile.partner && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Code</p>
+                <p className="font-mono font-semibold tracking-wider">{profile.partner.code ?? "-"}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant={profile.partner.type === "assigned" ? "secondary" : "outline"}>
+                  {profile.partner.type === "assigned" ? "Sous contrat (assigné)" : "Auto-inscription"}
+                </Badge>
+                <Badge variant={profile.partner.status === "approved" ? "default" : "outline"}>
+                  {profile.partner.status}
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {profile.partner.gain_percentage ?? 0}% de gain · {profile.partner.discount_percentage ?? 0}% de
+                réduction
+                {profile.partner.type === "self_service" && profile.partner.level_name
+                  ? ` · niveau ${profile.partner.level_name}`
+                  : ""}
+              </p>
+              <p className="text-sm text-muted-foreground">Solde : {profile.partner.balance} $</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

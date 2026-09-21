@@ -1,5 +1,6 @@
 export type PartnerStatus = "pending" | "approved" | "rejected";
 export type PartnerLevelName = "bronze" | "silver" | "gold" | "platinum";
+export type PartnerAccountType = "self_service" | "assigned";
 
 export interface PartnerLevelConfig {
   id: number;
@@ -19,6 +20,7 @@ export interface NextLevelInfo {
 
 export interface Partner {
   id: number;
+  type: PartnerAccountType;
   status: PartnerStatus;
   code: string | null;
   level: PartnerLevelName | null;
