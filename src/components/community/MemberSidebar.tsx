@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchCommunityMembers } from "@/lib/api/community";
@@ -36,6 +36,7 @@ export function MemberSidebar() {
         {members?.map((member) => (
           <div key={member.id} className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted">
             <Avatar size="sm">
+              <AvatarImage src={member.avatar_url ?? undefined} alt="" />
               <AvatarFallback>{initials(member.name)}</AvatarFallback>
             </Avatar>
             <span className="flex-1 truncate text-sm font-medium">{member.name}</span>

@@ -1,20 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdjustPartnerBalanceDialog } from "@/components/admin/AdjustPartnerBalanceDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
 import { PartnerLevelDialog } from "@/components/admin/PartnerLevelDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   approvePartnerApplication,
+  deletePartner,
   fetchApprovedPartners,
   fetchPartnerApplications,
   fetchPartnerLevels,
   rejectPartnerApplication,
 } from "@/lib/api/admin";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { extractApiError } from "@/lib/api/client";
+import { formatCurrency, formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { Partner, PartnerLevelConfig } from "@/types/partner";
 
@@ -97,6 +101,17 @@ export default function DashboardPartnersPage() {
     setPartners((prev) => prev?.map((p) => (p.id === updated.id ? updated : p)) ?? null);
   }
 
+  async function handleDeletePartner(partner: Partner) {
+    if (!window.confirm(`Supprimer définitivement le partenaire ${partner.code} ?`)) return;
+    try {
+      await deletePartner(partner.id);
+      setPartners((prev) => prev?.filter((p) => p.id !== partner.id) ?? null);
+      toast.success("Partenaire supprimé.");
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de supprimer ce partenaire."));
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -159,18 +174,37 @@ export default function DashboardPartnersPage() {
                 </p>
                 <p className="text-xs text-muted-foreground">Solde : {formatCurrency(partner.balance)}</p>
               </div>
-              {partner.type === "assigned" && partner.user && (
-                <AssignPartnerDialog
-                  userId={partner.user.id}
-                  existingPartner={partner}
+              <div className="flex items-center gap-2">
+                {partner.user && (
+                  <Button variant="outline" size="sm" render={<Link href={`/dashboard/users/${partner.user.id}`} />}>
+                    Voir l&apos;utilisateur
+                  </Button>
+                )}
+                {partner.type === "assigned" && partner.user && (
+                  <AssignPartnerDialog
+                    userId={partner.user.id}
+                    existingPartner={partner}
+                    onSaved={handlePartnerUpdated}
+                    trigger={
+                      <Button variant="outline" size="sm">
+                        Modifier
+                      </Button>
+                    }
+                  />
+                )}
+                <AdjustPartnerBalanceDialog
+                  partner={partner}
                   onSaved={handlePartnerUpdated}
                   trigger={
                     <Button variant="outline" size="sm">
-                      Modifier
+                      Ajouter au solde
                     </Button>
                   }
                 />
-              )}
+                <Button variant="destructive" size="sm" onClick={() => handleDeletePartner(partner)}>
+                  Supprimer
+                </Button>
+              </div>
             </div>
           ))}
         </CardContent>
@@ -194,7 +228,7 @@ export default function DashboardPartnersPage() {
                 <p className="font-semibold">{level.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {level.gain_percentage}% de gain · {level.discount_percentage}% de réduction · dès{" "}
-                  {level.min_cumulative_purchases} $ cumulés
+                  {formatPartnerAmount(level.min_cumulative_purchases)} cumulés
                 </p>
               </div>
               <PartnerLevelDialog

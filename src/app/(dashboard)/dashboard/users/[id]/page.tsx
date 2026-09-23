@@ -28,7 +28,7 @@ import {
   setUserCommunityAccess,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
 import type { LicensePlan } from "@/types/license";
@@ -327,7 +327,7 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   ? ` · niveau ${profile.partner.level_name}`
                   : ""}
               </p>
-              <p className="text-sm text-muted-foreground">Solde : {profile.partner.balance} $</p>
+              <p className="text-sm text-muted-foreground">Solde : {formatPartnerAmount(profile.partner.balance)}</p>
             </div>
           )}
         </CardContent>
@@ -371,9 +371,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
                   <p><span className="text-muted-foreground">Mot de passe :</span> {license.purchase_details.password}</p>
                   <p><span className="text-muted-foreground">Serveur :</span> {license.purchase_details.server}</p>
-                  {profile.whatsapp_number && (
+                  {/* {profile.whatsapp_number && (
                     <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
-                  )}
+                  )} */}
                 </div>
               )}
               {license.pending_purchase_details && (
@@ -427,9 +427,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
               {license.purchase_details && (
                 <div className="grid gap-1.5 text-sm sm:grid-cols-2">
                   <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
-                  {profile.whatsapp_number && (
+                  {/* {profile.whatsapp_number && (
                     <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
-                  )}
+                  )} */}
                 </div>
               )}
               {license.pending_purchase_details && (

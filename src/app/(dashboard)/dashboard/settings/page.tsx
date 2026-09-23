@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Camera } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -12,13 +14,32 @@ import { useAuth } from "@/context/AuthContext";
 import { apiClient, extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
 export default function SettingsPage() {
   const { user, refresh } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [whatsappNumber, setWhatsappNumber] = useState(user?.whatsapp_number ?? "");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [profileSaved, setProfileSaved] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  function handleAvatarSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  }
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -30,7 +51,18 @@ export default function SettingsPage() {
     e.preventDefault();
     setProfileError(null);
     try {
-      await apiClient.patch("/me", { name, email, whatsapp_number: whatsappNumber });
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("_method", "PATCH");
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("whatsapp_number", whatsappNumber);
+        formData.append("avatar", avatarFile);
+        await apiClient.post("/me", formData);
+        setAvatarFile(null);
+      } else {
+        await apiClient.patch("/me", { name, email, whatsapp_number: whatsappNumber });
+      }
       await refresh();
       toast.success("Vos informations ont été mises à jour.");
       setProfileSaved(true);
@@ -72,6 +104,25 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleProfileSubmit} className="space-y-4">
+            <div className="flex items-center gap-4">
+              <Avatar size="lg" className="size-16">
+                <AvatarImage src={avatarPreview ?? user?.avatar_url ?? undefined} alt="" />
+                <AvatarFallback className="text-lg">{initials(user?.name ?? "")}</AvatarFallback>
+              </Avatar>
+              <div>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarSelected}
+                />
+                <Button type="button" variant="outline" size="sm" onClick={() => avatarInputRef.current?.click()}>
+                  <Camera className="mr-1 size-4" />
+                  Changer la photo
+                </Button>
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="name">Nom complet</Label>
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />

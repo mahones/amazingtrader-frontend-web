@@ -10,6 +10,7 @@ export interface User {
   name: string;
   email: string;
   whatsapp_number: string | null;
+  avatar_url: string | null;
   role: UserRole;
   is_active: boolean;
   has_pending_credentials_change: boolean;

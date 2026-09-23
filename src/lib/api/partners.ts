@@ -12,6 +12,11 @@ export async function fetchMyPartnerProfile() {
   return data.data;
 }
 
+export async function updateMyPartnerCode(code: string) {
+  const { data } = await apiClient.patch<{ data: Partner }>("/my/partner/code", { code });
+  return data.data;
+}
+
 export async function fetchMyWithdrawals() {
   const { data } = await apiClient.get<{ data: Withdrawal[] }>("/my/partner/withdrawals");
   return data.data;

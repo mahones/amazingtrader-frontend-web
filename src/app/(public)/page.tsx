@@ -1,3 +1,4 @@
+import { AnnouncementsBanner } from "@/components/announcements/AnnouncementsBanner";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OfferingsList } from "@/components/home/OfferingsList";
 import { FounderSection } from "@/components/home/FounderSection";
@@ -12,6 +13,10 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
+
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <AnnouncementsBanner />
+      </div>
 
       <OfferingsList />
 

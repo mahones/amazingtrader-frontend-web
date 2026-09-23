@@ -2,14 +2,83 @@
 
 import { useEffect, useState } from "react";
 import { ExternalLink, Plus } from "lucide-react";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { BrokerDialog } from "@/components/admin/BrokerDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { deleteAdminBroker, fetchAdminBrokers } from "@/lib/api/admin";
+import {
+  deleteAdminBroker,
+  fetchAdminBrokers,
+  fetchAdminBrokersPageSettings,
+  updateAdminBrokersPageSettings,
+} from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import type { Broker } from "@/types/broker";
+
+function BrokersPageTextCard() {
+  const [description, setDescription] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchAdminBrokersPageSettings().then((settings) => {
+      setDescription(settings.description);
+      setLoaded(true);
+    });
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+    try {
+      await updateAdminBrokersPageSettings({ description });
+      toast.success("Le texte de la page a été mis à jour.");
+    } catch (err) {
+      setError(extractApiError(err, "Impossible d'enregistrer ce texte."));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Texte de la page publique</CardTitle>
+        <CardDescription>
+          Cette description apparaît en haut de la page publique &quot;Courtier recommandés&quot;, sous le titre.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {!loaded ? (
+          <p className="text-muted-foreground">Chargement...</p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="brokers-page-description">Description</Label>
+              <Textarea
+                id="brokers-page-description"
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            {error && <Alert variant="error">{error}</Alert>}
+            <Button type="submit" disabled={pending}>
+              {pending ? "Enregistrement..." : "Enregistrer"}
+            </Button>
+          </form>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function DashboardBrokersPage() {
   useRequireRole(["admin", "developer"]);
@@ -63,6 +132,8 @@ export default function DashboardBrokersPage() {
         />
       </div>
 
+      <BrokersPageTextCard />
+
       <div className="grid gap-4">
         {brokers === null && <p className="text-muted-foreground">Chargement...</p>}
         {brokers?.length === 0 && (
@@ -89,7 +160,10 @@ export default function DashboardBrokersPage() {
                   </span>
                 )}
                 <div className="min-w-0">
-                  <h3 className="font-semibold">{broker.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">{broker.name}</h3>
+                    {broker.category && <Badge variant="outline">{broker.category}</Badge>}
+                  </div>
                   <a
                     href={broker.affiliate_url}
                     target="_blank"

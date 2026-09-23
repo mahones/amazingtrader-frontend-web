@@ -23,6 +23,7 @@ import type { Broker } from "@/types/broker";
 import type { PromoCode } from "@/types/promo-code";
 import type { Partner, PartnerLevelConfig } from "@/types/partner";
 import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
+import type { Review } from "@/types/review";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -432,6 +433,20 @@ export async function deleteAdminBroker(id: number) {
   await apiClient.delete(`/admin/brokers/${id}`);
 }
 
+export interface BrokersPageSettings {
+  description: string;
+}
+
+export async function fetchAdminBrokersPageSettings() {
+  const { data } = await apiClient.get<{ data: BrokersPageSettings }>("/admin/brokers-page-settings");
+  return data.data;
+}
+
+export async function updateAdminBrokersPageSettings(payload: BrokersPageSettings) {
+  const { data } = await apiClient.patch<{ data: BrokersPageSettings }>("/admin/brokers-page-settings", payload);
+  return data.data;
+}
+
 // Promo codes
 export async function fetchAdminPromoCodes() {
   const { data } = await apiClient.get<{ data: PromoCode[] }>("/admin/promo-codes");
@@ -587,6 +602,15 @@ export async function fetchApprovedPartners() {
   return data.data;
 }
 
+export async function deletePartner(id: number) {
+  await apiClient.delete(`/admin/partners/${id}`);
+}
+
+export async function adjustPartnerBalance(id: number, payload: { amount: number; note?: string }) {
+  const { data } = await apiClient.post<{ data: Partner }>(`/admin/partners/${id}/balance-adjustments`, payload);
+  return data.data;
+}
+
 // Contract (admin-assigned) partner codes
 export async function assignPartnerToUser(
   userId: number,
@@ -623,4 +647,10 @@ export async function rejectWithdrawal(id: number) {
 export async function fetchPendingWithdrawalCount() {
   const { data } = await apiClient.get<{ count: number }>("/admin/withdrawals/pending-count");
   return data.count;
+}
+
+// Reviews
+export async function fetchAdminReviews() {
+  const { data } = await apiClient.get<{ data: Review[] }>("/admin/reviews");
+  return data.data;
 }

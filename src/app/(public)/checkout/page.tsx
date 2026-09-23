@@ -59,25 +59,16 @@ function CheckoutPageContent() {
   const [pending, setPending] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
 
-  const [promoCodeInput, setPromoCodeInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{
+  const [codeInput, setCodeInput] = useState("");
+  const [appliedCode, setAppliedCode] = useState<{
+    kind: "promo" | "partner";
     code: string;
     discountPercentage: number;
     discountAmount: number;
     total: number;
   } | null>(null);
-  const [promoError, setPromoError] = useState<string | null>(null);
-  const [promoPending, setPromoPending] = useState(false);
-
-  const [partnerCodeInput, setPartnerCodeInput] = useState("");
-  const [appliedPartner, setAppliedPartner] = useState<{
-    code: string;
-    discountPercentage: number;
-    discountAmount: number;
-    total: number;
-  } | null>(null);
-  const [partnerError, setPartnerError] = useState<string | null>(null);
-  const [partnerPending, setPartnerPending] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [codePending, setCodePending] = useState(false);
 
   const requiresContract = type === "license_plan" || type === "bot_license_plan";
   const contractLabel =
@@ -159,56 +150,53 @@ function CheckoutPageContent() {
     };
   }, [type, id, isValidTarget]);
 
-  async function handleApplyPromo() {
-    if (!type || !promoCodeInput.trim()) return;
-    setPromoPending(true);
-    setPromoError(null);
+  async function handleApplyCode() {
+    if (!type || !codeInput.trim()) return;
+    setCodePending(true);
+    setCodeError(null);
+    const code = codeInput.trim();
     try {
-      const result = await validatePromoCode({ code: promoCodeInput.trim(), type, id });
-      setAppliedPromo({
+      const result = await validatePromoCode({ code, type, id });
+      setAppliedCode({
+        kind: "promo",
         code: result.code,
         discountPercentage: result.discount_percentage,
         discountAmount: result.discount_amount,
         total: result.total,
       });
-    } catch (err) {
-      setAppliedPromo(null);
-      setPromoError(extractApiError(err, "Ce code promo n'est pas valide."));
+    } catch (promoErr) {
+      const promoMessage = extractApiError(promoErr, "Ce code n'est pas valide.");
+      // Only a "code doesn't exist as a promo code" miss falls through to a partner-code
+      // lookup — any other promo failure (inactive, expired, not applicable) is a real
+      // promo-specific error and must surface as-is, not be masked by a partner retry.
+      if (promoMessage !== "Ce code promo n'existe pas.") {
+        setAppliedCode(null);
+        setCodeError(promoMessage);
+        return;
+      }
+
+      try {
+        const result = await validatePartnerCode({ code, type, id });
+        setAppliedCode({
+          kind: "partner",
+          code: result.code,
+          discountPercentage: result.discount_percentage,
+          discountAmount: result.discount_amount,
+          total: result.total,
+        });
+      } catch (partnerErr) {
+        setAppliedCode(null);
+        setCodeError(extractApiError(partnerErr, "Ce code n'est pas valide."));
+      }
     } finally {
-      setPromoPending(false);
+      setCodePending(false);
     }
   }
 
-  function handleRemovePromo() {
-    setAppliedPromo(null);
-    setPromoCodeInput("");
-    setPromoError(null);
-  }
-
-  async function handleApplyPartner() {
-    if (!type || !partnerCodeInput.trim()) return;
-    setPartnerPending(true);
-    setPartnerError(null);
-    try {
-      const result = await validatePartnerCode({ code: partnerCodeInput.trim(), type, id });
-      setAppliedPartner({
-        code: result.code,
-        discountPercentage: result.discount_percentage,
-        discountAmount: result.discount_amount,
-        total: result.total,
-      });
-    } catch (err) {
-      setAppliedPartner(null);
-      setPartnerError(extractApiError(err, "Ce code partenaire n'est pas valide."));
-    } finally {
-      setPartnerPending(false);
-    }
-  }
-
-  function handleRemovePartner() {
-    setAppliedPartner(null);
-    setPartnerCodeInput("");
-    setPartnerError(null);
+  function handleRemoveCode() {
+    setAppliedCode(null);
+    setCodeInput("");
+    setCodeError(null);
   }
 
   async function handlePay() {
@@ -216,7 +204,11 @@ function CheckoutPageContent() {
     setPending(true);
     setPayError(null);
     try {
-      const order = await createOrder([{ type, id }], appliedPromo?.code, appliedPartner?.code);
+      const order = await createOrder(
+        [{ type, id }],
+        appliedCode?.kind === "promo" ? appliedCode.code : undefined,
+        appliedCode?.kind === "partner" ? appliedCode.code : undefined
+      );
       if (method === "payerurl") {
         window.location.href = await payOrderWithPayerUrl(order.id);
         return;
@@ -276,17 +268,17 @@ function CheckoutPageContent() {
                 <div className="flex gap-2">
                   <Input
                     id="promo-code"
-                    value={promoCodeInput}
+                    value={codeInput}
                     onChange={(e) => {
-                      setPromoCodeInput(e.target.value);
-                      setPromoError(null);
+                      setCodeInput(e.target.value);
+                      setCodeError(null);
                     }}
-                    placeholder="ex. PROMO20"
-                    disabled={!!appliedPromo || !!appliedPartner}
+                    placeholder="Code promo ou code partenaire"
+                    disabled={!!appliedCode}
                     className="uppercase"
                   />
-                  {appliedPromo ? (
-                    <Button type="button" variant="outline" size="sm" onClick={handleRemovePromo}>
+                  {appliedCode ? (
+                    <Button type="button" variant="outline" size="sm" onClick={handleRemoveCode}>
                       Retirer
                     </Button>
                   ) : (
@@ -294,78 +286,30 @@ function CheckoutPageContent() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled={promoPending || !promoCodeInput.trim() || !!appliedPartner}
-                      onClick={handleApplyPromo}
+                      disabled={codePending || !codeInput.trim()}
+                      onClick={handleApplyCode}
                     >
-                      {promoPending ? "..." : "Appliquer"}
+                      {codePending ? "..." : "Appliquer"}
                     </Button>
                   )}
                 </div>
-                {promoError && <p className="text-sm text-destructive">{promoError}</p>}
-                {appliedPromo && (
+                {codeError && <p className="text-sm text-destructive">{codeError}</p>}
+                {appliedCode && (
                   <p className="text-sm text-emerald-600 dark:text-emerald-400">
-                    Code {appliedPromo.code} appliqué (-{appliedPromo.discountPercentage}%)
+                    Code {appliedCode.code} appliqué (-{appliedCode.discountPercentage}%)
                   </p>
                 )}
               </div>
 
-              <div className="space-y-1.5 border-t border-border pt-2">
-                <label htmlFor="partner-code" className="text-muted-foreground">
-                  Code partenaire
-                </label>
-                <div className="flex gap-2">
-                  <Input
-                    id="partner-code"
-                    value={partnerCodeInput}
-                    onChange={(e) => {
-                      setPartnerCodeInput(e.target.value);
-                      setPartnerError(null);
-                    }}
-                    placeholder="ex. ABC12345"
-                    disabled={!!appliedPartner || !!appliedPromo}
-                    className="uppercase"
-                  />
-                  {appliedPartner ? (
-                    <Button type="button" variant="outline" size="sm" onClick={handleRemovePartner}>
-                      Retirer
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={partnerPending || !partnerCodeInput.trim() || !!appliedPromo}
-                      onClick={handleApplyPartner}
-                    >
-                      {partnerPending ? "..." : "Appliquer"}
-                    </Button>
-                  )}
-                </div>
-                {partnerError && <p className="text-sm text-destructive">{partnerError}</p>}
-                {appliedPartner && (
-                  <p className="text-sm text-emerald-600 dark:text-emerald-400">
-                    Code {appliedPartner.code} appliqué (-{appliedPartner.discountPercentage}%)
-                  </p>
-                )}
-              </div>
-
-              {appliedPromo && (
+              {appliedCode && (
                 <div className="flex justify-between text-muted-foreground">
                   <span>Réduction</span>
-                  <span>-{formatCurrency(appliedPromo.discountAmount)}</span>
-                </div>
-              )}
-              {appliedPartner && (
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Réduction</span>
-                  <span>-{formatCurrency(appliedPartner.discountAmount)}</span>
+                  <span>-{formatCurrency(appliedCode.discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
                 <span>Total</span>
-                <span>
-                  {formatCurrency(appliedPromo ? appliedPromo.total : appliedPartner ? appliedPartner.total : recap.price)}
-                </span>
+                <span>{formatCurrency(appliedCode ? appliedCode.total : recap.price)}</span>
               </div>
             </CardContent>
           </Card>

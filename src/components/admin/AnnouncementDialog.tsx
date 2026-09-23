@@ -82,7 +82,7 @@ export function AnnouncementDialog({
         <DialogHeader>
           <DialogTitle>{isEditing ? "Modifier l'annonce" : "Nouvelle annonce"}</DialogTitle>
           <DialogDescription>
-            Seules les annonces épinglées s&apos;affichent dans le tableau de bord de tous les utilisateurs.
+            Seules les annonces épinglées s&apos;affichent, sur le site public et dans le tableau de bord.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -110,7 +110,7 @@ export function AnnouncementDialog({
 
           <div className="flex items-center gap-3">
             <Switch id="announcement-pinned" checked={isPinned} onCheckedChange={setIsPinned} />
-            <Label htmlFor="announcement-pinned">Épinglée (visible dans le tableau de bord)</Label>
+            <Label htmlFor="announcement-pinned">Épinglée (visible sur le site et le tableau de bord)</Label>
           </div>
 
           {error && <Alert variant="error">{error}</Alert>}

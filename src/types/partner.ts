@@ -23,6 +23,7 @@ export interface Partner {
   type: PartnerAccountType;
   status: PartnerStatus;
   code: string | null;
+  is_code_editable: boolean;
   level: PartnerLevelName | null;
   level_name: string | null;
   gain_percentage: number | null;
@@ -31,6 +32,7 @@ export interface Partner {
   balance: number;
   total_earned: number;
   next_level: NextLevelInfo | null;
+  levels: PartnerLevelConfig[] | null;
   user?: { id: number; name: string; email: string };
   reviewed_at: string | null;
   created_at: string;

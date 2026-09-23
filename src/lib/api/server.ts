@@ -49,6 +49,11 @@ export async function getBrokers() {
   return data;
 }
 
+export async function getBrokersPageSettings() {
+  const { data } = await getJson<{ data: { description: string } }>("/brokers-page-settings");
+  return data;
+}
+
 export async function getPosts(params?: { category?: string }) {
   const entries = Object.entries(params ?? {}).filter(
     (entry): entry is [string, string] => Boolean(entry[1])

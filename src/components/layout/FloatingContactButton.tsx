@@ -55,7 +55,7 @@ export function FloatingContactButton() {
               </a>
             </div>
 
-            <p className="mt-3 text-center text-xs font-medium text-[#25D366]">Réponse en moins de 5 min</p>
+            <p className="mt-3 text-center text-xs font-medium text-[#25D366]">Votre satisfaction, notre priorité</p>
           </motion.div>
         )}
       </AnimatePresence>

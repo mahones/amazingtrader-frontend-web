@@ -7,11 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProgressRing } from "@/components/ui/progress-ring";
+import { EditPartnerCodeDialog } from "@/components/partner/EditPartnerCodeDialog";
+import { PartnerLevelsDialog } from "@/components/partner/PartnerLevelsDialog";
 import { RequestWithdrawalDialog } from "@/components/partner/RequestWithdrawalDialog";
-import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { useRequireRole } from "@/hooks/useRequireRole";
 import { applyForPartnerProgram, fetchMyPartnerProfile, fetchMyWithdrawals } from "@/lib/api/partners";
 import { extractApiError } from "@/lib/api/client";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { Partner } from "@/types/partner";
 import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
@@ -29,7 +31,7 @@ const withdrawalStatusLabel: Record<WithdrawalStatus, string> = {
 };
 
 export default function DashboardPartnerPage() {
-  useRequireAuth();
+  useRequireRole(["user"]);
 
   const [partner, setPartner] = useState<Partner | null | undefined>(undefined);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
@@ -131,10 +133,22 @@ export default function DashboardPartnerPage() {
             <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
               <div>
                 <p className="text-sm text-muted-foreground">Votre code partenaire</p>
-                <p className="font-mono text-2xl font-bold tracking-wider">{partner.code}</p>
+                <div className="flex items-center gap-1">
+                  <p className="font-mono text-2xl font-bold tracking-wider">{partner.code}</p>
+                  {partner.type !== "assigned" && partner.is_code_editable && (
+                    <EditPartnerCodeDialog code={partner.code!} onUpdated={setPartner} />
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-3">
-                <Badge>{partner.type === "assigned" ? "Partenaire sous contrat" : (partner.level_name ?? "-")}</Badge>
+                <PartnerLevelsDialog
+                  partner={partner}
+                  trigger={
+                    <Badge className={partner.type === "assigned" ? undefined : "cursor-pointer"}>
+                      {partner.type === "assigned" ? "Partenaire sous contrat" : (partner.level_name ?? "-")}
+                    </Badge>
+                  }
+                />
                 <Button variant="outline" size="sm" onClick={() => handleCopyCode(partner.code!)}>
                   <Copy className="mr-1 size-4" /> Copier
                 </Button>
@@ -165,19 +179,24 @@ export default function DashboardPartnerPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="flex h-full flex-col justify-center gap-1 pt-6">
-                <p className="text-sm text-muted-foreground">
-                  {partner.type === "assigned" ? "Type de partenariat" : "Votre niveau"}
-                </p>
-                <p className="text-lg font-semibold">
-                  {partner.type === "assigned" ? "Sous contrat" : (partner.level_name ?? "-")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {partner.gain_percentage}% de gain · {partner.discount_percentage}% de réduction offerte
-                </p>
-              </CardContent>
-            </Card>
+            <PartnerLevelsDialog
+              partner={partner}
+              trigger={
+                <Card className="cursor-pointer transition-colors hover:bg-muted/50">
+                  <CardContent className="flex h-full flex-col justify-center gap-1 pt-6">
+                    <p className="text-sm text-muted-foreground">
+                      {partner.type === "assigned" ? "Type de partenariat" : "Votre niveau"}
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {partner.type === "assigned" ? "Sous contrat" : (partner.level_name ?? "-")}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {partner.gain_percentage}% de gain · {partner.discount_percentage}% de réduction offerte
+                    </p>
+                  </CardContent>
+                </Card>
+              }
+            />
             <Card>
               <CardContent className="flex h-full flex-col items-center justify-center gap-2 pt-6 text-center">
                 {partner.type === "assigned" ? (
@@ -194,7 +213,7 @@ export default function DashboardPartnerPage() {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {formatCurrency(partner.next_level.amount_remaining)} avant {partner.next_level.name}
+                      {formatPartnerAmount(partner.next_level.amount_remaining)} avant {partner.next_level.name}
                     </p>
                   </>
                 ) : (

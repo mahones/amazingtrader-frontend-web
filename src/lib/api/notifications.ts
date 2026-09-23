@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatPartnerAmount } from "@/lib/utils";
 import type { PaginatedResponse } from "./admin";
 
 export const NOTIFICATION_TYPES = {
@@ -95,7 +95,7 @@ export function formatNotificationMessage(notification: AdminNotification): {
     const data = notification.data as WithdrawalRequestedNotificationData;
     return {
       title: `Demande de retrait : ${data.user_name}`,
-      subtitle: formatCurrency(data.amount),
+      subtitle: formatPartnerAmount(data.amount),
     };
   }
 

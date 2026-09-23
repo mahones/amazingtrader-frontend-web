@@ -35,6 +35,7 @@ export function BrokerDialog({
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(broker?.name ?? "");
+  const [category, setCategory] = useState(broker?.category ?? "");
   const [affiliateUrl, setAffiliateUrl] = useState(broker?.affiliate_url ?? "");
   const [description, setDescription] = useState(broker?.description ?? "");
   const [position, setPosition] = useState(broker?.position?.toString() ?? "0");
@@ -45,6 +46,7 @@ export function BrokerDialog({
 
   function reset() {
     setName(broker?.name ?? "");
+    setCategory(broker?.category ?? "");
     setAffiliateUrl(broker?.affiliate_url ?? "");
     setDescription(broker?.description ?? "");
     setPosition(broker?.position?.toString() ?? "0");
@@ -60,6 +62,7 @@ export function BrokerDialog({
 
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("category", category.trim());
     formData.append("affiliate_url", affiliateUrl);
     formData.append("description", description);
     formData.append("position", position || "0");
@@ -106,6 +109,16 @@ export function BrokerDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="ex. Deriv, Exness, RoboForex"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="broker-category">Catégorie</Label>
+            <Input
+              id="broker-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="ex. Auto-trading, Bots de trading, Formations..."
             />
           </div>
 

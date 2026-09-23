@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { approveWithdrawal, fetchAdminWithdrawals, rejectWithdrawal } from "@/lib/api/admin";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
 
@@ -50,7 +50,7 @@ function WithdrawalReviewCard({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="font-medium">
-              {withdrawal.partner?.user?.name ?? "Partenaire"} · {formatCurrency(withdrawal.amount)}
+              {withdrawal.partner?.user?.name ?? "Partenaire"} · {formatPartnerAmount(withdrawal.amount)}
             </p>
             <p className="text-sm text-muted-foreground">
               {withdrawal.partner?.user?.email} · code {withdrawal.partner?.code}

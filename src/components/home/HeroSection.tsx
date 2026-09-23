@@ -70,10 +70,10 @@ export function HeroSection() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button size="lg" render={
               <Link href="/auto-trading">
-                Voir l&apos;auto-trading <ArrowRight className="ml-1 size-4" />
+                Voir nos performances <ArrowRight className="ml-1 size-4" />
               </Link>
             } />
-            <Button size="lg" variant="outline" render={<Link href="/formations">Découvrir les formations</Link>} />
+            <Button size="lg" variant="outline" render={<Link href="/bot-trading">Découvrir nos EAs</Link>} />
           </div>
         </motion.div>
 

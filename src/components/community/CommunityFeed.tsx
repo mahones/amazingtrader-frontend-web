@@ -2,13 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AxiosError } from "axios";
-import { deleteCommunityMessage, fetchCommunityMessages, postCommunityMessage } from "@/lib/api/community";
+import {
+  deleteCommunityMessage,
+  fetchCommunityMembers,
+  fetchCommunityMessages,
+  pinCommunityMessage,
+  postCommunityMessage,
+} from "@/lib/api/community";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import { CommunityUpsell } from "./CommunityUpsell";
 import { MessageCard } from "./MessageCard";
-import { MessageComposer } from "./MessageComposer";
-import type { CommunityMessage } from "@/types/community";
+import { MessageComposer, type ComposerSubmission } from "./MessageComposer";
+import type { CommunityMember, CommunityMessage } from "@/types/community";
 
 const POLL_INTERVAL_MS = 18_000;
 
@@ -30,6 +36,7 @@ function removeMessage(messages: CommunityMessage[], id: number): CommunityMessa
 
 export function CommunityFeed() {
   const [messages, setMessages] = useState<CommunityMessage[] | null>(null);
+  const [members, setMembers] = useState<CommunityMember[]>([]);
   const [forbidden, setForbidden] = useState(false);
 
   const poll = useCallback(async () => {
@@ -58,13 +65,30 @@ export function CommunityFeed() {
     };
   }, [poll]);
 
-  async function handlePost(body: string) {
-    const created = await postCommunityMessage(body);
+  useEffect(() => {
+    fetchCommunityMembers().then(setMembers).catch(() => {});
+  }, []);
+
+  async function handlePost(payload: ComposerSubmission) {
+    const created = await postCommunityMessage({
+      body: payload.body,
+      linkUrl: payload.linkUrl,
+      linkLabel: payload.linkLabel,
+      image: payload.image,
+      files: payload.files,
+    });
     setMessages((prev) => (prev ? [created, ...prev] : [created]));
   }
 
-  async function handleReply(parentId: number, body: string) {
-    const created = await postCommunityMessage(body, parentId);
+  async function handleReply(parentId: number, payload: ComposerSubmission) {
+    const created = await postCommunityMessage({
+      body: payload.body,
+      parentId,
+      linkUrl: payload.linkUrl,
+      linkLabel: payload.linkLabel,
+      image: payload.image,
+      files: payload.files,
+    });
     setMessages((prev) =>
       prev
         ? prev.map((message) =>
@@ -87,12 +111,21 @@ export function CommunityFeed() {
     }
   }
 
+  async function handlePin(id: number, pinned: boolean) {
+    try {
+      const updated = await pinCommunityMessage(id, pinned);
+      setMessages((prev) => (prev ? replaceMessage(prev, updated) : prev));
+    } catch (error) {
+      toast.error(extractApiError(error, "Impossible de mettre à jour l'épinglage."));
+    }
+  }
+
   if (forbidden) return <CommunityUpsell />;
 
   return (
     <div className="space-y-4">
       <div className="rounded-lg border border-border p-4">
-        <MessageComposer onSubmit={handlePost} />
+        <MessageComposer onSubmit={handlePost} members={members} />
       </div>
 
       {messages === null && <p className="text-sm text-muted-foreground">Chargement...</p>}
@@ -105,9 +138,11 @@ export function CommunityFeed() {
         <MessageCard
           key={message.id}
           message={message}
+          members={members}
           onReactionChange={handleReactionChange}
           onDelete={handleDelete}
-          onReply={(body) => handleReply(message.id, body)}
+          onReply={(payload) => handleReply(message.id, payload)}
+          onPin={handlePin}
         />
       ))}
     </div>

@@ -10,6 +10,7 @@ import {
   Bot,
   Handshake,
   KeyRound,
+  MessageSquarePlus,
   RefreshCw,
   Users,
   Wallet,
@@ -19,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { AnnouncementsBanner } from "@/components/announcements/AnnouncementsBanner";
+import { SubmitReviewDialog } from "@/components/reviews/SubmitReviewDialog";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
@@ -327,6 +329,19 @@ export default function DashboardOverviewPage() {
               <ArrowUpRight className="size-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           ))}
+          {!isStaff && (
+            <SubmitReviewDialog
+              trigger={
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+                >
+                  <MessageSquarePlus className="size-4 text-primary" />
+                  Laisser un avis
+                </button>
+              }
+            />
+          )}
         </CardContent>
       </Card>
     </div>

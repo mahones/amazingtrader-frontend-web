@@ -16,6 +16,7 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  MessageSquareText,
   Percent,
   Settings,
   Users,
@@ -36,7 +37,7 @@ export function Sidebar() {
     { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
     { href: "/dashboard/events", label: "Événements", icon: CalendarDays },
-    { href: "/dashboard/partenaire", label: "Espace Partenaire", icon: Handshake },
+    ...(isStaff ? [] : [{ href: "/dashboard/partenaire", label: "Espace Partenaire", icon: Handshake }]),
     ...(isStaff || user?.is_community_member
       ? [{ href: "/dashboard/community", label: "Communauté VIP", icon: Crown }]
       : []),
@@ -47,6 +48,7 @@ export function Sidebar() {
     ...(isStaff ? [{ href: "/dashboard/promo-codes", label: "Codes promo", icon: Percent }] : []),
     ...(isStaff ? [{ href: "/dashboard/partenaires", label: "Partenaires", icon: Handshake }] : []),
     ...(isStaff ? [{ href: "/dashboard/retraits", label: "Demandes de retrait", icon: Wallet }] : []),
+    ...(isStaff ? [{ href: "/dashboard/avis", label: "Avis clients", icon: MessageSquareText }] : []),
     ...(isStaff ? [{ href: "/dashboard/users", label: "Utilisateurs", icon: Users }] : []),
     ...(isStaff ? [{ href: "/dashboard/historique", label: "Historique", icon: History }] : []),
     { href: "/dashboard/settings", label: "Paramètres", icon: Settings },

@@ -1,8 +1,14 @@
 import { BrokerCard } from "@/components/cards/BrokerCard";
-import { getBrokers } from "@/lib/api/server";
+import { getBrokers, getBrokersPageSettings } from "@/lib/api/server";
+
+const DEFAULT_DESCRIPTION =
+  "Ouvrez votre compte chez l'un de nos courtiers recommandés pour une meilleure performance avec nos algorithmes.";
 
 export default async function BrokersPage() {
-  const brokers = await getBrokers().catch(() => []);
+  const [brokers, pageSettings] = await Promise.all([
+    getBrokers().catch(() => []),
+    getBrokersPageSettings().catch(() => ({ description: DEFAULT_DESCRIPTION })),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -10,10 +16,7 @@ export default async function BrokersPage() {
         <h1 className="text-4xl font-bold sm:text-5xl">
           Courtier <span className="text-primary">recommandés</span>
         </h1>
-        <p className="mt-3 text-lg text-muted-foreground">
-          Ouvrez votre compte chez l&apos;un de nos courtiers recommandés
-          pour une meilleure performance avec nos algorithmes.
-        </p>
+        <p className="mt-3 text-lg text-muted-foreground">{pageSettings.description}</p>
       </div>
 
       {brokers.length > 0 ? (
