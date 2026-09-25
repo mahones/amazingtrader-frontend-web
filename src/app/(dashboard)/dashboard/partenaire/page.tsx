@@ -135,7 +135,7 @@ export default function DashboardPartnerPage() {
                 <p className="text-sm text-muted-foreground">Votre code partenaire</p>
                 <div className="flex items-center gap-1">
                   <p className="font-mono text-2xl font-bold tracking-wider">{partner.code}</p>
-                  {partner.type !== "assigned" && partner.is_code_editable && (
+                  {partner.is_code_editable && (
                     <EditPartnerCodeDialog code={partner.code!} onUpdated={setPartner} />
                   )}
                 </div>

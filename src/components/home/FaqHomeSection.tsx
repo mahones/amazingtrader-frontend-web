@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, HelpCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { LinkifiedText } from "@/components/shared/LinkifiedText";
 import type { Faq } from "@/types/faq";
 
 export function FaqHomeSection({ faqs }: { faqs: Faq[] }) {
@@ -29,26 +30,23 @@ export function FaqHomeSection({ faqs }: { faqs: Faq[] }) {
         />
 
         <div className="relative">
-          <div className="flex min-w-0 items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <HelpCircle className="size-6" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-2xl font-bold text-balance text-white sm:text-3xl">
-                Des questions ? On a les réponses.
-              </h2>
-              <p className="mt-2 text-pretty text-white/60">
-                Retrouvez les réponses aux questions les plus fréquentes sur nos formations, l&apos;auto-trading et
-                nos bots.
-              </p>
-            </div>
+          <div className="text-center">
+            <span className="text-sm font-semibold tracking-wide text-primary uppercase">FAQ</span>
+            <h2 className="mt-3 text-2xl font-bold text-balance text-white sm:text-3xl">
+              Questions fréquentes
+            </h2>
+            <p className="mt-2 text-pretty text-white/60">
+              Les questions qu&apos;on nous pose avant chaque inscription.
+            </p>
           </div>
 
           <Accordion className="mt-8">
             {faqs.map((faq) => (
               <AccordionItem key={faq.id} value={faq.id} className="border-white/10 bg-white/[0.03]">
                 <AccordionTrigger className="text-white hover:no-underline">{faq.question}</AccordionTrigger>
-                <AccordionContent className="text-white/60">{faq.answer}</AccordionContent>
+                <AccordionContent className="text-white/60">
+                  <LinkifiedText text={faq.answer} />
+                </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>

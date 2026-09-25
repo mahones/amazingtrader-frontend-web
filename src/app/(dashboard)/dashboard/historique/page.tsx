@@ -20,6 +20,8 @@ const TYPE_FILTERS = [
   { value: "registration", label: "Inscriptions" },
   { value: "partner_application", label: "Demandes partenaires" },
   { value: "withdrawal_request", label: "Demandes de retrait" },
+  { value: "community_message", label: "Messages communauté" },
+  { value: "event", label: "Évènements créés" },
 ];
 
 function formatDateTime(date: string) {
@@ -30,6 +32,8 @@ function eventLabel(type: string) {
   if (type === NOTIFICATION_TYPES.newUser) return "Inscription";
   if (type === NOTIFICATION_TYPES.partnerApplication) return "Partenariat";
   if (type === NOTIFICATION_TYPES.withdrawalRequested) return "Retrait";
+  if (type === NOTIFICATION_TYPES.communityMessage) return "Communauté";
+  if (type === NOTIFICATION_TYPES.event) return "Évènement";
   return "Achat";
 }
 
@@ -48,7 +52,13 @@ export default function DashboardHistoriquePage() {
       type:
         type === "tout"
           ? undefined
-          : (type as "purchase" | "registration" | "partner_application" | "withdrawal_request"),
+          : (type as
+              | "purchase"
+              | "registration"
+              | "partner_application"
+              | "withdrawal_request"
+              | "community_message"
+              | "event"),
       date_from: dateFrom || undefined,
       date_to: dateTo || undefined,
     }).then((res) => {

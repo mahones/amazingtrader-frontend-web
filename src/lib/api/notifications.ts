@@ -8,6 +8,8 @@ export const NOTIFICATION_TYPES = {
   credentialsUpdate: "App\\Notifications\\PurchaseDetailsChangeRequestedNotification",
   partnerApplication: "App\\Notifications\\NewPartnerApplicationNotification",
   withdrawalRequested: "App\\Notifications\\WithdrawalRequestedNotification",
+  communityMessage: "App\\Notifications\\NewCommunityMessageNotification",
+  event: "App\\Notifications\\NewEventNotification",
 } as const;
 
 export interface PaidOrderNotificationData {
@@ -50,6 +52,20 @@ export interface WithdrawalRequestedNotificationData {
   receiving_identifier: string;
 }
 
+export interface CommunityMessageNotificationData {
+  message_id: number;
+  author_id: number;
+  author_name: string;
+  excerpt: string;
+}
+
+export interface EventNotificationData {
+  event_id: number;
+  title: string;
+  author_id: number;
+  author_name: string;
+}
+
 export interface AdminNotification {
   id: string;
   type: string;
@@ -58,7 +74,9 @@ export interface AdminNotification {
     | NewUserNotificationData
     | CredentialsChangeNotificationData
     | PartnerApplicationNotificationData
-    | WithdrawalRequestedNotificationData;
+    | WithdrawalRequestedNotificationData
+    | CommunityMessageNotificationData
+    | EventNotificationData;
   read_at: string | null;
   created_at: string;
 }
@@ -99,6 +117,22 @@ export function formatNotificationMessage(notification: AdminNotification): {
     };
   }
 
+  if (notification.type === NOTIFICATION_TYPES.communityMessage) {
+    const data = notification.data as CommunityMessageNotificationData;
+    return {
+      title: `Nouveau message : ${data.author_name}`,
+      subtitle: data.excerpt,
+    };
+  }
+
+  if (notification.type === NOTIFICATION_TYPES.event) {
+    const data = notification.data as EventNotificationData;
+    return {
+      title: `Nouvel évènement : ${data.title}`,
+      subtitle: `Créé par ${data.author_name}`,
+    };
+  }
+
   const data = notification.data as PaidOrderNotificationData;
   return {
     title: `Nouveau paiement de ${data.user_name}`,
@@ -116,7 +150,14 @@ export async function fetchAdminNotifications() {
 }
 
 export interface NotificationFilters {
-  type?: "purchase" | "registration" | "credentials_update" | "partner_application" | "withdrawal_request";
+  type?:
+    | "purchase"
+    | "registration"
+    | "credentials_update"
+    | "partner_application"
+    | "withdrawal_request"
+    | "community_message"
+    | "event";
   date_from?: string;
   date_to?: string;
 }

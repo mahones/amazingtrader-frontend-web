@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { LinkifiedText } from "@/components/shared/LinkifiedText";
 import { cn } from "@/lib/utils";
 import type { Faq } from "@/types/faq";
 
@@ -72,7 +73,9 @@ export function FaqCategoryFilter({ faqs }: { faqs: Faq[] }) {
                 {categoryFaqs.map((faq) => (
                   <AccordionItem key={faq.id} value={faq.id}>
                     <AccordionTrigger>{faq.question}</AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
+                    <AccordionContent className="text-muted-foreground">
+                      <LinkifiedText text={faq.answer} />
+                    </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>

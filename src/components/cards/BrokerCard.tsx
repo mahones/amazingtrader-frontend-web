@@ -1,5 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Broker } from "@/types/broker";
 
@@ -20,7 +21,10 @@ export function BrokerCard({ broker }: { broker: Broker }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-lg font-semibold">{broker.name}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="truncate text-lg font-semibold">{broker.name}</p>
+          {broker.category && <Badge variant="secondary">{broker.category}</Badge>}
+        </div>
         {broker.description && (
           <p className="line-clamp-2 text-sm text-muted-foreground">{broker.description}</p>
         )}

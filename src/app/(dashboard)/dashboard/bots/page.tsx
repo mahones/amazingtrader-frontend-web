@@ -202,7 +202,6 @@ function BotLicenseCard({
   license: UserBotLicense;
   onUpdated: (license: UserBotLicense) => void;
 }) {
-  const { user } = useAuth();
   const bot = license.bot_license_plan.trading_bot;
   const files = license.files ?? [];
 
@@ -240,19 +239,12 @@ function BotLicenseCard({
           status={license.status}
         />
 
-        {(license.purchase_details || user?.whatsapp_number) && (
+        {license.purchase_details && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
             <div className="flex flex-wrap gap-x-6 gap-y-1">
-              {license.purchase_details && (
-                <p>
-                  <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
-                </p>
-              )}
-              {user?.whatsapp_number && (
-                <p>
-                  <span className="text-muted-foreground">WhatsApp :</span> {user.whatsapp_number}
-                </p>
-              )}
+              <p>
+                <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
+              </p>
             </div>
             <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
           </div>
@@ -285,7 +277,7 @@ function BotLicenseCard({
           </div>
         )}
 
-        {!license.purchase_details && !user?.whatsapp_number && (
+        {!license.purchase_details && (
           <div className="flex justify-end">
             <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
           </div>

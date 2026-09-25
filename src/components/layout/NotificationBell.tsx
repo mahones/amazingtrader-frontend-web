@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  NOTIFICATION_TYPES,
   fetchAdminNotifications,
   fetchAdminUnreadCount,
   formatNotificationMessage,
@@ -69,7 +70,19 @@ export function NotificationBell() {
     if (!notification.read_at) {
       await markNotificationRead(notification.id);
     }
-    router.push(`/dashboard/users/${notification.data.user_id}`);
+
+    if (notification.type === NOTIFICATION_TYPES.communityMessage) {
+      router.push("/dashboard/community");
+      return;
+    }
+
+    if (notification.type === NOTIFICATION_TYPES.event) {
+      router.push("/dashboard/events");
+      return;
+    }
+
+    const data = notification.data as { user_id: number };
+    router.push(`/dashboard/users/${data.user_id}`);
   }
 
   return (

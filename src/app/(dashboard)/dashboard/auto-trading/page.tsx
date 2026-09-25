@@ -213,8 +213,6 @@ function LicenseCard({
   license: UserLicense;
   onUpdated: (license: UserLicense) => void;
 }) {
-  const { user } = useAuth();
-
   return (
     <Card>
       <CardHeader>
@@ -249,27 +247,17 @@ function LicenseCard({
           status={license.status}
         />
 
-        {(license.purchase_details || user?.whatsapp_number) && (
+        {license.purchase_details && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              {license.purchase_details && (
-                <>
-                  <p>
-                    <span className="text-muted-foreground">ID :</span>{" "}
-                    {license.purchase_details.id}
-                  </p>
-                  <p>
-                    <span className="text-muted-foreground">Serveur :</span>{" "}
-                    {license.purchase_details.server}
-                  </p>
-                </>
-              )}
-              {user?.whatsapp_number && (
-                <p>
-                  <span className="text-muted-foreground">WhatsApp :</span>{" "}
-                  {user.whatsapp_number}
-                </p>
-              )}
+              <p>
+                <span className="text-muted-foreground">ID :</span>{" "}
+                {license.purchase_details.id}
+              </p>
+              <p>
+                <span className="text-muted-foreground">Serveur :</span>{" "}
+                {license.purchase_details.server}
+              </p>
             </div>
             <EditPurchaseDetailsDialog
               type="license_plan"
@@ -293,7 +281,7 @@ function LicenseCard({
           </div>
         )}
 
-        {!license.purchase_details && !user?.whatsapp_number && (
+        {!license.purchase_details && (
           <div className="flex justify-end">
             <EditPurchaseDetailsDialog
               type="license_plan"

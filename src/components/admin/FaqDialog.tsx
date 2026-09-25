@@ -126,6 +126,9 @@ export function FaqDialog({
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
             />
+            <p className="text-xs text-muted-foreground">
+              Astuce : collez une URL (https://...) dans le texte, elle s&apos;affichera comme un lien cliquable.
+            </p>
           </div>
 
           <div className="space-y-2">
