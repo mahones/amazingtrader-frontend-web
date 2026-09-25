@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -42,6 +42,13 @@ export function Header() {
   const router = useRouter();
   const { user, isLoading, logout } = useAuth();
   const [open, setOpen] = useState(false);
+
+  // Belt-and-suspenders alongside each link's own onClick: closes the menu
+  // whenever the route actually changes, so it can't stay stuck open if a
+  // tap's click handler ever races with the navigation on a real device.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   async function handleLogout() {
     if (!window.confirm("Voulez-vous vraiment vous déconnecter ?")) return;
