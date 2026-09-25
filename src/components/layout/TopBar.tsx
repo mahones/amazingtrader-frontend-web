@@ -55,36 +55,34 @@ export function TopBar() {
 
     return (
       <>
-        <div className="flex items-center gap-3 bg-destructive px-4 py-2">
+        <div className="relative flex items-center bg-destructive px-4 py-2">
           <button
             type="button"
             onClick={() => setSelected(current)}
-            className="flex min-w-0 flex-1 items-center gap-2 text-left text-white"
+            className="mx-auto flex min-w-0 max-w-[calc(100%-3rem)] items-center gap-2 text-white"
           >
             <Megaphone className="size-4 shrink-0" />
-            <span className="relative h-5 min-w-0 flex-1 overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={current.id}
-                  initial={{ y: 14, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -14, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 flex items-center gap-2 truncate text-sm"
-                >
-                  <span className="shrink-0 font-semibold text-white">{current.title}</span>
-                  <span className="shrink-0 text-white/70">·</span>
-                  <span className="truncate text-white/90">{current.description}</span>
-                </motion.span>
-              </AnimatePresence>
-            </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={current.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="flex min-w-0 items-center gap-2 truncate text-sm"
+              >
+                <span className="shrink-0 font-semibold text-white">{current.title}</span>
+                <span className="shrink-0 text-white/70">·</span>
+                <span className="truncate text-white/90">{current.description}</span>
+              </motion.span>
+            </AnimatePresence>
           </button>
 
           <button
             type="button"
             onClick={() => setDismissed(true)}
             aria-label="Fermer l'annonce"
-            className="shrink-0 rounded-full p-1 text-white transition-colors hover:bg-white/20"
+            className="absolute right-3 shrink-0 rounded-full p-1 text-white transition-colors hover:bg-white/20"
           >
             <X className="size-4" />
           </button>
