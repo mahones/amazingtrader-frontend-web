@@ -1,4 +1,4 @@
-import { BrokerCard } from "@/components/cards/BrokerCard";
+import { BrokerCategoryFilter } from "@/components/brokers/BrokerCategoryFilter";
 import { getBrokers, getBrokersPageSettings } from "@/lib/api/server";
 
 const DEFAULT_DESCRIPTION =
@@ -19,17 +19,7 @@ export default async function BrokersPage() {
         <p className="mt-3 text-lg text-muted-foreground">{pageSettings.description}</p>
       </div>
 
-      {brokers.length > 0 ? (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          {brokers.map((broker) => (
-            <BrokerCard key={broker.id} broker={broker} />
-          ))}
-        </div>
-      ) : (
-        <p className="mt-12 text-center text-muted-foreground">
-          Aucun courtier partenaire pour le moment.
-        </p>
-      )}
+      <BrokerCategoryFilter brokers={brokers} />
     </div>
   );
 }

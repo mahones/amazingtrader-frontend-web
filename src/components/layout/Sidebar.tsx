@@ -9,6 +9,7 @@ import {
   CalendarDays,
   Crown,
   FileText,
+  Gift,
   Handshake,
   HelpCircle,
   History,
@@ -23,15 +24,14 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Logo } from "./Logo";
 import { useAuth } from "@/context/AuthContext";
 
-export function Sidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { user, isStaff, logout } = useAuth();
+function useSidebarNavItems() {
+  const { user, isStaff } = useAuth();
 
-  const navItems = [
+  return [
     { href: "/dashboard", label: "Aperçu", icon: LayoutDashboard },
     { href: "/dashboard/formations", label: "Mes Formations", icon: BookOpen },
     { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
@@ -47,22 +47,31 @@ export function Sidebar() {
     ...(isStaff ? [{ href: "/dashboard/brokers", label: "Courtiers", icon: Building2 }] : []),
     ...(isStaff ? [{ href: "/dashboard/promo-codes", label: "Codes promo", icon: Percent }] : []),
     ...(isStaff ? [{ href: "/dashboard/partenaires", label: "Partenaires", icon: Handshake }] : []),
+    ...(isStaff ? [{ href: "/dashboard/cadeaux", label: "Cadeaux", icon: Gift }] : []),
     ...(isStaff ? [{ href: "/dashboard/retraits", label: "Demandes de retrait", icon: Wallet }] : []),
     ...(isStaff ? [{ href: "/dashboard/avis", label: "Avis clients", icon: MessageSquareText }] : []),
     ...(isStaff ? [{ href: "/dashboard/users", label: "Utilisateurs", icon: Users }] : []),
     ...(isStaff ? [{ href: "/dashboard/historique", label: "Historique", icon: History }] : []),
     { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
   ];
+}
+
+function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, isStaff, logout } = useAuth();
+  const navItems = useSidebarNavItems();
 
   async function handleLogout() {
     if (!window.confirm("Voulez-vous vraiment vous déconnecter ?")) return;
+    onNavigate?.();
     await logout();
     router.push("/");
   }
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border/60 bg-background md:flex md:h-screen md:flex-col">
-      <Link href="/" className="shrink-0 px-6 py-5" aria-label="amazingtraders, accueil">
+    <>
+      <Link href="/" className="shrink-0 px-6 py-5" aria-label="amazingtraders, accueil" onClick={onNavigate}>
         <Logo themed />
       </Link>
 
@@ -74,6 +83,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground"
@@ -103,6 +113,31 @@ export function Sidebar() {
           </Button>
         </div>
       )}
+    </>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden w-64 shrink-0 border-r border-border/60 bg-background md:flex md:h-screen md:flex-col">
+      <SidebarNav />
     </aside>
+  );
+}
+
+export function MobileSidebar({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="left" className="w-72 gap-0 p-0 md:hidden">
+        <SheetTitle className="sr-only">Menu</SheetTitle>
+        <SidebarNav onNavigate={() => onOpenChange(false)} />
+      </SheetContent>
+    </Sheet>
   );
 }

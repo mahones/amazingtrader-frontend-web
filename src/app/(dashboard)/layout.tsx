@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { useState } from "react";
+import { Home, Menu } from "lucide-react";
 import { CommunityMenu } from "@/components/layout/CommunityMenu";
 import { NotificationBell } from "@/components/layout/NotificationBell";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileSidebar, Sidebar } from "@/components/layout/Sidebar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -23,6 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, isLoading } = useRequireAuth();
   const { isStaff } = useAuth();
   useAutoLogout();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   if (isLoading || !user) {
     return (
@@ -39,9 +41,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar />
+      <MobileSidebar open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border/60 px-6">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border/60 px-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 md:hidden"
+              onClick={() => setMobileNavOpen(true)}
+              aria-label="Ouvrir le menu"
+            >
+              <Menu className="size-5" />
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -69,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <CommunityMenu />
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

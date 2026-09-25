@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { EditPartnerCodeDialog } from "@/components/partner/EditPartnerCodeDialog";
 import { PartnerLevelsDialog } from "@/components/partner/PartnerLevelsDialog";
+import { PartnerRewardsCard } from "@/components/partner/PartnerRewardsCard";
 import { RequestWithdrawalDialog } from "@/components/partner/RequestWithdrawalDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { applyForPartnerProgram, fetchMyPartnerProfile, fetchMyWithdrawals } from "@/lib/api/partners";
@@ -258,6 +259,8 @@ export default function DashboardPartnerPage() {
               ))}
             </CardContent>
           </Card>
+
+          <PartnerRewardsCard partner={partner} onUpdated={setPartner} />
         </>
       )}
     </div>

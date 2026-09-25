@@ -30,3 +30,8 @@ export async function requestWithdrawal(payload: {
   const { data } = await apiClient.post<{ data: Withdrawal }>("/my/partner/withdrawals", payload);
   return data.data;
 }
+
+export async function claimPartnerReward(level: string) {
+  const { data } = await apiClient.post<{ data: Partner }>(`/my/partner/rewards/${level}/claim`);
+  return data.data;
+}

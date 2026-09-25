@@ -21,7 +21,7 @@ import type { Faq } from "@/types/faq";
 import type { User, UserProfile } from "@/types/user";
 import type { Broker } from "@/types/broker";
 import type { PromoCode } from "@/types/promo-code";
-import type { Partner, PartnerLevelConfig } from "@/types/partner";
+import type { AdminPartnerRewardClaim, Partner, PartnerLevelConfig, PartnerRewardClaimStatus } from "@/types/partner";
 import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
 import type { Review } from "@/types/review";
 
@@ -625,6 +625,21 @@ export async function updateAssignedPartner(
   payload: { gain_percentage: number; discount_percentage: number }
 ) {
   const { data } = await apiClient.patch<{ data: Partner }>(`/admin/users/${userId}/partner`, payload);
+  return data.data;
+}
+
+// Partner reward claims
+export async function fetchAdminPartnerRewardClaims(params?: { status?: PartnerRewardClaimStatus }) {
+  const { data } = await apiClient.get<{ data: AdminPartnerRewardClaim[] }>("/admin/partner-reward-claims", {
+    params,
+  });
+  return data.data;
+}
+
+export async function fulfillPartnerRewardClaim(id: number) {
+  const { data } = await apiClient.patch<{ data: AdminPartnerRewardClaim }>(
+    `/admin/partner-reward-claims/${id}/fulfill`
+  );
   return data.data;
 }
 

@@ -34,6 +34,9 @@ export function AssignLicenseDialog({
   botLicensePlans,
   onLicenseAssigned,
   onBotLicenseAssigned,
+  trigger,
+  open: openProp,
+  onOpenChange: onOpenChangeProp,
 }: {
   userId: number;
   whatsappNumber: string | null;
@@ -41,8 +44,13 @@ export function AssignLicenseDialog({
   botLicensePlans: (BotLicensePlan & { botName: string })[];
   onLicenseAssigned: (license: UserLicense) => void;
   onBotLicenseAssigned: (license: UserBotLicense) => void;
+  trigger?: React.ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = onOpenChangeProp ?? setOpenState;
   const [type, setType] = useState<LicenseType>("auto_trading");
   const [planId, setPlanId] = useState("");
   const [form, setForm] = useState<LicensePurchaseDetails>(emptyForm);
@@ -102,7 +110,11 @@ export function AssignLicenseDialog({
         if (!next) reset();
       }}
     >
-      <DialogTrigger render={<Button variant="outline" />}>Assigner une licence</DialogTrigger>
+      {trigger ? (
+        <DialogTrigger render={trigger} />
+      ) : (
+        <DialogTrigger render={<Button variant="outline" />}>Assigner une licence</DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Assigner une licence</DialogTitle>

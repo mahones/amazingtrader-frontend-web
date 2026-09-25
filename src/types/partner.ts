@@ -18,6 +18,39 @@ export interface NextLevelInfo {
   amount_remaining: number;
 }
 
+export type PartnerRewardClaimStatus = "pending" | "fulfilled";
+
+export interface PartnerRewardClaim {
+  id: number;
+  status: PartnerRewardClaimStatus;
+  claimed_at: string;
+  fulfilled_at: string | null;
+}
+
+export interface PartnerReward {
+  level: PartnerLevelName;
+  name: string;
+  min_cumulative_purchases: number;
+  unlocked: boolean;
+  progress_percent: number;
+  claim: PartnerRewardClaim | null;
+}
+
+export interface AdminPartnerRewardClaim {
+  id: number;
+  level: PartnerLevelName;
+  level_name: string | null;
+  status: PartnerRewardClaimStatus;
+  claimed_at: string;
+  fulfilled_at: string | null;
+  fulfilled_by: { id: number; name: string } | null;
+  partner: {
+    id: number;
+    code: string | null;
+    user: { id: number; name: string; email: string; whatsapp_number: string | null } | null;
+  };
+}
+
 export interface Partner {
   id: number;
   type: PartnerAccountType;
@@ -32,6 +65,7 @@ export interface Partner {
   balance: number;
   total_earned: number;
   next_level: NextLevelInfo | null;
+  rewards: PartnerReward[];
   levels: PartnerLevelConfig[] | null;
   user?: { id: number; name: string; email: string };
   reviewed_at: string | null;
