@@ -2,7 +2,7 @@ import { apiClient } from "./client";
 import type { Order } from "@/types/order";
 
 export type PurchasableType = "course" | "license_plan" | "bot_license_plan";
-export type PaymentGateway = "simulated" | "moneyfusion";
+export type PaymentGateway = "simulated";
 
 export async function createOrder(
   items: { type: PurchasableType; id: number; quantity?: number }[],
@@ -87,5 +87,21 @@ export async function payOrderWithPayPal(orderId: number) {
 
 export async function capturePayPalPayment(orderId: number) {
   const { data } = await apiClient.post<{ data: Order }>(`/orders/${orderId}/pay/paypal/capture`);
+  return data.data;
+}
+
+/**
+ * CinetPay is redirect-based, not synchronous like payOrder(): returns the
+ * hosted mobile-money checkout URL to send the browser to. Confirmation
+ * happens via CinetPay's webhook, with verifyCinetPayPayment() as an
+ * immediate re-check when the buyer lands back on the confirmation page.
+ */
+export async function payOrderWithCinetPay(orderId: number) {
+  const { data } = await apiClient.post<{ redirect_url: string }>(`/orders/${orderId}/pay/cinetpay`);
+  return data.redirect_url;
+}
+
+export async function verifyCinetPayPayment(orderId: number) {
+  const { data } = await apiClient.post<{ data: Order }>(`/orders/${orderId}/pay/cinetpay/verify`);
   return data.data;
 }

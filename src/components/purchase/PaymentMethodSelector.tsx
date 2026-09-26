@@ -3,7 +3,7 @@
 import { Bitcoin, CreditCard, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type CheckoutPaymentMethod = "paypal" | "payerurl" | "moneyfusion";
+export type CheckoutPaymentMethod = "paypal" | "payerurl" | "cinetpay";
 
 const METHODS: {
   value: CheckoutPaymentMethod;
@@ -15,11 +15,10 @@ const METHODS: {
   { value: "paypal", label: "PayPal", description: "Carte bancaire ou solde PayPal", icon: CreditCard },
   { value: "payerurl", label: "PayerURL", description: "Paiement en cryptomonnaie", icon: Bitcoin },
   {
-    value: "moneyfusion",
-    label: "MoneyFusion",
-    description: "Mobile money",
+    value: "cinetpay",
+    label: "Mobile Money",
+    description: "Orange Money, MTN, Moov, Wave... via CinetPay",
     icon: Smartphone,
-    disabled: true,
   },
 ];
 

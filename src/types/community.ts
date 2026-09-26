@@ -1,9 +1,6 @@
-import type { UserRole } from "./user";
-
 export interface CommunityAuthor {
   id: number;
   name: string;
-  role: UserRole;
   is_staff: boolean;
   avatar_url: string | null;
 }
@@ -40,7 +37,6 @@ export interface CommunityMessage {
 export interface CommunityMember {
   id: number;
   name: string;
-  role: UserRole;
   is_staff: boolean;
   avatar_url: string | null;
   created_at: string;

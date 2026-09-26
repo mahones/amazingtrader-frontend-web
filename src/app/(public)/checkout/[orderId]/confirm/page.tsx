@@ -14,6 +14,7 @@ import {
   fetchOrder,
   fetchPayerUrlConfig,
   simulatePayerUrlPayment,
+  verifyCinetPayPayment,
   type PurchasableType,
 } from "@/lib/api/orders";
 import { formatCurrency } from "@/lib/utils";
@@ -53,6 +54,7 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
   const [captureError, setCaptureError] = useState<string | null>(null);
   const hasHandledPaidRedirectRef = useRef(false);
   const hasCapturedPayPalRef = useRef(false);
+  const hasVerifiedCinetPayRef = useRef(false);
 
   async function reload() {
     try {
@@ -106,6 +108,38 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
       .then((fresh) => setOrder(fresh))
       .catch((err) => setCaptureError(extractApiError(err, "Impossible de finaliser le paiement PayPal.")));
   }, [order?.gateway, order?.status, orderId, searchParams]);
+
+  // CinetPay redirects the buyer back here whether the mobile-money payment
+  // succeeded or failed (success_url === failed_url). Re-check the real
+  // status immediately instead of waiting on the webhook — the polling
+  // effect below is only a fallback if this call lands before CinetPay has
+  // finalized the transaction on its side.
+  useEffect(() => {
+    if (order?.gateway !== "cinetpay" || order?.status !== "pending" || hasVerifiedCinetPayRef.current) return;
+
+    hasVerifiedCinetPayRef.current = true;
+    verifyCinetPayPayment(orderId)
+      .then((fresh) => setOrder(fresh))
+      .catch((err) => setCaptureError(extractApiError(err, "Impossible de vérifier le paiement CinetPay.")));
+  }, [order?.gateway, order?.status, orderId]);
+
+  // Still pending after the immediate verify? Poll a little while for the
+  // webhook (or a slightly delayed mobile-money confirmation) to land.
+  useEffect(() => {
+    if (order?.gateway !== "cinetpay" || order?.status !== "pending" || !hasVerifiedCinetPayRef.current) return;
+
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts += 1;
+      const fresh = await reload();
+      if (attempts >= MAX_POLL_ATTEMPTS || fresh?.status !== "pending") {
+        clearInterval(interval);
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.gateway, order?.status]);
 
   // A course purchase has nothing to configure — send the buyer straight
   // into their new formation as soon as payment is confirmed.
@@ -194,6 +228,18 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
                 </Link>
               </Alert>
             )}
+            {captureError && <Alert variant="error">{captureError}</Alert>}
+          </CardContent>
+        </Card>
+      )}
+
+      {order && order.status === "pending" && order.gateway === "cinetpay" && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">{formatCurrency(order.total_amount, order.currency)}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert>En attente de confirmation du paiement mobile money...</Alert>
             {captureError && <Alert variant="error">{captureError}</Alert>}
           </CardContent>
         </Card>

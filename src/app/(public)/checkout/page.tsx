@@ -15,7 +15,7 @@ import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
 import {
   createOrder,
-  payOrder,
+  payOrderWithCinetPay,
   payOrderWithPayerUrl,
   payOrderWithPayPal,
   validatePartnerCode,
@@ -217,8 +217,7 @@ function CheckoutPageContent() {
         window.location.href = await payOrderWithPayPal(order.id);
         return;
       }
-      await payOrder(order.id, method);
-      router.push(`/checkout/${order.id}/confirm`);
+      window.location.href = await payOrderWithCinetPay(order.id);
     } catch (err) {
       setPayError(extractApiError(err, "Le paiement a échoué. Veuillez réessayer."));
       setPending(false);

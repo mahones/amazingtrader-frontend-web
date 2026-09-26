@@ -3,7 +3,7 @@
 // by hand. That stamp is what makes the browser notice this file changed on
 // each deploy and re-run install/activate to drop the previous cache; if it
 // never changes, previously cached assets can keep being served forever.
-const CACHE_VERSION = "dev";
+const CACHE_VERSION = "246bf75a69ba";
 const CACHE_NAME = `amazingtraders-${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline.html";
 
