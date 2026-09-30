@@ -11,8 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { extractApiError } from "@/lib/api/client";
-import { createAdminTradingBot, fetchAdminBrokers, updateAdminTradingBot } from "@/lib/api/admin";
-import type { TradingBot } from "@/types/bot";
+import { createAdminBarronsChallenge, fetchAdminBrokers, updateAdminBarronsChallenge } from "@/lib/api/admin";
+import type { BarronsChallenge } from "@/types/barronsChallenge";
 import type { Broker } from "@/types/broker";
 
 function slugify(value: string) {
@@ -28,22 +28,28 @@ function toggleId(ids: number[], id: number): number[] {
   return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id];
 }
 
-export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: TradingBot) => void }) {
-  const isEditing = Boolean(bot);
+export function BarronsChallengeForm({
+  challenge,
+  onSaved,
+}: {
+  challenge?: BarronsChallenge;
+  onSaved: (challenge: BarronsChallenge) => void;
+}) {
+  const isEditing = Boolean(challenge);
 
-  const [name, setName] = useState(bot?.name ?? "");
-  const [slug, setSlug] = useState(bot?.slug ?? "");
+  const [name, setName] = useState(challenge?.name ?? "");
+  const [slug, setSlug] = useState(challenge?.slug ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
-  const [description, setDescription] = useState(bot?.description ?? "");
-  const [excerpt, setExcerpt] = useState(bot?.excerpt ?? "");
-  const [strategySummary, setStrategySummary] = useState(bot?.strategy_summary ?? "");
-  const [pairsTraded, setPairsTraded] = useState((bot?.pairs_traded ?? []).join(", "));
-  const [managedCapital, setManagedCapital] = useState(bot?.managed_capital?.toString() ?? "");
-  const [position, setPosition] = useState(bot?.position?.toString() ?? "");
-  const [isActive, setIsActive] = useState(bot?.is_active ?? true);
+  const [description, setDescription] = useState(challenge?.description ?? "");
+  const [excerpt, setExcerpt] = useState(challenge?.excerpt ?? "");
+  const [strategySummary, setStrategySummary] = useState(challenge?.strategy_summary ?? "");
+  const [pairsTraded, setPairsTraded] = useState((challenge?.pairs_traded ?? []).join(", "));
+  const [managedCapital, setManagedCapital] = useState(challenge?.managed_capital?.toString() ?? "");
+  const [position, setPosition] = useState(challenge?.position?.toString() ?? "");
+  const [isActive, setIsActive] = useState(challenge?.is_active ?? true);
   const [brokers, setBrokers] = useState<Broker[]>([]);
-  const [brokerIds, setBrokerIds] = useState<number[]>(bot?.brokers?.map((b) => b.id) ?? []);
+  const [brokerIds, setBrokerIds] = useState<number[]>(challenge?.brokers?.map((b) => b.id) ?? []);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -76,12 +82,12 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
 
     try {
       const saved =
-        isEditing && bot
-          ? await updateAdminTradingBot(bot.id, formData)
-          : await createAdminTradingBot(formData);
+        isEditing && challenge
+          ? await updateAdminBarronsChallenge(challenge.id, formData)
+          : await createAdminBarronsChallenge(formData);
       onSaved(saved);
     } catch (err) {
-      setError(extractApiError(err, "Impossible d'enregistrer le bot."));
+      setError(extractApiError(err, "Impossible d'enregistrer le challenge."));
     } finally {
       setPending(false);
     }
@@ -90,19 +96,19 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{isEditing ? "Informations générales" : "Nouveau bot"}</CardTitle>
+        <CardTitle>{isEditing ? "Informations générales" : "Nouveau challenge"}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="bot-name">Nom</Label>
-            <Input id="bot-name" required value={name} onChange={(e) => setName(e.target.value)} />
+            <Label htmlFor="barrons-name">Nom</Label>
+            <Input id="barrons-name" required value={name} onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-slug">Slug (URL)</Label>
+            <Label htmlFor="barrons-slug">Slug (URL)</Label>
             <Input
-              id="bot-slug"
+              id="barrons-slug"
               placeholder="auto-généré si laissé vide"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
@@ -110,30 +116,30 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <ImageUploadInput
-            id="bot-image"
-            label="Image principale (page détail du bot)"
+            id="barrons-image"
+            label="Image principale (page détail du challenge)"
             value={imageFile}
             onChange={setImageFile}
-            existingUrl={bot?.image_url}
+            existingUrl={challenge?.image_url}
           />
 
           <div className="space-y-2">
-            <Label>Description (page détail du bot)</Label>
+            <Label>Description (page détail du challenge)</Label>
             <RichTextEditor value={description} onChange={setDescription} />
           </div>
 
           <ImageUploadInput
-            id="bot-preview-image"
-            label="Image de la carte (liste des bots)"
+            id="barrons-preview-image"
+            label="Image de la carte (liste des challenges)"
             value={previewImageFile}
             onChange={setPreviewImageFile}
-            existingUrl={bot?.preview_image}
+            existingUrl={challenge?.preview_image}
           />
 
           <div className="space-y-2">
-            <Label htmlFor="bot-excerpt">Extrait (carte, liste des bots)</Label>
+            <Label htmlFor="barrons-excerpt">Extrait (carte, liste des challenges)</Label>
             <Textarea
-              id="bot-excerpt"
+              id="barrons-excerpt"
               rows={2}
               maxLength={500}
               value={excerpt}
@@ -142,9 +148,9 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-strategy">Résumé de la stratégie</Label>
+            <Label htmlFor="barrons-strategy">Résumé de la stratégie</Label>
             <Textarea
-              id="bot-strategy"
+              id="barrons-strategy"
               rows={3}
               value={strategySummary}
               onChange={(e) => setStrategySummary(e.target.value)}
@@ -152,9 +158,9 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-pairs">Paires / actifs tradés (séparés par des virgules)</Label>
+            <Label htmlFor="barrons-pairs">Paires / actifs tradés (séparés par des virgules)</Label>
             <Input
-              id="bot-pairs"
+              id="barrons-pairs"
               placeholder="EUR/USD, XAU/USD, BTC/USD"
               value={pairsTraded}
               onChange={(e) => setPairsTraded(e.target.value)}
@@ -162,9 +168,9 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-managed-capital">Capital géré ($)</Label>
+            <Label htmlFor="barrons-managed-capital">Capital géré ($)</Label>
             <Input
-              id="bot-managed-capital"
+              id="barrons-managed-capital"
               type="number"
               min="0"
               step="0.01"
@@ -194,9 +200,9 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-position">Ordre d&apos;affichage</Label>
+            <Label htmlFor="barrons-position">Ordre d&apos;affichage</Label>
             <Input
-              id="bot-position"
+              id="barrons-position"
               type="number"
               min="1"
               placeholder="Laissé vide = ajouté à la fin"
@@ -206,14 +212,14 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
           </div>
 
           <div className="flex items-center gap-3">
-            <Switch id="bot-active" checked={isActive} onCheckedChange={setIsActive} />
-            <Label htmlFor="bot-active">Actif (visible sur le site)</Label>
+            <Switch id="barrons-active" checked={isActive} onCheckedChange={setIsActive} />
+            <Label htmlFor="barrons-active">Actif (visible sur le site)</Label>
           </div>
 
           {error && <Alert variant="error">{error}</Alert>}
 
           <Button type="submit" disabled={pending}>
-            {pending ? "Enregistrement..." : isEditing ? "Enregistrer les modifications" : "Créer le bot"}
+            {pending ? "Enregistrement..." : isEditing ? "Enregistrer les modifications" : "Créer le challenge"}
           </Button>
         </form>
       </CardContent>

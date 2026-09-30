@@ -20,6 +20,7 @@ import {
   MessageSquareText,
   Percent,
   Settings,
+  Trophy,
   Users,
   Wallet,
 } from "lucide-react";
@@ -36,6 +37,7 @@ function useSidebarNavItems() {
     { href: "/dashboard/formations", label: "Mes Formations", icon: BookOpen },
     { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
+    { href: "/dashboard/barrons-challenges", label: "Challenges Barrons", icon: Trophy },
     { href: "/dashboard/events", label: "Événements", icon: CalendarDays },
     ...(isStaff ? [] : [{ href: "/dashboard/partenaire", label: "Espace Partenaire", icon: Handshake }]),
     ...(isStaff || user?.is_community_member

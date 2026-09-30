@@ -28,20 +28,27 @@ function TelegramButton({ className }: { className?: string }) {
   );
 }
 
-const NAV_LINKS = [
+const BASE_NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/formations", label: "Formations" },
   { href: "/auto-trading", label: "Auto-trading" },
   { href: "/bot-trading", label: "Bots de trading" },
   { href: "/articles", label: "Articles" },
-  { href: "/faq", label: "FAQ" },
 ];
+
+const FAQ_LINK = { href: "/faq", label: "FAQ" };
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading, logout } = useAuth();
   const [open, setOpen] = useState(false);
+
+  // Challenge Barrons is not on the public nav at all — it's reached only
+  // from the dashboard sidebar (visible once logged in). The public
+  // /challenge-barrons pages still exist and still require login, for
+  // anyone who follows a direct link.
+  const NAV_LINKS = [...BASE_NAV_LINKS, FAQ_LINK];
 
   // Belt-and-suspenders alongside each link's own onClick: closes the menu
   // whenever the route actually changes, so it can't stay stuck open if a

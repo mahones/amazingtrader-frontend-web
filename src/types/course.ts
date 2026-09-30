@@ -28,6 +28,7 @@ export interface Course {
   program: string[] | null;
   thumbnail_url: string | null;
   is_published: boolean;
+  position: number;
   lessons?: Lesson[];
   enrollment_count?: number;
   has_active_subscribers?: boolean;

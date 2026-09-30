@@ -39,6 +39,7 @@ export default function NewCoursePage() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("99");
   const [durationMinutes, setDurationMinutes] = useState("120");
+  const [position, setPosition] = useState("");
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [lessons, setLessons] = useState<LessonDraft[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +59,7 @@ export default function NewCoursePage() {
       formData.append("price", price);
       formData.append("duration_minutes", durationMinutes);
       formData.append("is_published", "1");
+      if (position) formData.append("position", position);
       if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
 
       const course = await createAdminCourse(formData);
@@ -156,6 +158,17 @@ export default function NewCoursePage() {
                   onChange={(e) => setDurationMinutes(e.target.value)}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="position">Ordre d&apos;affichage</Label>
+              <Input
+                id="position"
+                type="number"
+                min="1"
+                placeholder="Laissé vide = ajouté à la fin"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+              />
             </div>
             <ImageUploadInput
               id="course-thumbnail"

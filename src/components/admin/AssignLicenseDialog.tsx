@@ -16,14 +16,15 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
+import { assignBarronsChallengeLicenseToUser, assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import { digitsOnly } from "@/lib/utils";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
+import type { BarronsChallengeLicensePlan, UserBarronsChallengeLicense } from "@/types/barronsChallenge";
 import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 
-type LicenseType = "auto_trading" | "bot_trading";
+type LicenseType = "auto_trading" | "bot_trading" | "barrons_challenge";
 
 const emptyForm: LicensePurchaseDetails = { id: "", password: "", server: "" };
 
@@ -32,8 +33,10 @@ export function AssignLicenseDialog({
   whatsappNumber,
   licensePlans,
   botLicensePlans,
+  barronsChallengeLicensePlans,
   onLicenseAssigned,
   onBotLicenseAssigned,
+  onBarronsChallengeLicenseAssigned,
   trigger,
   open: openProp,
   onOpenChange: onOpenChangeProp,
@@ -42,8 +45,10 @@ export function AssignLicenseDialog({
   whatsappNumber: string | null;
   licensePlans: LicensePlan[];
   botLicensePlans: (BotLicensePlan & { botName: string })[];
+  barronsChallengeLicensePlans: (BarronsChallengeLicensePlan & { challengeName: string })[];
   onLicenseAssigned: (license: UserLicense) => void;
   onBotLicenseAssigned: (license: UserBotLicense) => void;
+  onBarronsChallengeLicenseAssigned: (license: UserBarronsChallengeLicense) => void;
   trigger?: React.ReactElement;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -66,6 +71,16 @@ export function AssignLicenseDialog({
     setError(null);
   }
 
+  const planOptions =
+    type === "auto_trading"
+      ? licensePlans.map((plan) => ({ value: String(plan.id), label: plan.name }))
+      : type === "bot_trading"
+        ? botLicensePlans.map((plan) => ({ value: String(plan.id), label: `${plan.botName} — ${plan.name}` }))
+        : barronsChallengeLicensePlans.map((plan) => ({
+            value: String(plan.id),
+            label: `${plan.challengeName} — ${plan.name}`,
+          }));
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!planId) {
@@ -84,13 +99,19 @@ export function AssignLicenseDialog({
           server: form.server,
         });
         onLicenseAssigned(license);
-      } else {
+      } else if (type === "bot_trading") {
         const license = await assignBotLicenseToUser(userId, {
           bot_license_plan_id: Number(planId),
           activate,
           id: form.id,
         });
         onBotLicenseAssigned(license);
+      } else {
+        const license = await assignBarronsChallengeLicenseToUser(userId, {
+          barrons_challenge_license_plan_id: Number(planId),
+          activate,
+        });
+        onBarronsChallengeLicenseAssigned(license);
       }
       toast.success("Licence assignée avec succès.");
       setOpen(false);
@@ -147,19 +168,23 @@ export function AssignLicenseDialog({
             >
               Bot de Trading
             </Button>
+            <Button
+              type="button"
+              variant={type === "barrons_challenge" ? "default" : "outline"}
+              className="flex-1"
+              onClick={() => {
+                setType("barrons_challenge");
+                setPlanId("");
+              }}
+            >
+              Challenge Barrons
+            </Button>
           </div>
 
           <div className="space-y-2">
             <Label>Licence</Label>
             <Select
-              items={
-                type === "auto_trading"
-                  ? licensePlans.map((plan) => ({ value: String(plan.id), label: plan.name }))
-                  : botLicensePlans.map((plan) => ({
-                      value: String(plan.id),
-                      label: `${plan.botName} — ${plan.name}`,
-                    }))
-              }
+              items={planOptions.map(({ value, label }) => ({ value, label }))}
               value={planId}
               onValueChange={(v) => setPlanId(v ?? "")}
             >
@@ -167,17 +192,11 @@ export function AssignLicenseDialog({
                 <SelectValue placeholder="Sélectionner une licence" />
               </SelectTrigger>
               <SelectContent>
-                {type === "auto_trading"
-                  ? licensePlans.map((plan) => (
-                      <SelectItem key={plan.id} value={String(plan.id)}>
-                        {plan.name}
-                      </SelectItem>
-                    ))
-                  : botLicensePlans.map((plan) => (
-                      <SelectItem key={plan.id} value={String(plan.id)}>
-                        {plan.botName} — {plan.name}
-                      </SelectItem>
-                    ))}
+                {planOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

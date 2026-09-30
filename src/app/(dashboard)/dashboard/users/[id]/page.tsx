@@ -10,18 +10,23 @@ import { Switch } from "@/components/ui/switch";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
+import { BarronsChallengeLicenseKeysManager } from "@/components/admin/BarronsChallengeLicenseKeysManager";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
+  activateUserBarronsChallengeLicense,
   activateUserBotLicense,
   activateUserLicense,
+  approveBarronsChallengeLicensePurchaseDetailsChange,
   approveBotLicensePurchaseDetailsChange,
   approveLicensePurchaseDetailsChange,
+  fetchAdminBarronsChallenges,
   fetchAdminLicensePlans,
   fetchAdminTradingBots,
   fetchAdminUserProfile,
+  rejectBarronsChallengeLicensePurchaseDetailsChange,
   rejectBotLicensePurchaseDetailsChange,
   rejectLicensePurchaseDetailsChange,
   requestCredentialsUpdate,
@@ -31,6 +36,7 @@ import {
 import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
+import type { BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
 import type { LicensePlan } from "@/types/license";
 import type { Partner } from "@/types/partner";
 import type { UserProfile } from "@/types/user";
@@ -98,6 +104,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
+  const [barronsChallengeLicensePlans, setBarronsChallengeLicensePlans] = useState<
+    (BarronsChallengeLicensePlan & { challengeName: string })[]
+  >([]);
 
   useEffect(() => {
     fetchAdminUserProfile(Number(id)).then(setProfile);
@@ -107,6 +116,12 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
         (bot.license_plans ?? []).map((plan) => ({ ...plan, botName: bot.name }))
       );
       setBotLicensePlans(plans);
+    });
+    fetchAdminBarronsChallenges().then((challenges) => {
+      const plans = challenges.flatMap((challenge) =>
+        (challenge.license_plans ?? []).map((plan) => ({ ...plan, challengeName: challenge.name }))
+      );
+      setBarronsChallengeLicensePlans(plans);
     });
   }, [id]);
 
@@ -200,6 +215,48 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
+  async function handleActivateBarronsChallengeLicense(licenseId: number) {
+    const updated = await activateUserBarronsChallengeLicense(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+              l.id === licenseId ? { ...l, ...updated } : l
+            ),
+          }
+        : prev
+    );
+  }
+
+  async function handleApproveBarronsChallengeLicenseChange(licenseId: number) {
+    const updated = await approveBarronsChallengeLicensePurchaseDetailsChange(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+              l.id === licenseId ? { ...l, ...updated } : l
+            ),
+          }
+        : prev
+    );
+  }
+
+  async function handleRejectBarronsChallengeLicenseChange(licenseId: number) {
+    const updated = await rejectBarronsChallengeLicensePurchaseDetailsChange(licenseId);
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+              l.id === licenseId ? { ...l, ...updated } : l
+            ),
+          }
+        : prev
+    );
+  }
+
   function handlePartnerSaved(partner: Partner) {
     setProfile((prev) => (prev ? { ...prev, partner } : prev));
   }
@@ -237,12 +294,20 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
             whatsappNumber={profile.whatsapp_number}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
+            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
             onLicenseAssigned={(license) =>
               setProfile((prev) => (prev ? { ...prev, user_licenses: [...prev.user_licenses, license] } : prev))
             }
             onBotLicenseAssigned={(license) =>
               setProfile((prev) =>
                 prev ? { ...prev, user_bot_licenses: [...prev.user_bot_licenses, license] } : prev
+              )
+            }
+            onBarronsChallengeLicenseAssigned={(license) =>
+              setProfile((prev) =>
+                prev
+                  ? { ...prev, user_barrons_challenge_licenses: [...prev.user_barrons_challenge_licenses, license] }
+                  : prev
               )
             }
           />
@@ -444,6 +509,97 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                 userBotLicenseId={license.id}
                 files={license.files ?? []}
                 onChange={(files) => handleBotLicenseFilesChanged(license.id, files)}
+              />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Challenges Barrons ({profile.user_barrons_challenge_licenses.length})</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {profile.user_barrons_challenge_licenses.length === 0 && (
+            <p className="text-sm text-muted-foreground">Aucune licence de challenge.</p>
+          )}
+          {profile.user_barrons_challenge_licenses.map((license) => (
+            <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">
+                    {license.barrons_challenge_license_plan.barrons_challenge?.name ?? "Challenge inconnu"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{license.barrons_challenge_license_plan.name}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ActivationBadge isActivated={license.is_activated} />
+                  {!license.is_activated && (
+                    <Button size="sm" onClick={() => handleActivateBarronsChallengeLicense(license.id)}>
+                      Activer
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <LicenseExpiryGauge
+                activatedAt={license.activated_at}
+                expiresAt={license.expires_at}
+                status={license.status}
+              />
+              {license.purchase_details && license.purchase_details.length > 0 && (
+                <div className="space-y-2">
+                  {license.purchase_details.map((account, index) => (
+                    <div key={index} className="grid gap-1.5 rounded-md bg-muted/50 p-3 text-sm sm:grid-cols-3">
+                      <p><span className="text-muted-foreground">Compte {index + 1} — ID :</span> {account.id || "-"}</p>
+                      <p><span className="text-muted-foreground">Mot de passe :</span> {account.password || "-"}</p>
+                      <p><span className="text-muted-foreground">Serveur :</span> {account.server || "-"}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {license.pending_purchase_details && (
+                <div className="space-y-2 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 p-3 text-sm">
+                  <p className="font-medium text-amber-700 dark:text-amber-400">
+                    Modification en attente d&apos;approbation
+                    {license.pending_purchase_details_submitted_at && (
+                      <> depuis le {formatDate(license.pending_purchase_details_submitted_at)}</>
+                    )}
+                  </p>
+                  {license.pending_purchase_details.map((account, index) => (
+                    <div key={index} className="grid gap-1 sm:grid-cols-3">
+                      <p><span className="text-muted-foreground">Compte {index + 1} — ID :</span> {account.id}</p>
+                      <p><span className="text-muted-foreground">Mot de passe :</span> {account.password}</p>
+                      <p><span className="text-muted-foreground">Serveur :</span> {account.server}</p>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => handleApproveBarronsChallengeLicenseChange(license.id)}>
+                      Approuver
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleRejectBarronsChallengeLicenseChange(license.id)}
+                    >
+                      Rejeter
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <BarronsChallengeLicenseKeysManager
+                license={license}
+                onChange={(updated) =>
+                  setProfile((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+                            l.id === updated.id ? updated : l
+                          ),
+                        }
+                      : prev
+                  )
+                }
               />
             </div>
           ))}

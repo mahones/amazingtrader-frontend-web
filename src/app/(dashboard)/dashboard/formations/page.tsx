@@ -73,6 +73,7 @@ export default function DashboardFormationsPage() {
                     <Badge variant={course.is_published ? "default" : "secondary"}>
                       {course.is_published ? "Publiée" : "Brouillon"}
                     </Badge>
+                    <Badge variant="outline">#{course.position}</Badge>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {formatCurrency(course.price)} · {course.enrollment_count ?? 0} inscrits

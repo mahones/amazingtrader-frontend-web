@@ -17,6 +17,7 @@ const SITE_LINKS = [
   { href: "/formations", label: "Formations" },
   { href: "/auto-trading", label: "Auto-trading" },
   { href: "/bot-trading", label: "Bots de trading" },
+  { href: "/challenge-barrons", label: "Challenge Barrons" },
   { href: "/articles", label: "Articles" },
 ];
 

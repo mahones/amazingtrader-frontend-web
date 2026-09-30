@@ -1,26 +1,23 @@
 import type { Broker } from "./broker";
 import type { LicenseDurationUnit } from "./license";
-import type { User } from "./user";
 
-export type BotAssignmentStatus = "active" | "paused" | "stopped";
-export type TradeDirection = "buy" | "sell";
+export type BarronsChallengeLicenseOfferType = "time_limited" | "lifetime";
 export type PerformancePlatform = "myfxbook" | "mql5" | "other";
-export type BotLicenseOfferType = "time_limited" | "lifetime";
 
-export interface BotRequirement {
+export interface BarronsChallengeRequirement {
   id: number;
   label: string;
   position: number;
 }
 
-export interface BotInstruction {
+export interface BarronsChallengeInstruction {
   id: number;
   title: string;
   url: string;
   position: number;
 }
 
-export interface BotPerformanceLink {
+export interface BarronsChallengePerformanceLink {
   id: number;
   platform: PerformancePlatform;
   label: string;
@@ -28,25 +25,26 @@ export interface BotPerformanceLink {
   position: number;
 }
 
-export interface BotLicensePlan {
+export interface BarronsChallengeLicensePlan {
   id: number;
-  trading_bot_id: number;
-  offer_type: BotLicenseOfferType;
+  barrons_challenge_id: number;
+  offer_type: BarronsChallengeLicenseOfferType;
   name: string;
   description: string | null;
   duration_value: number | null;
   duration_unit: LicenseDurationUnit | null;
   price: number;
   features: string[];
+  number_of_accounts: number;
   is_featured: boolean;
   is_active: boolean;
   position: number;
   purchase_count?: number;
   has_active_subscribers?: boolean;
-  trading_bot?: TradingBot;
+  barrons_challenge?: BarronsChallenge;
 }
 
-export interface BotFile {
+export interface BarronsChallengeFile {
   id: number;
   label: string;
   original_filename: string;
@@ -56,7 +54,7 @@ export interface BotFile {
   created_at: string;
 }
 
-export interface TradingBot {
+export interface BarronsChallenge {
   id: number;
   name: string;
   slug: string;
@@ -70,46 +68,33 @@ export interface TradingBot {
   is_active: boolean;
   position: number;
   has_active_subscribers?: boolean;
-  requirements?: BotRequirement[];
-  performance_links?: BotPerformanceLink[];
-  license_plans?: BotLicensePlan[];
-  bot_instructions?: BotInstruction[];
+  requirements?: BarronsChallengeRequirement[];
+  performance_links?: BarronsChallengePerformanceLink[];
+  license_plans?: BarronsChallengeLicensePlan[];
+  instructions?: BarronsChallengeInstruction[];
   brokers?: Broker[];
 }
 
-export interface BotLicensePurchaseDetails {
+export interface BarronsChallengeAccountCredentials {
   id: string;
+  password: string;
+  server: string;
+  license_keys: string[];
 }
 
-export interface UserBotLicense {
+export type BarronsChallengePurchaseDetails = BarronsChallengeAccountCredentials[];
+
+export interface UserBarronsChallengeLicense {
   id: number;
   status: "active" | "expired" | "revoked";
   is_activated: boolean;
-  purchase_details: BotLicensePurchaseDetails | null;
-  pending_purchase_details: BotLicensePurchaseDetails | null;
+  purchase_details: BarronsChallengePurchaseDetails | null;
+  pending_purchase_details: Array<Pick<BarronsChallengeAccountCredentials, "id" | "password" | "server">> | null;
   pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
   product_snapshot?: Record<string, unknown> | null;
-  bot_license_plan: BotLicensePlan;
-  files?: BotFile[];
-}
-
-export interface BotAssignment {
-  id: number;
-  status: BotAssignmentStatus;
-  assigned_at: string | null;
-  trading_bot: TradingBot;
-  user?: User;
-}
-
-export interface BotTrade {
-  id: number;
-  pair: string;
-  direction: TradeDirection;
-  entry_price: number;
-  exit_price: number | null;
-  profit_loss: number | null;
-  opened_at: string;
-  closed_at: string | null;
+  number_of_accounts?: number;
+  barrons_challenge_license_plan: BarronsChallengeLicensePlan;
+  files?: BarronsChallengeFile[];
 }

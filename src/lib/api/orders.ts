@@ -1,7 +1,7 @@
 import { apiClient } from "./client";
 import type { Order } from "@/types/order";
 
-export type PurchasableType = "course" | "license_plan" | "bot_license_plan";
+export type PurchasableType = "course" | "license_plan" | "bot_license_plan" | "barrons_challenge_license_plan";
 export type PaymentGateway = "simulated";
 
 export async function createOrder(

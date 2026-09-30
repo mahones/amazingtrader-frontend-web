@@ -15,6 +15,16 @@ import type {
   TradingBot,
   UserBotLicense,
 } from "@/types/bot";
+import type {
+  BarronsChallenge,
+  BarronsChallengeAccountCredentials,
+  BarronsChallengeFile,
+  BarronsChallengeInstruction,
+  BarronsChallengeLicensePlan,
+  BarronsChallengePerformanceLink,
+  BarronsChallengeRequirement,
+  UserBarronsChallengeLicense,
+} from "@/types/barronsChallenge";
 import type { Post } from "@/types/post";
 import type { Event } from "@/types/event";
 import type { Faq } from "@/types/faq";
@@ -323,6 +333,216 @@ export async function deleteAdminBotFile(id: number) {
   await apiClient.delete(`/admin/bot-files/${id}`);
 }
 
+// Barrons Challenges
+export async function fetchAdminBarronsChallenges() {
+  const { data } = await apiClient.get<{ data: BarronsChallenge[] }>("/admin/barrons-challenges");
+  return data.data;
+}
+
+export async function fetchAdminBarronsChallenge(id: number) {
+  const { data } = await apiClient.get<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`);
+  return data.data;
+}
+
+export async function createAdminBarronsChallenge(payload: Partial<BarronsChallenge> | FormData) {
+  const { data } = await apiClient.post<{ data: BarronsChallenge }>("/admin/barrons-challenges", payload);
+  return data.data;
+}
+
+export async function updateAdminBarronsChallenge(id: number, payload: Partial<BarronsChallenge> | FormData) {
+  if (payload instanceof FormData) {
+    payload.append("_method", "PUT");
+    const { data } = await apiClient.post<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`, payload);
+    return data.data;
+  }
+  const { data } = await apiClient.put<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallenge(id: number) {
+  await apiClient.delete(`/admin/barrons-challenges/${id}`);
+}
+
+// Barrons Challenge requirements
+export async function createAdminBarronsChallengeRequirement(
+  challengeId: number,
+  payload: Partial<BarronsChallengeRequirement>
+) {
+  const { data } = await apiClient.post<{ data: BarronsChallengeRequirement }>(
+    `/admin/barrons-challenges/${challengeId}/requirements`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBarronsChallengeRequirement(
+  id: number,
+  payload: Partial<BarronsChallengeRequirement>
+) {
+  const { data } = await apiClient.put<{ data: BarronsChallengeRequirement }>(
+    `/admin/barrons-challenge-requirements/${id}`,
+    payload
+  );
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallengeRequirement(id: number) {
+  await apiClient.delete(`/admin/barrons-challenge-requirements/${id}`);
+}
+
+// Barrons Challenge instructions
+export async function createAdminBarronsChallengeInstruction(
+  challengeId: number,
+  payload: Partial<BarronsChallengeInstruction>
+) {
+  const { data } = await apiClient.post<{ data: BarronsChallengeInstruction }>(
+    `/admin/barrons-challenges/${challengeId}/instructions`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBarronsChallengeInstruction(
+  id: number,
+  payload: Partial<BarronsChallengeInstruction>
+) {
+  const { data } = await apiClient.put<{ data: BarronsChallengeInstruction }>(
+    `/admin/barrons-challenge-instructions/${id}`,
+    payload
+  );
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallengeInstruction(id: number) {
+  await apiClient.delete(`/admin/barrons-challenge-instructions/${id}`);
+}
+
+// Barrons Challenge performance links
+export async function createAdminBarronsChallengePerformanceLink(
+  challengeId: number,
+  payload: Partial<BarronsChallengePerformanceLink>
+) {
+  const { data } = await apiClient.post<{ data: BarronsChallengePerformanceLink }>(
+    `/admin/barrons-challenges/${challengeId}/performance-links`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBarronsChallengePerformanceLink(
+  id: number,
+  payload: Partial<BarronsChallengePerformanceLink>
+) {
+  const { data } = await apiClient.put<{ data: BarronsChallengePerformanceLink }>(
+    `/admin/barrons-challenge-performance-links/${id}`,
+    payload
+  );
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallengePerformanceLink(id: number) {
+  await apiClient.delete(`/admin/barrons-challenge-performance-links/${id}`);
+}
+
+// Barrons Challenge license plans
+export async function createAdminBarronsChallengeLicensePlan(
+  challengeId: number,
+  payload: Partial<BarronsChallengeLicensePlan>
+) {
+  const { data } = await apiClient.post<{ data: BarronsChallengeLicensePlan }>(
+    `/admin/barrons-challenges/${challengeId}/license-plans`,
+    payload
+  );
+  return data.data;
+}
+
+export async function updateAdminBarronsChallengeLicensePlan(
+  id: number,
+  payload: Partial<BarronsChallengeLicensePlan>
+) {
+  const { data } = await apiClient.put<{ data: BarronsChallengeLicensePlan }>(
+    `/admin/barrons-challenge-license-plans/${id}`,
+    payload
+  );
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallengeLicensePlan(id: number) {
+  await apiClient.delete(`/admin/barrons-challenge-license-plans/${id}`);
+}
+
+// Barrons Challenge files (per challenge, shared by every activated buyer)
+export async function fetchAdminBarronsChallengeFiles(challengeId: number) {
+  const { data } = await apiClient.get<{ data: BarronsChallengeFile[] }>(
+    `/admin/barrons-challenges/${challengeId}/files`
+  );
+  return data.data;
+}
+
+export async function createAdminBarronsChallengeFiles(challengeId: number, formData: FormData) {
+  const { data } = await apiClient.post<{ data: BarronsChallengeFile[] }>(
+    `/admin/barrons-challenges/${challengeId}/files`,
+    formData
+  );
+  return data.data;
+}
+
+export async function updateAdminBarronsChallengeFile(
+  id: number,
+  payload: { label?: string; position?: number }
+) {
+  const { data } = await apiClient.put<{ data: BarronsChallengeFile }>(`/admin/barrons-challenge-files/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminBarronsChallengeFile(id: number) {
+  await apiClient.delete(`/admin/barrons-challenge-files/${id}`);
+}
+
+// Barrons Challenge license activation & credentials
+export async function activateUserBarronsChallengeLicense(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
+    `/admin/user-barrons-challenge-licenses/${id}/activate`
+  );
+  return data.data;
+}
+
+export async function approveBarronsChallengeLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
+    `/admin/user-barrons-challenge-licenses/${id}/purchase-details/approve`
+  );
+  return data.data;
+}
+
+export async function rejectBarronsChallengeLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
+    `/admin/user-barrons-challenge-licenses/${id}/purchase-details/reject`
+  );
+  return data.data;
+}
+
+export async function updateBarronsChallengeLicenseKeys(
+  id: number,
+  accounts: Array<{ license_keys: string[] }>
+) {
+  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
+    `/admin/user-barrons-challenge-licenses/${id}/license-keys`,
+    { accounts }
+  );
+  return data.data;
+}
+
+export async function assignBarronsChallengeLicenseToUser(
+  userId: number,
+  payload: { barrons_challenge_license_plan_id: number; activate?: boolean }
+) {
+  const { data } = await apiClient.post<{ data: UserBarronsChallengeLicense }>(
+    `/admin/users/${userId}/barrons-challenge-licenses`,
+    payload
+  );
+  return data.data;
+}
+
 // Users & orders (oversight)
 export async function fetchAdminUsers() {
   const { data } = await apiClient.get<{ data: User[] }>("/admin/users");
@@ -376,6 +596,10 @@ export async function createAdminUser(payload: {
   course_ids?: number[];
   licenses?: Array<{ license_plan_id: number } & Partial<LicensePurchaseDetails>>;
   bot_licenses?: Array<{ bot_license_plan_id: number } & Partial<BotLicensePurchaseDetails>>;
+  barrons_challenge_licenses?: Array<{
+    barrons_challenge_license_plan_id: number;
+    accounts?: Array<Partial<Pick<BarronsChallengeAccountCredentials, "id" | "password" | "server">>>;
+  }>;
 }) {
   const { data } = await apiClient.post<{ data: UserProfile }>("/admin/users", payload);
   return data.data;

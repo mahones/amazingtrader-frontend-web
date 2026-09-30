@@ -13,6 +13,7 @@ import { extractApiError } from "@/lib/api/client";
 import { fetchCourses } from "@/lib/api/courses";
 import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
+import { fetchBarronsChallenges } from "@/lib/api/barronsChallenges";
 import {
   createOrder,
   payOrderWithCinetPay,
@@ -29,6 +30,7 @@ type Recap = {
   description: string;
   price: number;
   durationLabel: string | null;
+  numberOfAccounts?: number;
 };
 
 export default function CheckoutPage() {
@@ -46,7 +48,12 @@ function CheckoutPageContent() {
 
   const rawType = searchParams.get("type");
   const type: PurchasableType | null =
-    rawType === "course" || rawType === "license_plan" || rawType === "bot_license_plan" ? rawType : null;
+    rawType === "course" ||
+    rawType === "license_plan" ||
+    rawType === "bot_license_plan" ||
+    rawType === "barrons_challenge_license_plan"
+      ? rawType
+      : null;
   const rawId = searchParams.get("id");
   const id = rawId ? Number(rawId) : NaN;
   const isValidTarget = type !== null && Number.isFinite(id);
@@ -70,7 +77,8 @@ function CheckoutPageContent() {
   const [codeError, setCodeError] = useState<string | null>(null);
   const [codePending, setCodePending] = useState(false);
 
-  const requiresContract = type === "license_plan" || type === "bot_license_plan";
+  const requiresContract =
+    type === "license_plan" || type === "bot_license_plan" || type === "barrons_challenge_license_plan";
   const contractLabel =
     type === "license_plan" ? (
       <>
@@ -136,6 +144,21 @@ function CheckoutPageContent() {
                 plan.duration_value && plan.duration_unit
                   ? formatDuration(plan.duration_value, plan.duration_unit)
                   : "Accès à vie",
+            });
+          }
+        } else if (type === "barrons_challenge_license_plan") {
+          const plan = (await fetchBarronsChallenges()).flatMap((c) => c.license_plans ?? []).find((p) => p.id === id);
+          if (!plan) throw new Error("not_found");
+          if (!cancelled) {
+            setRecap({
+              title: plan.name,
+              description: plan.description ?? "",
+              price: plan.price,
+              durationLabel:
+                plan.duration_value && plan.duration_unit
+                  ? formatDuration(plan.duration_value, plan.duration_unit)
+                  : "Accès à vie",
+              numberOfAccounts: plan.number_of_accounts,
             });
           }
         }
@@ -257,6 +280,12 @@ function CheckoutPageContent() {
                 <div className="flex justify-between text-muted-foreground">
                   <span>Durée</span>
                   <span>{recap.durationLabel}</span>
+                </div>
+              )}
+              {recap.numberOfAccounts && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Comptes inclus</span>
+                  <span>{recap.numberOfAccounts}</span>
                 </div>
               )}
 

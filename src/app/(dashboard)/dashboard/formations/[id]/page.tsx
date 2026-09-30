@@ -7,6 +7,8 @@ import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { VideoPlayer } from "@/components/media/VideoPlayer";
 import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { EMPTY_LESSON_DRAFT, LessonFields, type LessonDraft } from "@/components/forms/LessonFields";
@@ -163,6 +165,8 @@ function AdminCourseView({ courseId }: { courseId: number }) {
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [savingThumbnail, setSavingThumbnail] = useState(false);
+  const [positionInput, setPositionInput] = useState<string | null>(null);
+  const [savingPosition, setSavingPosition] = useState(false);
 
   async function reload() {
     const refreshed = await fetchAdminCourse(courseId);
@@ -188,6 +192,21 @@ function AdminCourseView({ courseId }: { courseId: number }) {
       toast.error(extractApiError(err, "Impossible de mettre à jour l'image."));
     } finally {
       setSavingThumbnail(false);
+    }
+  }
+
+  async function handleSavePosition() {
+    const value = positionInput ?? String(course?.position ?? 1);
+    setSavingPosition(true);
+    try {
+      await updateAdminCourse(courseId, { position: Number(value) });
+      setPositionInput(null);
+      await reload();
+      toast.success("Ordre d'affichage mis à jour.");
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de mettre à jour l'ordre d'affichage."));
+    } finally {
+      setSavingPosition(false);
     }
   }
 
@@ -234,6 +253,27 @@ function AdminCourseView({ courseId }: { courseId: number }) {
           {course.enrollment_count ?? 0} personne(s) inscrite(s)
         </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Ordre d&apos;affichage</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="course-position">Position</Label>
+            <Input
+              id="course-position"
+              type="number"
+              min="1"
+              value={positionInput ?? String(course.position)}
+              onChange={(e) => setPositionInput(e.target.value)}
+            />
+          </div>
+          <Button size="sm" disabled={savingPosition} onClick={handleSavePosition}>
+            {savingPosition ? "Enregistrement..." : "Enregistrer la position"}
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

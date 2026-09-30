@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
+  fetchAdminBarronsChallenges,
   fetchAdminLicensePlans,
   fetchAdminPartnerRewardClaims,
   fetchAdminTradingBots,
@@ -17,6 +18,7 @@ import { extractApiError } from "@/lib/api/client";
 import { formatDateTime } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan } from "@/types/bot";
+import type { BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
 import type { LicensePlan } from "@/types/license";
 import type { AdminPartnerRewardClaim } from "@/types/partner";
 
@@ -24,11 +26,13 @@ function RewardClaimCard({
   claim,
   licensePlans,
   botLicensePlans,
+  barronsChallengeLicensePlans,
   onFulfilled,
 }: {
   claim: AdminPartnerRewardClaim;
   licensePlans: LicensePlan[];
   botLicensePlans: (BotLicensePlan & { botName: string })[];
+  barronsChallengeLicensePlans: (BarronsChallengeLicensePlan & { challengeName: string })[];
   onFulfilled: (claim: AdminPartnerRewardClaim) => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -71,8 +75,10 @@ function RewardClaimCard({
             whatsappNumber={claim.partner.user?.whatsapp_number ?? null}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
+            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
             onLicenseAssigned={handleLicenseAssigned}
             onBotLicenseAssigned={handleLicenseAssigned}
+            onBarronsChallengeLicenseAssigned={handleLicenseAssigned}
             open={dialogOpen}
             onOpenChange={setDialogOpen}
             trigger={<Button size="sm">Traiter</Button>}
@@ -96,6 +102,9 @@ export default function DashboardRewardClaimsPage() {
   const [claims, setClaims] = useState<AdminPartnerRewardClaim[] | null>(null);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
+  const [barronsChallengeLicensePlans, setBarronsChallengeLicensePlans] = useState<
+    (BarronsChallengeLicensePlan & { challengeName: string })[]
+  >([]);
 
   useEffect(() => {
     fetchAdminPartnerRewardClaims().then(setClaims);
@@ -105,6 +114,12 @@ export default function DashboardRewardClaimsPage() {
         (bot.license_plans ?? []).map((plan) => ({ ...plan, botName: bot.name }))
       );
       setBotLicensePlans(plans);
+    });
+    fetchAdminBarronsChallenges().then((challenges) => {
+      const plans = challenges.flatMap((challenge) =>
+        (challenge.license_plans ?? []).map((plan) => ({ ...plan, challengeName: challenge.name }))
+      );
+      setBarronsChallengeLicensePlans(plans);
     });
   }, []);
 
@@ -142,6 +157,7 @@ export default function DashboardRewardClaimsPage() {
             claim={claim}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
+            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
             onFulfilled={handleFulfilled}
           />
         ))}
@@ -156,6 +172,7 @@ export default function DashboardRewardClaimsPage() {
               claim={claim}
               licensePlans={licensePlans}
               botLicensePlans={botLicensePlans}
+              barronsChallengeLicensePlans={barronsChallengeLicensePlans}
               onFulfilled={handleFulfilled}
             />
           ))}
