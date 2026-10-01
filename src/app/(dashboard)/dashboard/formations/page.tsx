@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
 import { deleteAdminCourse, fetchAdminCourses } from "@/lib/api/admin";
@@ -61,36 +62,36 @@ export default function DashboardFormationsPage() {
 
         {error && <Alert variant="error">{error}</Alert>}
 
-        <div className="grid gap-4">
-          {adminCourses === null && <p className="text-muted-foreground">Chargement...</p>}
-          {adminCourses?.length === 0 && <p className="text-muted-foreground">Aucune formation créée.</p>}
+        {adminCourses === null && <p className="text-muted-foreground">Chargement...</p>}
+        {adminCourses?.length === 0 && <p className="text-muted-foreground">Aucune formation créée.</p>}
+        <CatalogCardGrid>
           {adminCourses?.map((course) => (
-            <Card key={course.id}>
-              <CardContent className="flex items-center justify-between pt-6">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{course.title}</h3>
-                    <Badge variant={course.is_published ? "default" : "secondary"}>
-                      {course.is_published ? "Publiée" : "Brouillon"}
-                    </Badge>
-                    <Badge variant="outline">#{course.position}</Badge>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {formatCurrency(course.price)} · {course.enrollment_count ?? 0} inscrits
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
+            <CatalogCard
+              key={course.id}
+              title={course.title}
+              badges={
+                <>
+                  <Badge variant="outline">#{course.position}</Badge>
+                  <Badge variant={course.is_published ? "default" : "secondary"}>
+                    {course.is_published ? "Publiée" : "Brouillon"}
+                  </Badge>
+                </>
+              }
+              caption={`${formatCurrency(course.price)} · ${course.enrollment_count ?? 0} inscrits`}
+              actions={
+                <>
                   <Button
                     variant="outline"
                     size="sm"
                     render={<Link href={`/formations/${course.slug}`}>Voir la page</Link>}
                   />
-                  <Button variant="outline" size="sm" render={<Link href={`/dashboard/formations/${course.id}`}>Gérer</Link>} />
+                  <Button render={<Link href={`/dashboard/formations/${course.id}`}>Gérer</Link>} size="sm" />
                   <Tooltip>
                     <TooltipTrigger render={<span tabIndex={course.has_active_subscribers ? 0 : undefined} />}>
                       <Button
                         variant="outline"
                         size="sm"
+                        className="text-destructive hover:text-destructive"
                         disabled={course.has_active_subscribers}
                         onClick={() => handleDeleteCourse(course.id)}
                       >
@@ -103,11 +104,11 @@ export default function DashboardFormationsPage() {
                       </TooltipContent>
                     )}
                   </Tooltip>
-                </div>
-              </CardContent>
-            </Card>
+                </>
+              }
+            />
           ))}
-        </div>
+        </CatalogCardGrid>
       </div>
     );
   }

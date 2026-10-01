@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { approveWithdrawal, fetchAdminWithdrawals, rejectWithdrawal } from "@/lib/api/admin";
 import { formatDate, formatPartnerAmount } from "@/lib/utils";
@@ -45,45 +46,46 @@ function WithdrawalReviewCard({
   }
 
   return (
-    <Card>
-      <CardContent className="space-y-3 pt-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="font-medium">
-              {withdrawal.partner?.user?.name ?? "Partenaire"} · {formatPartnerAmount(withdrawal.amount)}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {withdrawal.partner?.user?.email} · code {withdrawal.partner?.code}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {withdrawal.payment_method} · {withdrawal.receiving_identifier}
-            </p>
-            <p className="text-xs text-muted-foreground/70">Demandé le {formatDate(withdrawal.created_at)}</p>
-          </div>
-          {withdrawal.status === "pending" ? (
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                disabled={pending}
-                onClick={() => handle(() => approveWithdrawal(withdrawal.id), "Retrait approuvé.")}
-              >
-                Approuver
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={pending}
-                onClick={() => handle(() => rejectWithdrawal(withdrawal.id), "Retrait rejeté.")}
-              >
-                Rejeter
-              </Button>
-            </div>
-          ) : (
-            <Badge variant={statusVariant[withdrawal.status]}>{statusLabel[withdrawal.status]}</Badge>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <CatalogCard
+      title={`${withdrawal.partner?.user?.name ?? "Partenaire"} · ${formatPartnerAmount(withdrawal.amount)}`}
+      badges={
+        withdrawal.status !== "pending" && (
+          <Badge variant={statusVariant[withdrawal.status]}>{statusLabel[withdrawal.status]}</Badge>
+        )
+      }
+      caption={
+        <>
+          <p>
+            {withdrawal.partner?.user?.email} · code {withdrawal.partner?.code}
+          </p>
+          <p>
+            {withdrawal.payment_method} · {withdrawal.receiving_identifier}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground/70">Demandé le {formatDate(withdrawal.created_at)}</p>
+        </>
+      }
+      actions={
+        withdrawal.status === "pending" && (
+          <>
+            <Button
+              size="sm"
+              disabled={pending}
+              onClick={() => handle(() => approveWithdrawal(withdrawal.id), "Retrait approuvé.")}
+            >
+              Approuver
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={pending}
+              onClick={() => handle(() => rejectWithdrawal(withdrawal.id), "Retrait rejeté.")}
+            >
+              Rejeter
+            </Button>
+          </>
+        )
+      }
+    />
   );
 }
 
@@ -111,19 +113,19 @@ export default function DashboardWithdrawalsPage() {
         <p className="text-muted-foreground">Approuvez ou rejetez les demandes de retrait des partenaires.</p>
       </div>
 
-      <div className="grid gap-4">
-        {withdrawals === null && <p className="text-muted-foreground">Chargement...</p>}
-        {withdrawals?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucune demande de retrait pour le moment.
-            </CardContent>
-          </Card>
-        )}
+      {withdrawals === null && <p className="text-muted-foreground">Chargement...</p>}
+      {withdrawals?.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center text-muted-foreground">
+            Aucune demande de retrait pour le moment.
+          </CardContent>
+        </Card>
+      )}
+      <CatalogCardGrid>
         {withdrawals?.map((withdrawal) => (
           <WithdrawalReviewCard key={withdrawal.id} withdrawal={withdrawal} onUpdated={handleUpdated} />
         ))}
-      </div>
+      </CatalogCardGrid>
     </div>
   );
 }

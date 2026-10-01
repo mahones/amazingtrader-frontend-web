@@ -14,6 +14,7 @@ import { fetchCourses } from "@/lib/api/courses";
 import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
 import { fetchBarronsChallenges } from "@/lib/api/barronsChallenges";
+import { fetchVipFormations } from "@/lib/api/vipFormations";
 import {
   createOrder,
   payOrderWithCinetPay,
@@ -51,7 +52,8 @@ function CheckoutPageContent() {
     rawType === "course" ||
     rawType === "license_plan" ||
     rawType === "bot_license_plan" ||
-    rawType === "barrons_challenge_license_plan"
+    rawType === "barrons_challenge_license_plan" ||
+    rawType === "vip_formation"
       ? rawType
       : null;
   const rawId = searchParams.get("id");
@@ -159,6 +161,17 @@ function CheckoutPageContent() {
                   ? formatDuration(plan.duration_value, plan.duration_unit)
                   : "Accès à vie",
               numberOfAccounts: plan.number_of_accounts,
+            });
+          }
+        } else if (type === "vip_formation") {
+          const vipFormation = (await fetchVipFormations()).find((f) => f.id === id);
+          if (!vipFormation) throw new Error("not_found");
+          if (!cancelled) {
+            setRecap({
+              title: vipFormation.title,
+              description: vipFormation.description,
+              price: vipFormation.price,
+              durationLabel: null,
             });
           }
         }

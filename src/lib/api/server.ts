@@ -4,6 +4,7 @@ import type { TradingBot } from "@/types/bot";
 import type { Post } from "@/types/post";
 import type { Broker } from "@/types/broker";
 import type { Faq } from "@/types/faq";
+import type { VipFormation } from "@/types/vipFormation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -31,6 +32,11 @@ export async function getCourse(slug: string) {
 
 export async function getLicensePlans() {
   const { data } = await getJson<{ data: LicensePlan[] }>("/license-plans");
+  return data;
+}
+
+export async function getVipFormations() {
+  const { data } = await getJson<{ data: VipFormation[] }>("/vip-formations");
   return data;
 }
 

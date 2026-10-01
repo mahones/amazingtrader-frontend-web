@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   NOTIFICATION_TYPES,
@@ -76,125 +76,140 @@ export default function DashboardHistoriquePage() {
         </p>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3">
-        <Select
-          items={TYPE_FILTERS}
-          value={type}
-          onValueChange={(value) => {
-            setType(value ?? "tout");
-            setPage(1);
-          }}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            {TYPE_FILTERS.map((t) => (
-              <SelectItem key={t.value} value={t.value}>
-                {t.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="date_from" className="text-xs text-muted-foreground">
-            Du
-          </label>
-          <Input
-            id="date_from"
-            type="date"
-            value={dateFrom}
-            onChange={(e) => {
-              setDateFrom(e.target.value);
-              setPage(1);
-            }}
-            className="w-[160px]"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="date_to" className="text-xs text-muted-foreground">
-            Au
-          </label>
-          <Input
-            id="date_to"
-            type="date"
-            value={dateTo}
-            onChange={(e) => {
-              setDateTo(e.target.value);
-              setPage(1);
-            }}
-            className="w-[160px]"
-          />
-        </div>
-        {(type !== "tout" || dateFrom || dateTo) && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setType("tout");
-              setDateFrom("");
-              setDateTo("");
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex flex-wrap items-end gap-3 p-4">
+          <Select
+            items={TYPE_FILTERS}
+            value={type}
+            onValueChange={(value) => {
+              setType(value ?? "tout");
               setPage(1);
             }}
           >
-            Réinitialiser
-          </Button>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {TYPE_FILTERS.map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="date_from" className="text-xs text-muted-foreground">
+              Du
+            </label>
+            <Input
+              id="date_from"
+              type="date"
+              value={dateFrom}
+              onChange={(e) => {
+                setDateFrom(e.target.value);
+                setPage(1);
+              }}
+              className="w-[160px]"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="date_to" className="text-xs text-muted-foreground">
+              Au
+            </label>
+            <Input
+              id="date_to"
+              type="date"
+              value={dateTo}
+              onChange={(e) => {
+                setDateTo(e.target.value);
+                setPage(1);
+              }}
+              className="w-[160px]"
+            />
+          </div>
+          {(type !== "tout" || dateFrom || dateTo) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setType("tout");
+                setDateFrom("");
+                setDateTo("");
+                setPage(1);
+              }}
+            >
+              Réinitialiser
+            </Button>
+          )}
+        </div>
+
+        <div className="overflow-x-auto border-t border-border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Type</TableHead>
+                <TableHead>Évènement</TableHead>
+                <TableHead>Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {notifications === null && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-muted-foreground">
+                    Chargement...
+                  </TableCell>
+                </TableRow>
+              )}
+              {notifications?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-muted-foreground">
+                    Aucun évènement pour le moment.
+                  </TableCell>
+                </TableRow>
+              )}
+              {notifications?.map((notification) => {
+                const { title, subtitle } = formatNotificationMessage(notification);
+                return (
+                  <TableRow key={notification.id}>
+                    <TableCell>
+                      <Badge variant="outline">{eventLabel(notification.type)}</Badge>
+                    </TableCell>
+                    <TableCell className="whitespace-normal">
+                      <p className="font-medium">{title}</p>
+                      {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+                    </TableCell>
+                    <TableCell>{formatDateTime(notification.created_at)}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+
+        {meta && meta.last_page > 1 && (
+          <div className="flex items-center justify-between border-t border-border p-4 text-sm text-muted-foreground">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={meta.current_page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
+              ← Précédent
+            </Button>
+            <span>
+              Page {meta.current_page} sur {meta.last_page}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={meta.current_page >= meta.last_page}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Suivant →
+            </Button>
+          </div>
         )}
       </div>
-
-      <div className="space-y-3">
-        {notifications === null && <p className="text-muted-foreground">Chargement...</p>}
-        {notifications?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucun évènement pour le moment.
-            </CardContent>
-          </Card>
-        )}
-        {notifications?.map((notification) => {
-          const { title, subtitle } = formatNotificationMessage(notification);
-          return (
-            <Card key={notification.id}>
-              <CardContent className="flex items-center justify-between gap-4 pt-6">
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline">{eventLabel(notification.type)}</Badge>
-                  <div>
-                    <p className="font-medium">{title}</p>
-                    <p className="text-sm text-muted-foreground">{subtitle}</p>
-                  </div>
-                </div>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatDateTime(notification.created_at)}
-                </span>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {meta && meta.last_page > 1 && (
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={meta.current_page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Précédent
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {meta.current_page} / {meta.last_page}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={meta.current_page >= meta.last_page}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Suivant
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

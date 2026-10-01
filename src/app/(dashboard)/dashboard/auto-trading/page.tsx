@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
 import { fetchMyLicenses } from "@/lib/api/licenses";
@@ -94,24 +95,22 @@ export default function DashboardAutoTradingPage() {
 
         {error && <Alert variant="error">{error}</Alert>}
 
-        <div className="grid gap-4">
-          {plans === null && (
-            <p className="text-muted-foreground">Chargement...</p>
-          )}
+        {plans === null && (
+          <p className="text-muted-foreground">Chargement...</p>
+        )}
+        <CatalogCardGrid>
           {plans?.map((plan) => (
-            <Card key={plan.id}>
-              <CardContent className="flex items-center justify-between pt-6">
-                <div>
-                  <h3 className="font-semibold">{plan.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {formatCurrency(plan.price)} · {plan.purchase_count ?? 0}{" "}
-                    achetée(s)
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge variant={plan.is_active ? "default" : "secondary"}>
-                    {plan.is_active ? "Active" : "Inactive"}
-                  </Badge>
+            <CatalogCard
+              key={plan.id}
+              title={plan.name}
+              badges={
+                <Badge variant={plan.is_active ? "default" : "secondary"}>
+                  {plan.is_active ? "Active" : "Inactive"}
+                </Badge>
+              }
+              caption={`${formatCurrency(plan.price)} · ${plan.purchase_count ?? 0} achetée(s)`}
+              actions={
+                <>
                   <Button
                     variant="outline"
                     size="sm"
@@ -122,7 +121,6 @@ export default function DashboardAutoTradingPage() {
                     }
                   />
                   <Button
-                    variant="outline"
                     size="sm"
                     render={
                       <Link href={`/dashboard/auto-trading/${plan.id}/edit`}>
@@ -141,6 +139,7 @@ export default function DashboardAutoTradingPage() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="text-destructive hover:text-destructive"
                         disabled={plan.has_active_subscribers}
                         onClick={() => handleDeletePlan(plan.id)}
                       >
@@ -154,11 +153,11 @@ export default function DashboardAutoTradingPage() {
                       </TooltipContent>
                     )}
                   </Tooltip>
-                </div>
-              </CardContent>
-            </Card>
+                </>
+              }
+            />
           ))}
-        </div>
+        </CatalogCardGrid>
       </div>
     );
   }

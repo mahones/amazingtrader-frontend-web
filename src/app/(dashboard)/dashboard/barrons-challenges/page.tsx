@@ -10,6 +10,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditBarronsChallengePurchaseDetailsDialog } from "@/components/licenses/EditBarronsChallengePurchaseDetailsDialog";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
 import { downloadBarronsChallengeFile, fetchMyBarronsChallengeLicenses } from "@/lib/api/barronsChallenges";
 import { deleteAdminBarronsChallenge, fetchAdminBarronsChallenges } from "@/lib/api/admin";
@@ -85,30 +86,29 @@ export default function DashboardBarronsChallengesPage() {
 
         {error && <Alert variant="error">{error}</Alert>}
 
-        <div className="grid gap-4">
-          {challenges === null && <p className="text-muted-foreground">Chargement...</p>}
+        {challenges === null && <p className="text-muted-foreground">Chargement...</p>}
+        <CatalogCardGrid>
           {challenges?.map((challenge) => (
-            <Card key={challenge.id}>
-              <CardContent className="flex items-center justify-between pt-6">
-                <div>
-                  <h3 className="font-semibold">{challenge.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Capital géré :{" "}
-                    {challenge.managed_capital !== null ? formatCurrency(challenge.managed_capital) : "-"}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
+            <CatalogCard
+              key={challenge.id}
+              title={challenge.name}
+              badges={
+                <>
+                  <Badge variant="outline">#{challenge.position}</Badge>
                   <Badge variant={challenge.is_active ? "default" : "secondary"}>
                     {challenge.is_active ? "Actif" : "Inactif"}
                   </Badge>
-                  <Badge variant="outline">#{challenge.position}</Badge>
+                </>
+              }
+              caption={`Capital géré : ${challenge.managed_capital !== null ? formatCurrency(challenge.managed_capital) : "-"}`}
+              actions={
+                <>
                   <Button
                     variant="outline"
                     size="sm"
                     render={<Link href={`/challenge-barrons/${challenge.slug}`}>Voir la page</Link>}
                   />
                   <Button
-                    variant="outline"
                     size="sm"
                     render={
                       <Link href={`/dashboard/barrons-challenges/${challenge.id}/edit`}>
@@ -121,6 +121,7 @@ export default function DashboardBarronsChallengesPage() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="text-destructive hover:text-destructive"
                         disabled={challenge.has_active_subscribers}
                         onClick={() => handleDeleteChallenge(challenge.id)}
                       >
@@ -133,11 +134,11 @@ export default function DashboardBarronsChallengesPage() {
                       </TooltipContent>
                     )}
                   </Tooltip>
-                </div>
-              </CardContent>
-            </Card>
+                </>
+              }
+            />
           ))}
-        </div>
+        </CatalogCardGrid>
       </div>
     );
   }

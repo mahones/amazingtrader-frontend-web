@@ -95,9 +95,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold">Paramètres du compte</h1>
 
+      <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardHeader>
           <CardTitle>Informations personnelles</CardTitle>
@@ -175,6 +176,7 @@ export default function SettingsPage() {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

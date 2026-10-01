@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { AnnouncementDialog } from "@/components/admin/AnnouncementDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminAnnouncement, fetchAdminAnnouncements } from "@/lib/api/admin";
@@ -64,31 +65,30 @@ export default function DashboardAnnouncementsPage() {
         />
       </div>
 
-      <div className="grid gap-4">
-        {announcements === null && <p className="text-muted-foreground">Chargement...</p>}
-        {announcements?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucune annonce pour le moment.
-            </CardContent>
-          </Card>
-        )}
+      {announcements === null && <p className="text-muted-foreground">Chargement...</p>}
+      {announcements?.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center text-muted-foreground">
+            Aucune annonce pour le moment.
+          </CardContent>
+        </Card>
+      )}
+      <CatalogCardGrid>
         {announcements?.map((announcement) => (
-          <Card key={announcement.id}>
-            <CardContent className="flex flex-wrap items-start justify-between gap-4 pt-6">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-semibold">{announcement.title}</h3>
-                  {announcement.is_pinned ? (
-                    <Badge>Épinglée</Badge>
-                  ) : (
-                    <Badge variant="secondary">Désépinglée</Badge>
-                  )}
-                </div>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{announcement.description}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{formatDateTime(announcement.created_at)}</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
+          <CatalogCard
+            key={announcement.id}
+            title={announcement.title}
+            badges={
+              announcement.is_pinned ? <Badge>Épinglée</Badge> : <Badge variant="secondary">Désépinglée</Badge>
+            }
+            caption={
+              <>
+                <p className="line-clamp-2">{announcement.description}</p>
+                <p className="mt-1 text-xs text-muted-foreground/70">{formatDateTime(announcement.created_at)}</p>
+              </>
+            }
+            actions={
+              <>
                 <AnnouncementDialog
                   announcement={announcement}
                   onSaved={handleSaved}
@@ -98,14 +98,19 @@ export default function DashboardAnnouncementsPage() {
                     </Button>
                   }
                 />
-                <Button variant="outline" size="sm" onClick={() => handleDelete(announcement.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(announcement.id)}
+                >
                   Supprimer
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </>
+            }
+          />
         ))}
-      </div>
+      </CatalogCardGrid>
     </div>
   );
 }

@@ -2,26 +2,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
-  AlertTriangle,
   ArrowUpRight,
   BookOpen,
   Bot,
-  Handshake,
   KeyRound,
   MessageSquarePlus,
-  RefreshCw,
-  Users,
-  Wallet,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { AnnouncementsBanner } from "@/components/announcements/AnnouncementsBanner";
 import { SubmitReviewDialog } from "@/components/reviews/SubmitReviewDialog";
-import { cn } from "@/lib/utils";
+import { ActivityFeedCard, LicenseDistributionCard, MonthlyBarChart, TrendChartCard } from "@/components/dashboard/DashboardCharts";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
 import { fetchMyLicenses } from "@/lib/api/licenses";
@@ -35,62 +31,119 @@ import {
   fetchPendingPartnerApplicationCount,
   fetchPendingWithdrawalCount,
 } from "@/lib/api/admin";
+import {
+  fetchAdminKpiTrends,
+  fetchAdminLicenseDistribution,
+  fetchAdminRecentActivity,
+  fetchAdminRegistrationStats,
+  fetchAdminRevenueStats,
+  fetchMyBotPerformanceStats,
+  fetchMyEnrollmentStats,
+  fetchMyKpiTrends,
+  fetchMyLicenseDistribution,
+  fetchMyRecentActivity,
+} from "@/lib/api/stats";
+import type { ActivityItem, LicenseDistributionPoint, MonthlyPoint, StatsPeriod, TrendPoint } from "@/types/stats";
 
 type Stat = {
   label: string;
   value: number;
-  icon: typeof BookOpen;
   href?: string;
-  sublabel?: string;
+  caption?: string;
   attention?: boolean;
+  trendPercent?: number | null;
 };
 
-function MiniBar({ value, max }: { value: number; max: number }) {
-  const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
+// Decorative accent curve only — it is not a rendering of real historical
+// data (we don't track per-day history for these counters), just a visual
+// echo of the design reference. Seeded from the stat's own value so it stays
+// stable across re-renders instead of reshuffling on every tick.
+function sparklinePoints(seed: number, count = 10) {
+  const points: number[] = [];
+  let value = 45 + (seed % 20);
+  for (let i = 0; i < count; i++) {
+    const n = Math.sin((seed + 1) * (i + 1) * 12.9898) * 43758.5453;
+    const frac = n - Math.floor(n);
+    value += (frac - 0.32) * 26;
+    value = Math.max(12, Math.min(88, value));
+    points.push(value);
+  }
+  return points;
+}
+
+function Sparkline({ seed, tone = "primary" }: { seed: number; tone?: "primary" | "destructive" }) {
+  const width = 100;
+  const height = 28;
+  const points = useMemo(() => sparklinePoints(Math.max(1, seed)), [seed]);
+  const coords = points.map((p, i) => ({
+    x: (i / (points.length - 1)) * width,
+    y: height - (p / 100) * height,
+  }));
+
+  let d = `M ${coords[0].x},${coords[0].y}`;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const mid = { x: (coords[i].x + coords[i + 1].x) / 2, y: (coords[i].y + coords[i + 1].y) / 2 };
+    d += ` Q ${coords[i].x},${coords[i].y} ${mid.x},${mid.y}`;
+  }
+  d += ` T ${coords[coords.length - 1].x},${coords[coords.length - 1].y}`;
+
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-      <motion.div
-        className="h-full rounded-full bg-primary"
-        initial={{ width: 0 }}
-        animate={{ width: `${pct}%` }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    <svg viewBox={`0 0 ${width} ${height}`} className="h-7 w-full overflow-visible" preserveAspectRatio="none">
+      <path
+        d={d}
+        fill="none"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={tone === "destructive" ? "stroke-destructive" : "stroke-primary"}
       />
-    </div>
+    </svg>
   );
 }
 
-function StatTile({ stat, max }: { stat: Stat; max: number }) {
+function StatTile({ stat, index }: { stat: Stat; index: number }) {
   const content = (
     <Card
       className={cn(
         "h-full transition-all duration-200",
-        stat.href && "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 hover:ring-primary/40"
+        stat.href && "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5",
+        stat.attention &&
+          "border-destructive/50 bg-destructive/[0.03] ring-1 ring-destructive/15 dark:bg-destructive/[0.06]"
       )}
     >
-      <CardContent className="flex h-full flex-col gap-4">
-        <div className="flex items-start justify-between">
-          <div
-            className={cn(
-              "flex size-11 items-center justify-center rounded-xl",
-              stat.attention ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
-            )}
-          >
-            <stat.icon className="size-5" />
-          </div>
-          {stat.href && (
-            <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover/card:-translate-y-0.5 group-hover/card:translate-x-0.5" />
+      <CardContent className="flex h-full flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
+          {stat.attention ? (
+            <Badge variant="destructive" className="shrink-0">
+              À traiter
+            </Badge>
+          ) : (
+            stat.trendPercent != null && (
+              <span
+                className={cn(
+                  "shrink-0 text-xs font-semibold tabular-nums",
+                  stat.trendPercent >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"
+                )}
+              >
+                {stat.trendPercent >= 0 ? "+" : ""}
+                {stat.trendPercent.toFixed(1)}%
+              </span>
+            )
           )}
         </div>
 
-        <div className="mt-auto">
-          <div className="font-heading text-3xl font-bold tabular-nums">
-            <AnimatedNumber value={stat.value} />
+        <div className="mt-auto flex items-end justify-between gap-3">
+          <div>
+            <div className="font-heading text-3xl font-bold tabular-nums">
+              <AnimatedNumber value={stat.value} />
+            </div>
+            {stat.caption && <p className="mt-0.5 text-xs text-muted-foreground/70">{stat.caption}</p>}
           </div>
-          <p className="mt-1 text-sm font-medium text-muted-foreground">{stat.label}</p>
-          {stat.sublabel && <p className="mt-0.5 text-xs text-muted-foreground/70">{stat.sublabel}</p>}
+          <div className="w-20 shrink-0">
+            <Sparkline seed={stat.value + index} tone={stat.attention ? "destructive" : "primary"} />
+          </div>
         </div>
-
-        <MiniBar value={stat.value} max={max} />
       </CardContent>
     </Card>
   );
@@ -107,13 +160,18 @@ function StatTile({ stat, max }: { stat: Stat; max: number }) {
 function StatTileSkeleton() {
   return (
     <Card>
-      <CardContent className="flex flex-col gap-4">
-        <Skeleton className="size-11 rounded-xl" />
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-16" />
-          <Skeleton className="h-4 w-24" />
+      <CardContent className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-10" />
         </div>
-        <Skeleton className="h-1.5 w-full rounded-full" />
+        <div className="flex items-end justify-between gap-3">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-16" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <Skeleton className="h-7 w-20 shrink-0" />
+        </div>
       </CardContent>
     </Card>
   );
@@ -160,6 +218,15 @@ export default function DashboardOverviewPage() {
   const [avgProgress, setAvgProgress] = useState(0);
   const [enrollmentCount, setEnrollmentCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<StatsPeriod>(30);
+  const [trendPoints, setTrendPoints] = useState<TrendPoint[]>([]);
+  const [trendLoading, setTrendLoading] = useState(true);
+  const [monthlyPoints, setMonthlyPoints] = useState<MonthlyPoint[]>([]);
+  const [monthlyLoading, setMonthlyLoading] = useState(true);
+  const [licensePoints, setLicensePoints] = useState<LicenseDistributionPoint[]>([]);
+  const [licenseLoading, setLicenseLoading] = useState(true);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
@@ -172,6 +239,7 @@ export default function DashboardOverviewPage() {
           pendingCredentialsChanges,
           pendingWithdrawals,
           pendingPartnerApplications,
+          kpiTrends,
         ] = await Promise.all([
           fetchAdminCourses(),
           fetchAdminLicensePlans(),
@@ -180,52 +248,71 @@ export default function DashboardOverviewPage() {
           fetchPendingCredentialsChangeCount(),
           fetchPendingWithdrawalCount(),
           fetchPendingPartnerApplicationCount(),
+          fetchAdminKpiTrends(),
         ]);
+        const publishedCourses = courses.filter((c) => c.is_published).length;
+        const activePlans = plans.filter((p) => p.is_active).length;
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        const newUsersThisWeek = users.filter((u) => new Date(u.created_at).getTime() >= sevenDaysAgo).length;
+
         setStats([
-          { label: "Formations publiées", value: courses.length, icon: BookOpen },
-          { label: "Auto-trading créés", value: plans.length, icon: KeyRound },
-          { label: "Utilisateurs", value: users.length, icon: Users },
+          {
+            label: "Formations publiées",
+            value: publishedCourses,
+            caption: `sur ${courses.length} au total`,
+            trendPercent: kpiTrends.formations,
+          },
+          {
+            label: "Auto-trading créés",
+            value: plans.length,
+            caption: `${activePlans} actif${activePlans > 1 ? "s" : ""}`,
+            trendPercent: kpiTrends.auto_trading,
+          },
+          {
+            label: "Utilisateurs",
+            value: users.length,
+            caption: `+${newUsersThisWeek} cette semaine`,
+            trendPercent: kpiTrends.users,
+          },
           {
             label: "Attente d'activation",
             value: pendingActivations,
-            icon: AlertTriangle,
             href: "/dashboard/users?license_status=pending",
-            sublabel: "À traiter",
+            caption: "licences à traiter",
             attention: pendingActivations > 0,
           },
           {
             label: "Modifications à approuver",
             value: pendingCredentialsChanges,
-            icon: RefreshCw,
             href: "/dashboard/users?license_status=pending_changes",
-            sublabel: "À traiter",
+            caption: "demandes à traiter",
             attention: pendingCredentialsChanges > 0,
           },
           {
             label: "Retraits en attente",
             value: pendingWithdrawals,
-            icon: Wallet,
             href: "/dashboard/retraits",
-            sublabel: "À traiter",
+            caption: "retraits à traiter",
             attention: pendingWithdrawals > 0,
           },
           {
             label: "Demandes partenaires",
             value: pendingPartnerApplications,
-            icon: Handshake,
             href: "/dashboard/partenaires",
-            sublabel: "À traiter",
+            caption: pendingPartnerApplications > 0 ? "demandes à traiter" : "Aucune en attente",
             attention: pendingPartnerApplications > 0,
           },
         ]);
       } else {
-        const [enrollments, licenses, bots] = await Promise.all([
+        const [enrollments, licenses, bots, kpiTrends] = await Promise.all([
           fetchMyEnrollments(),
           fetchMyLicenses(),
           fetchMyBotAssignments(),
+          fetchMyKpiTrends(),
         ]);
         const activeLicenses = licenses.filter((l) => l.is_activated).length;
         const activeBots = bots.filter((b) => b.status === "active").length;
+        const inProgressCourses = enrollments.filter((e) => e.progress_percent < 100).length;
         const avg =
           enrollments.length > 0
             ? enrollments.reduce((sum, e) => sum + e.progress_percent, 0) / enrollments.length
@@ -234,22 +321,23 @@ export default function DashboardOverviewPage() {
           {
             label: "Mes formations",
             value: enrollments.length,
-            icon: BookOpen,
             href: "/dashboard/formations",
+            caption: enrollments.length > 0 ? `${inProgressCourses} en cours` : undefined,
+            trendPercent: kpiTrends.formations,
           },
           {
             label: "Mon auto-trading",
             value: licenses.length,
-            icon: KeyRound,
             href: "/dashboard/auto-trading",
-            sublabel: licenses.length > 0 ? `${activeLicenses} active${activeLicenses > 1 ? "s" : ""}` : undefined,
+            caption: licenses.length > 0 ? `${activeLicenses} active${activeLicenses > 1 ? "s" : ""}` : undefined,
+            trendPercent: kpiTrends.auto_trading,
           },
           {
             label: "Mes bots",
             value: bots.length,
-            icon: Bot,
             href: "/dashboard/bots",
-            sublabel: bots.length > 0 ? `${activeBots} actif${activeBots > 1 ? "s" : ""}` : undefined,
+            caption: bots.length > 0 ? `${activeBots} actif${activeBots > 1 ? "s" : ""}` : undefined,
+            trendPercent: kpiTrends.bots,
           },
         ]);
         setAvgProgress(avg);
@@ -260,7 +348,85 @@ export default function DashboardOverviewPage() {
     load();
   }, [isStaff]);
 
-  const max = useMemo(() => Math.max(1, ...stats.map((s) => s.value)), [stats]);
+  useEffect(() => {
+    let isActive = true;
+    async function load() {
+      setTrendLoading(true);
+      const points = isStaff ? await fetchAdminRevenueStats(period) : await fetchMyBotPerformanceStats(period);
+      if (!isActive) return;
+      setTrendPoints(points);
+      setTrendLoading(false);
+    }
+    load();
+    return () => {
+      isActive = false;
+    };
+  }, [isStaff, period]);
+
+  useEffect(() => {
+    let isActive = true;
+    async function load() {
+      setMonthlyLoading(true);
+      const points = isStaff ? await fetchAdminRegistrationStats() : await fetchMyEnrollmentStats();
+      if (!isActive) return;
+      setMonthlyPoints(points);
+      setMonthlyLoading(false);
+    }
+    load();
+    return () => {
+      isActive = false;
+    };
+  }, [isStaff]);
+
+  useEffect(() => {
+    let isActive = true;
+    async function load() {
+      setLicenseLoading(true);
+      const points = isStaff ? await fetchAdminLicenseDistribution() : await fetchMyLicenseDistribution();
+      if (!isActive) return;
+      setLicensePoints(points);
+      setLicenseLoading(false);
+    }
+    load();
+    return () => {
+      isActive = false;
+    };
+  }, [isStaff]);
+
+  useEffect(() => {
+    let isActive = true;
+    async function load() {
+      setActivityLoading(true);
+      const items = isStaff ? await fetchAdminRecentActivity() : await fetchMyRecentActivity();
+      if (!isActive) return;
+      setActivity(items);
+      setActivityLoading(false);
+    }
+    load();
+    return () => {
+      isActive = false;
+    };
+  }, [isStaff]);
+
+  const trendHeadline = isStaff
+    ? formatCurrency(trendPoints.reduce((sum, p) => sum + p.value, 0))
+    : formatCurrency(trendPoints.length > 0 ? trendPoints[trendPoints.length - 1].value : 0);
+
+  const trendChangePercent = useMemo(() => {
+    if (trendPoints.length < 2) return null;
+    // Revenue points are already per-day totals; bot-performance points are a
+    // cumulative running total, so de-cumulate them first for a like-for-like
+    // first-half-vs-second-half comparison.
+    const deltas = isStaff
+      ? trendPoints.map((p) => p.value)
+      : trendPoints.map((p, i) => (i === 0 ? p.value : p.value - trendPoints[i - 1].value));
+
+    const mid = Math.floor(deltas.length / 2);
+    const firstHalf = deltas.slice(0, mid).reduce((sum, v) => sum + v, 0);
+    const secondHalf = deltas.slice(mid).reduce((sum, v) => sum + v, 0);
+    if (firstHalf === 0) return null;
+    return ((secondHalf - firstHalf) / Math.abs(firstHalf)) * 100;
+  }, [trendPoints, isStaff]);
 
   return (
     <div className="space-y-6">
@@ -290,8 +456,8 @@ export default function DashboardOverviewPage() {
           </>
         ) : (
           <>
-            {stats.map((stat) => (
-              <StatTile key={stat.label} stat={stat} max={max} />
+            {stats.map((stat, index) => (
+              <StatTile key={stat.label} stat={stat} index={index} />
             ))}
             {!isStaff && (
               <ProgressRingTile
@@ -307,6 +473,43 @@ export default function DashboardOverviewPage() {
             )}
           </>
         )}
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <TrendChartCard
+            title={isStaff ? `Revenus des ${period} derniers jours` : `Performance de mes bots sur ${period} jours`}
+            points={trendPoints}
+            loading={trendLoading}
+            period={period}
+            onPeriodChange={setPeriod}
+            headline={trendHeadline}
+            changePercent={trendChangePercent}
+            changeLabel={isStaff ? "sur la période" : "ce mois"}
+            emptyLabel={isStaff ? "Aucun revenu sur la période" : "Aucune clôture de trade sur la période"}
+          />
+        </div>
+        <LicenseDistributionCard
+          title={isStaff ? "Répartition des licences" : "Mes licences"}
+          points={licensePoints}
+          loading={licenseLoading}
+          emptyLabel={isStaff ? "Aucune licence active" : "Aucune licence active"}
+        />
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <MonthlyBarChart
+          title={isStaff ? "Inscriptions par mois" : "Mes formations par mois"}
+          points={monthlyPoints}
+          loading={monthlyLoading}
+          emptyLabel={isStaff ? "Aucune inscription récente" : "Aucune formation récente"}
+        />
+        <ActivityFeedCard
+          title={isStaff ? "Activité récente" : "Mes dernières activités"}
+          items={activity}
+          loading={activityLoading}
+          emptyLabel={isStaff ? "Aucune activité récente" : "Aucune activité récente"}
+        />
       </div>
 
       <Card>

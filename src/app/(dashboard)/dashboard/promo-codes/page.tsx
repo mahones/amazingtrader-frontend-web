@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { PromoCodeDialog } from "@/components/admin/PromoCodeDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminPromoCode, fetchAdminPromoCodes } from "@/lib/api/admin";
@@ -75,32 +76,32 @@ export default function DashboardPromoCodesPage() {
         />
       </div>
 
-      <div className="grid gap-4">
-        {promoCodes === null && <p className="text-muted-foreground">Chargement...</p>}
-        {promoCodes?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucun code promo pour le moment.
-            </CardContent>
-          </Card>
-        )}
+      {promoCodes === null && <p className="text-muted-foreground">Chargement...</p>}
+      {promoCodes?.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center text-muted-foreground">
+            Aucun code promo pour le moment.
+          </CardContent>
+        </Card>
+      )}
+      <CatalogCardGrid>
         {promoCodes?.map((promoCode) => (
-          <Card key={promoCode.id}>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-mono font-semibold">{promoCode.code}</h3>
-                  <Badge variant="outline">-{promoCode.discount_percentage}%</Badge>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {productsSummary(promoCode)} ·{" "}
-                  {promoCode.expires_at ? `Expire le ${formatDate(promoCode.expires_at)}` : "Sans expiration"}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
+          <CatalogCard
+            key={promoCode.id}
+            title={<span className="font-mono">{promoCode.code}</span>}
+            badges={
+              <>
+                <Badge variant="outline">-{promoCode.discount_percentage}%</Badge>
                 <Badge variant={promoCode.is_active ? "default" : "secondary"}>
                   {promoCode.is_active ? "Actif" : "Inactif"}
                 </Badge>
+              </>
+            }
+            caption={`${productsSummary(promoCode)} · ${
+              promoCode.expires_at ? `Expire le ${formatDate(promoCode.expires_at)}` : "Sans expiration"
+            }`}
+            actions={
+              <>
                 <PromoCodeDialog
                   promoCode={promoCode}
                   onSaved={handleSaved}
@@ -110,14 +111,19 @@ export default function DashboardPromoCodesPage() {
                     </Button>
                   }
                 />
-                <Button variant="outline" size="sm" onClick={() => handleDelete(promoCode.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(promoCode.id)}
+                >
                   Supprimer
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </>
+            }
+          />
         ))}
-      </div>
+      </CatalogCardGrid>
     </div>
   );
 }

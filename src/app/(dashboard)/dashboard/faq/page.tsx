@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { FaqDialog } from "@/components/admin/FaqDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { deleteAdminFaq, fetchAdminFaqs } from "@/lib/api/admin";
@@ -63,28 +64,29 @@ export default function DashboardFaqPage() {
         />
       </div>
 
-      <div className="grid gap-4">
-        {faqs === null && <p className="text-muted-foreground">Chargement...</p>}
-        {faqs?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucune question pour le moment.
-            </CardContent>
-          </Card>
-        )}
+      {faqs === null && <p className="text-muted-foreground">Chargement...</p>}
+      {faqs?.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center text-muted-foreground">
+            Aucune question pour le moment.
+          </CardContent>
+        </Card>
+      )}
+      <CatalogCardGrid>
         {faqs?.map((faq) => (
-          <Card key={faq.id}>
-            <CardContent className="flex flex-wrap items-start justify-between gap-4 pt-6">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-semibold">{faq.question}</h3>
-                  {faq.category && <Badge variant="outline">{faq.category}</Badge>}
-                  {faq.is_featured && <Badge>Mise en avant</Badge>}
-                  {!faq.is_active && <Badge variant="secondary">Masquée</Badge>}
-                </div>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{faq.answer}</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
+          <CatalogCard
+            key={faq.id}
+            title={faq.question}
+            badges={
+              <>
+                {faq.category && <Badge variant="outline">{faq.category}</Badge>}
+                {faq.is_featured && <Badge>Mise en avant</Badge>}
+                {!faq.is_active && <Badge variant="secondary">Masquée</Badge>}
+              </>
+            }
+            caption={<p className="line-clamp-2">{faq.answer}</p>}
+            actions={
+              <>
                 <FaqDialog
                   faq={faq}
                   onSaved={handleSaved}
@@ -94,14 +96,19 @@ export default function DashboardFaqPage() {
                     </Button>
                   }
                 />
-                <Button variant="outline" size="sm" onClick={() => handleDelete(faq.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(faq.id)}
+                >
                   Supprimer
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </>
+            }
+          />
         ))}
-      </div>
+      </CatalogCardGrid>
     </div>
   );
 }

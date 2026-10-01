@@ -34,6 +34,7 @@ import type { PromoCode } from "@/types/promo-code";
 import type { AdminPartnerRewardClaim, Partner, PartnerLevelConfig, PartnerRewardClaimStatus } from "@/types/partner";
 import type { Withdrawal, WithdrawalStatus } from "@/types/withdrawal";
 import type { Review } from "@/types/review";
+import type { VipFormation } from "@/types/vipFormation";
 
 // Courses
 export async function fetchAdminCourses() {
@@ -97,6 +98,26 @@ export async function updateAdminLicensePlan(id: number, payload: Partial<Licens
 
 export async function deleteAdminLicensePlan(id: number) {
   await apiClient.delete(`/admin/license-plans/${id}`);
+}
+
+// VIP formations
+export async function fetchAdminVipFormations() {
+  const { data } = await apiClient.get<{ data: VipFormation[] }>("/admin/vip-formations");
+  return data.data;
+}
+
+export async function createAdminVipFormation(payload: Partial<VipFormation>) {
+  const { data } = await apiClient.post<{ data: VipFormation }>("/admin/vip-formations", payload);
+  return data.data;
+}
+
+export async function updateAdminVipFormation(id: number, payload: Partial<VipFormation>) {
+  const { data } = await apiClient.put<{ data: VipFormation }>(`/admin/vip-formations/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminVipFormation(id: number) {
+  await apiClient.delete(`/admin/vip-formations/${id}`);
 }
 
 // Trading bots

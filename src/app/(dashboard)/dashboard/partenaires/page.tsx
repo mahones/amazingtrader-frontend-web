@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { AdjustPartnerBalanceDialog } from "@/components/admin/AdjustPartnerBalanceDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
 import { PartnerLevelDialog } from "@/components/admin/PartnerLevelDialog";
@@ -132,13 +133,15 @@ export default function DashboardPartnersPage() {
           {applications?.length === 0 && (
             <p className="text-sm text-muted-foreground">Aucune demande en attente.</p>
           )}
-          {applications?.map((application) => (
-            <PartnerApplicationReviewCard
-              key={application.id}
-              application={application}
-              onReviewed={handleReviewed}
-            />
-          ))}
+          <CatalogCardGrid>
+            {applications?.map((application) => (
+              <PartnerApplicationReviewCard
+                key={application.id}
+                application={application}
+                onReviewed={handleReviewed}
+              />
+            ))}
+          </CatalogCardGrid>
         </CardContent>
       </Card>
 
@@ -155,58 +158,73 @@ export default function DashboardPartnersPage() {
           {partners?.length === 0 && (
             <p className="text-sm text-muted-foreground">Aucun partenaire actif pour le moment.</p>
           )}
-          {partners?.map((partner) => (
-            <div
-              key={partner.id}
-              className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border p-3"
-            >
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="font-mono font-semibold tracking-wider">{partner.code}</p>
+          <CatalogCardGrid>
+            {partners?.map((partner) => (
+              <CatalogCard
+                key={partner.id}
+                title={<span className="font-mono tracking-wider">{partner.code}</span>}
+                badges={
                   <Badge variant={partner.type === "assigned" ? "secondary" : "outline"}>
                     {partner.type === "assigned" ? "Sous contrat" : "Auto-inscription"}
                   </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {partner.user?.name} ({partner.user?.email}) · {partner.gain_percentage ?? 0}% de gain ·{" "}
-                  {partner.discount_percentage ?? 0}% de réduction
-                  {partner.type === "self_service" && partner.level_name ? ` · niveau ${partner.level_name}` : ""}
-                </p>
-                <p className="text-xs text-muted-foreground">Solde : {formatCurrency(partner.balance)}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                {partner.user && (
-                  <Button variant="outline" size="sm" render={<Link href={`/dashboard/users/${partner.user.id}`} />}>
-                    Voir l&apos;utilisateur
-                  </Button>
-                )}
-                {partner.type === "assigned" && partner.user && (
-                  <AssignPartnerDialog
-                    userId={partner.user.id}
-                    existingPartner={partner}
-                    onSaved={handlePartnerUpdated}
-                    trigger={
-                      <Button variant="outline" size="sm">
-                        Modifier
+                }
+                caption={
+                  <>
+                    <p>
+                      {partner.user?.name} ({partner.user?.email}) · {partner.gain_percentage ?? 0}% de gain ·{" "}
+                      {partner.discount_percentage ?? 0}% de réduction
+                      {partner.type === "self_service" && partner.level_name
+                        ? ` · niveau ${partner.level_name}`
+                        : ""}
+                    </p>
+                    <p className="text-xs text-muted-foreground/70">Solde : {formatCurrency(partner.balance)}</p>
+                  </>
+                }
+                actions={
+                  <>
+                    {partner.user && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        render={<Link href={`/dashboard/users/${partner.user.id}`} />}
+                      >
+                        Voir l&apos;utilisateur
                       </Button>
-                    }
-                  />
-                )}
-                <AdjustPartnerBalanceDialog
-                  partner={partner}
-                  onSaved={handlePartnerUpdated}
-                  trigger={
-                    <Button variant="outline" size="sm">
-                      Ajouter au solde
+                    )}
+                    {partner.type === "assigned" && partner.user && (
+                      <AssignPartnerDialog
+                        userId={partner.user.id}
+                        existingPartner={partner}
+                        onSaved={handlePartnerUpdated}
+                        trigger={
+                          <Button variant="outline" size="sm">
+                            Modifier
+                          </Button>
+                        }
+                      />
+                    )}
+                    <AdjustPartnerBalanceDialog
+                      partner={partner}
+                      onSaved={handlePartnerUpdated}
+                      trigger={
+                        <Button variant="outline" size="sm">
+                          Ajouter au solde
+                        </Button>
+                      }
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => handleDeletePartner(partner)}
+                    >
+                      Supprimer
                     </Button>
-                  }
-                />
-                <Button variant="destructive" size="sm" onClick={() => handleDeletePartner(partner)}>
-                  Supprimer
-                </Button>
-              </div>
-            </div>
-          ))}
+                  </>
+                }
+              />
+            ))}
+          </CatalogCardGrid>
         </CardContent>
       </Card>
 
@@ -219,29 +237,26 @@ export default function DashboardPartnersPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           {levels === null && <p className="text-muted-foreground">Chargement...</p>}
-          {levels?.map((level) => (
-            <div
-              key={level.id}
-              className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border p-3"
-            >
-              <div>
-                <p className="font-semibold">{level.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {level.gain_percentage}% de gain · {level.discount_percentage}% de réduction · dès{" "}
-                  {formatPartnerAmount(level.min_cumulative_purchases)} cumulés
-                </p>
-              </div>
-              <PartnerLevelDialog
-                level={level}
-                onSaved={handleLevelSaved}
-                trigger={
-                  <Button variant="outline" size="sm">
-                    Modifier
-                  </Button>
+          <CatalogCardGrid>
+            {levels?.map((level) => (
+              <CatalogCard
+                key={level.id}
+                title={level.name}
+                caption={`${level.gain_percentage}% de gain · ${level.discount_percentage}% de réduction · dès ${formatPartnerAmount(level.min_cumulative_purchases)} cumulés`}
+                actions={
+                  <PartnerLevelDialog
+                    level={level}
+                    onSaved={handleLevelSaved}
+                    trigger={
+                      <Button variant="outline" size="sm">
+                        Modifier
+                      </Button>
+                    }
+                  />
                 }
               />
-            </div>
-          ))}
+            ))}
+          </CatalogCardGrid>
         </CardContent>
       </Card>
     </div>

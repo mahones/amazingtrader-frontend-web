@@ -10,6 +10,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
 import { downloadBotFile, fetchMyBotLicenses } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
@@ -90,27 +91,25 @@ export default function DashboardBotsPage() {
 
         {error && <Alert variant="error">{error}</Alert>}
 
-        <div className="grid gap-4">
-          {bots === null && (
-            <p className="text-muted-foreground">Chargement...</p>
-          )}
+        {bots === null && (
+          <p className="text-muted-foreground">Chargement...</p>
+        )}
+        <CatalogCardGrid>
           {bots?.map((bot) => (
-            <Card key={bot.id}>
-              <CardContent className="flex items-center justify-between pt-6">
-                <div>
-                  <h3 className="font-semibold">{bot.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Capital géré :{" "}
-                    {bot.managed_capital !== null
-                      ? formatCurrency(bot.managed_capital)
-                      : "-"}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
+            <CatalogCard
+              key={bot.id}
+              title={bot.name}
+              badges={
+                <>
+                  <Badge variant="outline">#{bot.position}</Badge>
                   <Badge variant={bot.is_active ? "default" : "secondary"}>
                     {bot.is_active ? "Actif" : "Inactif"}
                   </Badge>
-                  <Badge variant="outline">#{bot.position}</Badge>
+                </>
+              }
+              caption={`Capital géré : ${bot.managed_capital !== null ? formatCurrency(bot.managed_capital) : "-"}`}
+              actions={
+                <>
                   <Button
                     variant="outline"
                     size="sm"
@@ -139,6 +138,7 @@ export default function DashboardBotsPage() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="text-destructive hover:text-destructive"
                         disabled={bot.has_active_subscribers}
                         onClick={() => handleDeleteBot(bot.id)}
                       >
@@ -151,11 +151,11 @@ export default function DashboardBotsPage() {
                       </TooltipContent>
                     )}
                   </Tooltip>
-                </div>
-              </CardContent>
-            </Card>
+                </>
+              }
+            />
           ))}
-        </div>
+        </CatalogCardGrid>
       </div>
     );
   }

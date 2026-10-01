@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { BrokerDialog } from "@/components/admin/BrokerDialog";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
@@ -134,51 +135,54 @@ export default function DashboardBrokersPage() {
 
       <BrokersPageTextCard />
 
-      <div className="grid gap-4">
-        {brokers === null && <p className="text-muted-foreground">Chargement...</p>}
-        {brokers?.length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              Aucun courtier pour le moment.
-            </CardContent>
-          </Card>
-        )}
+      {brokers === null && <p className="text-muted-foreground">Chargement...</p>}
+      {brokers?.length === 0 && (
+        <Card>
+          <CardContent className="pt-6 text-center text-muted-foreground">
+            Aucun courtier pour le moment.
+          </CardContent>
+        </Card>
+      )}
+      <CatalogCardGrid>
         {brokers?.map((broker) => (
-          <Card key={broker.id}>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
-              <div className="flex min-w-0 items-center gap-4">
-                {broker.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded logo, arbitrary host not known at build time
-                  <img
-                    src={broker.logo_url}
-                    alt={broker.name}
-                    className="h-10 w-16 shrink-0 rounded-md border border-border object-contain p-1"
-                  />
-                ) : (
-                  <span className="flex h-10 w-16 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-xs text-muted-foreground">
-                    Pas de logo
-                  </span>
-                )}
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{broker.name}</h3>
-                    {broker.category && <Badge variant="outline">{broker.category}</Badge>}
-                  </div>
-                  <a
-                    href={broker.affiliate_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
-                  >
-                    <span className="truncate">{broker.affiliate_url}</span>
-                    <ExternalLink className="size-3 shrink-0" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
+          <CatalogCard
+            key={broker.id}
+            media={
+              broker.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded logo, arbitrary host not known at build time
+                <img
+                  src={broker.logo_url}
+                  alt={broker.name}
+                  className="h-10 w-16 rounded-md border border-border object-contain p-1"
+                />
+              ) : (
+                <span className="flex h-10 w-16 items-center justify-center rounded-md border border-border bg-muted text-xs text-muted-foreground">
+                  Pas de logo
+                </span>
+              )
+            }
+            title={broker.name}
+            badges={
+              <>
+                {broker.category && <Badge variant="outline">{broker.category}</Badge>}
                 <Badge variant={broker.is_active ? "default" : "secondary"}>
                   {broker.is_active ? "Actif" : "Inactif"}
                 </Badge>
+              </>
+            }
+            caption={
+              <a
+                href={broker.affiliate_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 hover:text-primary"
+              >
+                <span className="truncate">{broker.affiliate_url}</span>
+                <ExternalLink className="size-3 shrink-0" />
+              </a>
+            }
+            actions={
+              <>
                 <BrokerDialog
                   broker={broker}
                   onSaved={handleSaved}
@@ -188,14 +192,19 @@ export default function DashboardBrokersPage() {
                     </Button>
                   }
                 />
-                <Button variant="outline" size="sm" onClick={() => handleDelete(broker.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(broker.id)}
+                >
                   Supprimer
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </>
+            }
+          />
         ))}
-      </div>
+      </CatalogCardGrid>
     </div>
   );
 }

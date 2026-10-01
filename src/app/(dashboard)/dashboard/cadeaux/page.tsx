@@ -6,6 +6,7 @@ import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   fetchAdminBarronsChallenges,
@@ -57,19 +58,22 @@ function RewardClaimCard({
   }
 
   return (
-    <Card>
-      <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
-        <div>
-          <p className="font-medium">
-            {claim.partner.user?.name ?? "Utilisateur"} · Cadeau {claim.level_name ?? claim.level}
-          </p>
-          <p className="text-sm text-muted-foreground">
+    <CatalogCard
+      title={`${claim.partner.user?.name ?? "Utilisateur"} · Cadeau ${claim.level_name ?? claim.level}`}
+      badges={claim.status === "fulfilled" && <Badge>Traité</Badge>}
+      caption={
+        <>
+          <p>
             {claim.partner.user?.email} · code {claim.partner.code}
           </p>
-          <p className="text-xs text-muted-foreground/70">Réclamé le {formatDateTime(claim.claimed_at)}</p>
-        </div>
-
-        {claim.status === "pending" ? (
+          <p className="mt-1 text-xs text-muted-foreground/70">Réclamé le {formatDateTime(claim.claimed_at)}</p>
+          {claim.fulfilled_by && (
+            <p className="text-xs text-muted-foreground/70">par {claim.fulfilled_by.name}</p>
+          )}
+        </>
+      }
+      actions={
+        claim.status === "pending" && (
           <AssignLicenseDialog
             userId={claim.partner.user?.id ?? 0}
             whatsappNumber={claim.partner.user?.whatsapp_number ?? null}
@@ -83,16 +87,9 @@ function RewardClaimCard({
             onOpenChange={setDialogOpen}
             trigger={<Button size="sm">Traiter</Button>}
           />
-        ) : (
-          <div className="text-right">
-            <Badge>Traité</Badge>
-            {claim.fulfilled_by && (
-              <p className="mt-1 text-xs text-muted-foreground">par {claim.fulfilled_by.name}</p>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        )
+      }
+    />
   );
 }
 
@@ -151,22 +148,8 @@ export default function DashboardRewardClaimsPage() {
             </CardContent>
           </Card>
         )}
-        {pending.map((claim) => (
-          <RewardClaimCard
-            key={claim.id}
-            claim={claim}
-            licensePlans={licensePlans}
-            botLicensePlans={botLicensePlans}
-            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
-            onFulfilled={handleFulfilled}
-          />
-        ))}
-      </div>
-
-      {fulfilled.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Traités</h2>
-          {fulfilled.map((claim) => (
+        <CatalogCardGrid>
+          {pending.map((claim) => (
             <RewardClaimCard
               key={claim.id}
               claim={claim}
@@ -176,6 +159,24 @@ export default function DashboardRewardClaimsPage() {
               onFulfilled={handleFulfilled}
             />
           ))}
+        </CatalogCardGrid>
+      </div>
+
+      {fulfilled.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold">Traités</h2>
+          <CatalogCardGrid>
+            {fulfilled.map((claim) => (
+              <RewardClaimCard
+                key={claim.id}
+                claim={claim}
+                licensePlans={licensePlans}
+                botLicensePlans={botLicensePlans}
+                barronsChallengeLicensePlans={barronsChallengeLicensePlans}
+                onFulfilled={handleFulfilled}
+              />
+            ))}
+          </CatalogCardGrid>
         </div>
       )}
     </div>
