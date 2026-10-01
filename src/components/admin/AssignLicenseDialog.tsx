@@ -16,15 +16,15 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { assignBarronsChallengeLicenseToUser, assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
+import { assignEurekaChallengeLicenseToUser, assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import { digitsOnly } from "@/lib/utils";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
-import type { BarronsChallengeLicensePlan, UserBarronsChallengeLicense } from "@/types/barronsChallenge";
+import type { EurekaChallengeLicensePlan, UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
 
-type LicenseType = "auto_trading" | "bot_trading" | "barrons_challenge";
+type LicenseType = "auto_trading" | "bot_trading" | "eureka_challenge";
 
 const emptyForm: LicensePurchaseDetails = { id: "", password: "", server: "" };
 
@@ -33,10 +33,10 @@ export function AssignLicenseDialog({
   whatsappNumber,
   licensePlans,
   botLicensePlans,
-  barronsChallengeLicensePlans,
+  eurekaChallengeLicensePlans,
   onLicenseAssigned,
   onBotLicenseAssigned,
-  onBarronsChallengeLicenseAssigned,
+  onEurekaChallengeLicenseAssigned,
   trigger,
   open: openProp,
   onOpenChange: onOpenChangeProp,
@@ -45,10 +45,10 @@ export function AssignLicenseDialog({
   whatsappNumber: string | null;
   licensePlans: LicensePlan[];
   botLicensePlans: (BotLicensePlan & { botName: string })[];
-  barronsChallengeLicensePlans: (BarronsChallengeLicensePlan & { challengeName: string })[];
+  eurekaChallengeLicensePlans: (EurekaChallengeLicensePlan & { challengeName: string })[];
   onLicenseAssigned: (license: UserLicense) => void;
   onBotLicenseAssigned: (license: UserBotLicense) => void;
-  onBarronsChallengeLicenseAssigned: (license: UserBarronsChallengeLicense) => void;
+  onEurekaChallengeLicenseAssigned: (license: UserEurekaChallengeLicense) => void;
   trigger?: React.ReactElement;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -76,7 +76,7 @@ export function AssignLicenseDialog({
       ? licensePlans.map((plan) => ({ value: String(plan.id), label: plan.name }))
       : type === "bot_trading"
         ? botLicensePlans.map((plan) => ({ value: String(plan.id), label: `${plan.botName} — ${plan.name}` }))
-        : barronsChallengeLicensePlans.map((plan) => ({
+        : eurekaChallengeLicensePlans.map((plan) => ({
             value: String(plan.id),
             label: `${plan.challengeName} — ${plan.name}`,
           }));
@@ -107,11 +107,11 @@ export function AssignLicenseDialog({
         });
         onBotLicenseAssigned(license);
       } else {
-        const license = await assignBarronsChallengeLicenseToUser(userId, {
-          barrons_challenge_license_plan_id: Number(planId),
+        const license = await assignEurekaChallengeLicenseToUser(userId, {
+          eureka_challenge_license_plan_id: Number(planId),
           activate,
         });
-        onBarronsChallengeLicenseAssigned(license);
+        onEurekaChallengeLicenseAssigned(license);
       }
       toast.success("Licence assignée avec succès.");
       setOpen(false);
@@ -170,14 +170,14 @@ export function AssignLicenseDialog({
             </Button>
             <Button
               type="button"
-              variant={type === "barrons_challenge" ? "default" : "outline"}
+              variant={type === "eureka_challenge" ? "default" : "outline"}
               className="flex-1"
               onClick={() => {
-                setType("barrons_challenge");
+                setType("eureka_challenge");
                 setPlanId("");
               }}
             >
-              Challenge Barrons
+              Challenge Eureka
             </Button>
           </div>
 

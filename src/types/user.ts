@@ -1,7 +1,7 @@
 import type { Enrollment } from "./course";
 import type { UserLicense } from "./license";
 import type { UserBotLicense } from "./bot";
-import type { UserBarronsChallengeLicense } from "./barronsChallenge";
+import type { UserEurekaChallengeLicense } from "./eurekaChallenge";
 import type { Partner } from "./partner";
 
 export type UserRole = "user" | "admin" | "developer";
@@ -27,6 +27,6 @@ export interface UserProfile extends User {
   enrollments: Enrollment[];
   user_licenses: UserLicense[];
   user_bot_licenses: UserBotLicense[];
-  user_barrons_challenge_licenses: UserBarronsChallengeLicense[];
+  user_eureka_challenge_licenses: UserEurekaChallengeLicense[];
   partner: Partner | null;
 }

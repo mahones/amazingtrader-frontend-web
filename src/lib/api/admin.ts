@@ -16,15 +16,15 @@ import type {
   UserBotLicense,
 } from "@/types/bot";
 import type {
-  BarronsChallenge,
-  BarronsChallengeAccountCredentials,
-  BarronsChallengeFile,
-  BarronsChallengeInstruction,
-  BarronsChallengeLicensePlan,
-  BarronsChallengePerformanceLink,
-  BarronsChallengeRequirement,
-  UserBarronsChallengeLicense,
-} from "@/types/barronsChallenge";
+  EurekaChallenge,
+  EurekaChallengeAccountCredentials,
+  EurekaChallengeFile,
+  EurekaChallengeInstruction,
+  EurekaChallengeLicensePlan,
+  EurekaChallengePerformanceLink,
+  EurekaChallengeRequirement,
+  UserEurekaChallengeLicense,
+} from "@/types/eurekaChallenge";
 import type { Post } from "@/types/post";
 import type { Event } from "@/types/event";
 import type { Faq } from "@/types/faq";
@@ -354,211 +354,211 @@ export async function deleteAdminBotFile(id: number) {
   await apiClient.delete(`/admin/bot-files/${id}`);
 }
 
-// Barrons Challenges
-export async function fetchAdminBarronsChallenges() {
-  const { data } = await apiClient.get<{ data: BarronsChallenge[] }>("/admin/barrons-challenges");
+// Eureka Challenges
+export async function fetchAdminEurekaChallenges() {
+  const { data } = await apiClient.get<{ data: EurekaChallenge[] }>("/admin/eureka-challenges");
   return data.data;
 }
 
-export async function fetchAdminBarronsChallenge(id: number) {
-  const { data } = await apiClient.get<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`);
+export async function fetchAdminEurekaChallenge(id: number) {
+  const { data } = await apiClient.get<{ data: EurekaChallenge }>(`/admin/eureka-challenges/${id}`);
   return data.data;
 }
 
-export async function createAdminBarronsChallenge(payload: Partial<BarronsChallenge> | FormData) {
-  const { data } = await apiClient.post<{ data: BarronsChallenge }>("/admin/barrons-challenges", payload);
+export async function createAdminEurekaChallenge(payload: Partial<EurekaChallenge> | FormData) {
+  const { data } = await apiClient.post<{ data: EurekaChallenge }>("/admin/eureka-challenges", payload);
   return data.data;
 }
 
-export async function updateAdminBarronsChallenge(id: number, payload: Partial<BarronsChallenge> | FormData) {
+export async function updateAdminEurekaChallenge(id: number, payload: Partial<EurekaChallenge> | FormData) {
   if (payload instanceof FormData) {
     payload.append("_method", "PUT");
-    const { data } = await apiClient.post<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`, payload);
+    const { data } = await apiClient.post<{ data: EurekaChallenge }>(`/admin/eureka-challenges/${id}`, payload);
     return data.data;
   }
-  const { data } = await apiClient.put<{ data: BarronsChallenge }>(`/admin/barrons-challenges/${id}`, payload);
+  const { data } = await apiClient.put<{ data: EurekaChallenge }>(`/admin/eureka-challenges/${id}`, payload);
   return data.data;
 }
 
-export async function deleteAdminBarronsChallenge(id: number) {
-  await apiClient.delete(`/admin/barrons-challenges/${id}`);
+export async function deleteAdminEurekaChallenge(id: number) {
+  await apiClient.delete(`/admin/eureka-challenges/${id}`);
 }
 
-// Barrons Challenge requirements
-export async function createAdminBarronsChallengeRequirement(
+// Eureka Challenge requirements
+export async function createAdminEurekaChallengeRequirement(
   challengeId: number,
-  payload: Partial<BarronsChallengeRequirement>
+  payload: Partial<EurekaChallengeRequirement>
 ) {
-  const { data } = await apiClient.post<{ data: BarronsChallengeRequirement }>(
-    `/admin/barrons-challenges/${challengeId}/requirements`,
+  const { data } = await apiClient.post<{ data: EurekaChallengeRequirement }>(
+    `/admin/eureka-challenges/${challengeId}/requirements`,
     payload
   );
   return data.data;
 }
 
-export async function updateAdminBarronsChallengeRequirement(
+export async function updateAdminEurekaChallengeRequirement(
   id: number,
-  payload: Partial<BarronsChallengeRequirement>
+  payload: Partial<EurekaChallengeRequirement>
 ) {
-  const { data } = await apiClient.put<{ data: BarronsChallengeRequirement }>(
-    `/admin/barrons-challenge-requirements/${id}`,
+  const { data } = await apiClient.put<{ data: EurekaChallengeRequirement }>(
+    `/admin/eureka-challenge-requirements/${id}`,
     payload
   );
   return data.data;
 }
 
-export async function deleteAdminBarronsChallengeRequirement(id: number) {
-  await apiClient.delete(`/admin/barrons-challenge-requirements/${id}`);
+export async function deleteAdminEurekaChallengeRequirement(id: number) {
+  await apiClient.delete(`/admin/eureka-challenge-requirements/${id}`);
 }
 
-// Barrons Challenge instructions
-export async function createAdminBarronsChallengeInstruction(
+// Eureka Challenge instructions
+export async function createAdminEurekaChallengeInstruction(
   challengeId: number,
-  payload: Partial<BarronsChallengeInstruction>
+  payload: Partial<EurekaChallengeInstruction>
 ) {
-  const { data } = await apiClient.post<{ data: BarronsChallengeInstruction }>(
-    `/admin/barrons-challenges/${challengeId}/instructions`,
+  const { data } = await apiClient.post<{ data: EurekaChallengeInstruction }>(
+    `/admin/eureka-challenges/${challengeId}/instructions`,
     payload
   );
   return data.data;
 }
 
-export async function updateAdminBarronsChallengeInstruction(
+export async function updateAdminEurekaChallengeInstruction(
   id: number,
-  payload: Partial<BarronsChallengeInstruction>
+  payload: Partial<EurekaChallengeInstruction>
 ) {
-  const { data } = await apiClient.put<{ data: BarronsChallengeInstruction }>(
-    `/admin/barrons-challenge-instructions/${id}`,
+  const { data } = await apiClient.put<{ data: EurekaChallengeInstruction }>(
+    `/admin/eureka-challenge-instructions/${id}`,
     payload
   );
   return data.data;
 }
 
-export async function deleteAdminBarronsChallengeInstruction(id: number) {
-  await apiClient.delete(`/admin/barrons-challenge-instructions/${id}`);
+export async function deleteAdminEurekaChallengeInstruction(id: number) {
+  await apiClient.delete(`/admin/eureka-challenge-instructions/${id}`);
 }
 
-// Barrons Challenge performance links
-export async function createAdminBarronsChallengePerformanceLink(
+// Eureka Challenge performance links
+export async function createAdminEurekaChallengePerformanceLink(
   challengeId: number,
-  payload: Partial<BarronsChallengePerformanceLink>
+  payload: Partial<EurekaChallengePerformanceLink>
 ) {
-  const { data } = await apiClient.post<{ data: BarronsChallengePerformanceLink }>(
-    `/admin/barrons-challenges/${challengeId}/performance-links`,
+  const { data } = await apiClient.post<{ data: EurekaChallengePerformanceLink }>(
+    `/admin/eureka-challenges/${challengeId}/performance-links`,
     payload
   );
   return data.data;
 }
 
-export async function updateAdminBarronsChallengePerformanceLink(
+export async function updateAdminEurekaChallengePerformanceLink(
   id: number,
-  payload: Partial<BarronsChallengePerformanceLink>
+  payload: Partial<EurekaChallengePerformanceLink>
 ) {
-  const { data } = await apiClient.put<{ data: BarronsChallengePerformanceLink }>(
-    `/admin/barrons-challenge-performance-links/${id}`,
+  const { data } = await apiClient.put<{ data: EurekaChallengePerformanceLink }>(
+    `/admin/eureka-challenge-performance-links/${id}`,
     payload
   );
   return data.data;
 }
 
-export async function deleteAdminBarronsChallengePerformanceLink(id: number) {
-  await apiClient.delete(`/admin/barrons-challenge-performance-links/${id}`);
+export async function deleteAdminEurekaChallengePerformanceLink(id: number) {
+  await apiClient.delete(`/admin/eureka-challenge-performance-links/${id}`);
 }
 
-// Barrons Challenge license plans
-export async function createAdminBarronsChallengeLicensePlan(
+// Eureka Challenge license plans
+export async function createAdminEurekaChallengeLicensePlan(
   challengeId: number,
-  payload: Partial<BarronsChallengeLicensePlan>
+  payload: Partial<EurekaChallengeLicensePlan>
 ) {
-  const { data } = await apiClient.post<{ data: BarronsChallengeLicensePlan }>(
-    `/admin/barrons-challenges/${challengeId}/license-plans`,
+  const { data } = await apiClient.post<{ data: EurekaChallengeLicensePlan }>(
+    `/admin/eureka-challenges/${challengeId}/license-plans`,
     payload
   );
   return data.data;
 }
 
-export async function updateAdminBarronsChallengeLicensePlan(
+export async function updateAdminEurekaChallengeLicensePlan(
   id: number,
-  payload: Partial<BarronsChallengeLicensePlan>
+  payload: Partial<EurekaChallengeLicensePlan>
 ) {
-  const { data } = await apiClient.put<{ data: BarronsChallengeLicensePlan }>(
-    `/admin/barrons-challenge-license-plans/${id}`,
+  const { data } = await apiClient.put<{ data: EurekaChallengeLicensePlan }>(
+    `/admin/eureka-challenge-license-plans/${id}`,
     payload
   );
   return data.data;
 }
 
-export async function deleteAdminBarronsChallengeLicensePlan(id: number) {
-  await apiClient.delete(`/admin/barrons-challenge-license-plans/${id}`);
+export async function deleteAdminEurekaChallengeLicensePlan(id: number) {
+  await apiClient.delete(`/admin/eureka-challenge-license-plans/${id}`);
 }
 
-// Barrons Challenge files (per challenge, shared by every activated buyer)
-export async function fetchAdminBarronsChallengeFiles(challengeId: number) {
-  const { data } = await apiClient.get<{ data: BarronsChallengeFile[] }>(
-    `/admin/barrons-challenges/${challengeId}/files`
+// Eureka Challenge files (per challenge, shared by every activated buyer)
+export async function fetchAdminEurekaChallengeFiles(challengeId: number) {
+  const { data } = await apiClient.get<{ data: EurekaChallengeFile[] }>(
+    `/admin/eureka-challenges/${challengeId}/files`
   );
   return data.data;
 }
 
-export async function createAdminBarronsChallengeFiles(challengeId: number, formData: FormData) {
-  const { data } = await apiClient.post<{ data: BarronsChallengeFile[] }>(
-    `/admin/barrons-challenges/${challengeId}/files`,
+export async function createAdminEurekaChallengeFiles(challengeId: number, formData: FormData) {
+  const { data } = await apiClient.post<{ data: EurekaChallengeFile[] }>(
+    `/admin/eureka-challenges/${challengeId}/files`,
     formData
   );
   return data.data;
 }
 
-export async function updateAdminBarronsChallengeFile(
+export async function updateAdminEurekaChallengeFile(
   id: number,
   payload: { label?: string; position?: number }
 ) {
-  const { data } = await apiClient.put<{ data: BarronsChallengeFile }>(`/admin/barrons-challenge-files/${id}`, payload);
+  const { data } = await apiClient.put<{ data: EurekaChallengeFile }>(`/admin/eureka-challenge-files/${id}`, payload);
   return data.data;
 }
 
-export async function deleteAdminBarronsChallengeFile(id: number) {
-  await apiClient.delete(`/admin/barrons-challenge-files/${id}`);
+export async function deleteAdminEurekaChallengeFile(id: number) {
+  await apiClient.delete(`/admin/eureka-challenge-files/${id}`);
 }
 
-// Barrons Challenge license activation & credentials
-export async function activateUserBarronsChallengeLicense(id: number) {
-  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
-    `/admin/user-barrons-challenge-licenses/${id}/activate`
+// Eureka Challenge license activation & credentials
+export async function activateUserEurekaChallengeLicense(id: number) {
+  const { data } = await apiClient.patch<{ data: UserEurekaChallengeLicense }>(
+    `/admin/user-eureka-challenge-licenses/${id}/activate`
   );
   return data.data;
 }
 
-export async function approveBarronsChallengeLicensePurchaseDetailsChange(id: number) {
-  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
-    `/admin/user-barrons-challenge-licenses/${id}/purchase-details/approve`
+export async function approveEurekaChallengeLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserEurekaChallengeLicense }>(
+    `/admin/user-eureka-challenge-licenses/${id}/purchase-details/approve`
   );
   return data.data;
 }
 
-export async function rejectBarronsChallengeLicensePurchaseDetailsChange(id: number) {
-  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
-    `/admin/user-barrons-challenge-licenses/${id}/purchase-details/reject`
+export async function rejectEurekaChallengeLicensePurchaseDetailsChange(id: number) {
+  const { data } = await apiClient.patch<{ data: UserEurekaChallengeLicense }>(
+    `/admin/user-eureka-challenge-licenses/${id}/purchase-details/reject`
   );
   return data.data;
 }
 
-export async function updateBarronsChallengeLicenseKeys(
+export async function updateEurekaChallengeLicenseKeys(
   id: number,
   accounts: Array<{ license_keys: string[] }>
 ) {
-  const { data } = await apiClient.patch<{ data: UserBarronsChallengeLicense }>(
-    `/admin/user-barrons-challenge-licenses/${id}/license-keys`,
+  const { data } = await apiClient.patch<{ data: UserEurekaChallengeLicense }>(
+    `/admin/user-eureka-challenge-licenses/${id}/license-keys`,
     { accounts }
   );
   return data.data;
 }
 
-export async function assignBarronsChallengeLicenseToUser(
+export async function assignEurekaChallengeLicenseToUser(
   userId: number,
-  payload: { barrons_challenge_license_plan_id: number; activate?: boolean }
+  payload: { eureka_challenge_license_plan_id: number; activate?: boolean }
 ) {
-  const { data } = await apiClient.post<{ data: UserBarronsChallengeLicense }>(
-    `/admin/users/${userId}/barrons-challenge-licenses`,
+  const { data } = await apiClient.post<{ data: UserEurekaChallengeLicense }>(
+    `/admin/users/${userId}/eureka-challenge-licenses`,
     payload
   );
   return data.data;
@@ -617,9 +617,9 @@ export async function createAdminUser(payload: {
   course_ids?: number[];
   licenses?: Array<{ license_plan_id: number } & Partial<LicensePurchaseDetails>>;
   bot_licenses?: Array<{ bot_license_plan_id: number } & Partial<BotLicensePurchaseDetails>>;
-  barrons_challenge_licenses?: Array<{
-    barrons_challenge_license_plan_id: number;
-    accounts?: Array<Partial<Pick<BarronsChallengeAccountCredentials, "id" | "password" | "server">>>;
+  eureka_challenge_licenses?: Array<{
+    eureka_challenge_license_plan_id: number;
+    accounts?: Array<Partial<Pick<EurekaChallengeAccountCredentials, "id" | "password" | "server">>>;
   }>;
 }) {
   const { data } = await apiClient.post<{ data: UserProfile }>("/admin/users", payload);

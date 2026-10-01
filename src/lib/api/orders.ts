@@ -5,7 +5,7 @@ export type PurchasableType =
   | "course"
   | "license_plan"
   | "bot_license_plan"
-  | "barrons_challenge_license_plan"
+  | "eureka_challenge_license_plan"
   | "vip_formation";
 export type PaymentGateway = "simulated";
 

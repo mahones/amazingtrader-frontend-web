@@ -13,7 +13,7 @@ import { extractApiError } from "@/lib/api/client";
 import { fetchCourses } from "@/lib/api/courses";
 import { fetchLicensePlans } from "@/lib/api/licenses";
 import { fetchTradingBots } from "@/lib/api/bots";
-import { fetchBarronsChallenges } from "@/lib/api/barronsChallenges";
+import { fetchEurekaChallenges } from "@/lib/api/eurekaChallenges";
 import { fetchVipFormations } from "@/lib/api/vipFormations";
 import {
   createOrder,
@@ -52,7 +52,7 @@ function CheckoutPageContent() {
     rawType === "course" ||
     rawType === "license_plan" ||
     rawType === "bot_license_plan" ||
-    rawType === "barrons_challenge_license_plan" ||
+    rawType === "eureka_challenge_license_plan" ||
     rawType === "vip_formation"
       ? rawType
       : null;
@@ -80,7 +80,7 @@ function CheckoutPageContent() {
   const [codePending, setCodePending] = useState(false);
 
   const requiresContract =
-    type === "license_plan" || type === "bot_license_plan" || type === "barrons_challenge_license_plan";
+    type === "license_plan" || type === "bot_license_plan" || type === "eureka_challenge_license_plan";
   const contractLabel =
     type === "license_plan" ? (
       <>
@@ -148,8 +148,8 @@ function CheckoutPageContent() {
                   : "Accès à vie",
             });
           }
-        } else if (type === "barrons_challenge_license_plan") {
-          const plan = (await fetchBarronsChallenges()).flatMap((c) => c.license_plans ?? []).find((p) => p.id === id);
+        } else if (type === "eureka_challenge_license_plan") {
+          const plan = (await fetchEurekaChallenges()).flatMap((c) => c.license_plans ?? []).find((p) => p.id === id);
           if (!plan) throw new Error("not_found");
           if (!cancelled) {
             setRecap({

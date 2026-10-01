@@ -8,20 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { extractApiError } from "@/lib/api/client";
-import { updateBarronsChallengeLicenseKeys } from "@/lib/api/admin";
-import type { UserBarronsChallengeLicense } from "@/types/barronsChallenge";
+import { updateEurekaChallengeLicenseKeys } from "@/lib/api/admin";
+import type { UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 
 /**
  * Admin-only editor for the license_keys of each account on a purchased
- * Barrons Challenge license. id/password/server are self-reported by the
+ * Eureka Challenge license. id/password/server are self-reported by the
  * buyer and never editable here — only the license keys the admin issues.
  */
-export function BarronsChallengeLicenseKeysManager({
+export function EurekaChallengeLicenseKeysManager({
   license,
   onChange,
 }: {
-  license: UserBarronsChallengeLicense;
-  onChange: (next: UserBarronsChallengeLicense) => void;
+  license: UserEurekaChallengeLicense;
+  onChange: (next: UserEurekaChallengeLicense) => void;
 }) {
   const accounts = license.purchase_details ?? [];
   const [drafts, setDrafts] = useState<string[]>(accounts.map(() => ""));
@@ -39,7 +39,7 @@ export function BarronsChallengeLicenseKeysManager({
       const payload = accounts.map((account, index) => ({
         license_keys: index === accountIndex ? nextKeys : account.license_keys,
       }));
-      const updated = await updateBarronsChallengeLicenseKeys(license.id, payload);
+      const updated = await updateEurekaChallengeLicenseKeys(license.id, payload);
       onChange(updated);
     } catch (err) {
       setError(extractApiError(err, "Impossible de mettre à jour les license keys."));

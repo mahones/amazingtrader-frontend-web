@@ -44,9 +44,9 @@ export function Header() {
   const { user, isLoading, logout } = useAuth();
   const [open, setOpen] = useState(false);
 
-  // Challenge Barrons is not on the public nav at all — it's reached only
+  // Challenge Eureka is not on the public nav at all — it's reached only
   // from the dashboard sidebar (visible once logged in). The public
-  // /challenge-barrons pages still exist and still require login, for
+  // /challenge-eureka pages still exist and still require login, for
   // anyone who follows a direct link.
   const NAV_LINKS = [...BASE_NAV_LINKS, FAQ_LINK];
 

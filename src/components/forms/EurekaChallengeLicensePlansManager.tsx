@@ -14,15 +14,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { extractApiError } from "@/lib/api/client";
 import {
-  createAdminBarronsChallengeLicensePlan,
-  deleteAdminBarronsChallengeLicensePlan,
-  updateAdminBarronsChallengeLicensePlan,
+  createAdminEurekaChallengeLicensePlan,
+  deleteAdminEurekaChallengeLicensePlan,
+  updateAdminEurekaChallengeLicensePlan,
 } from "@/lib/api/admin";
 import { formatCurrency } from "@/lib/utils";
-import type { BarronsChallengeLicenseOfferType, BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
+import type { EurekaChallengeLicenseOfferType, EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 import type { LicenseDurationUnit } from "@/types/license";
 
-const OFFER_LABELS: Record<BarronsChallengeLicenseOfferType, string> = {
+const OFFER_LABELS: Record<EurekaChallengeLicenseOfferType, string> = {
   time_limited: "Time-limited offer",
   lifetime: "Lifetime offer",
 };
@@ -30,7 +30,7 @@ const OFFER_LABELS: Record<BarronsChallengeLicenseOfferType, string> = {
 const DURATION_UNIT_LABELS: Record<string, string> = { month: "Mois", year: "Année" };
 
 interface PlanDraft {
-  offer_type: BarronsChallengeLicenseOfferType;
+  offer_type: EurekaChallengeLicenseOfferType;
   name: string;
   description: string;
   duration_value: string;
@@ -55,7 +55,7 @@ const EMPTY_DRAFT: PlanDraft = {
   is_active: true,
 };
 
-function planToDraft(plan: BarronsChallengeLicensePlan): PlanDraft {
+function planToDraft(plan: EurekaChallengeLicensePlan): PlanDraft {
   return {
     offer_type: plan.offer_type,
     name: plan.name,
@@ -97,7 +97,7 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
           <Select
             items={OFFER_LABELS}
             value={value.offer_type}
-            onValueChange={(v) => v && onChange({ ...value, offer_type: v as BarronsChallengeLicenseOfferType })}
+            onValueChange={(v) => v && onChange({ ...value, offer_type: v as EurekaChallengeLicenseOfferType })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -211,7 +211,7 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
   );
 }
 
-export function BarronsChallengeLicensePlansManager({
+export function EurekaChallengeLicensePlansManager({
   challengeId,
   challengeSlug,
   plans,
@@ -219,8 +219,8 @@ export function BarronsChallengeLicensePlansManager({
 }: {
   challengeId: number;
   challengeSlug: string;
-  plans: BarronsChallengeLicensePlan[];
-  onChange: (next: BarronsChallengeLicensePlan[]) => void;
+  plans: EurekaChallengeLicensePlan[];
+  onChange: (next: EurekaChallengeLicensePlan[]) => void;
 }) {
   const [draft, setDraft] = useState<PlanDraft>(EMPTY_DRAFT);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -234,7 +234,7 @@ export function BarronsChallengeLicensePlansManager({
     setPending(true);
     setError(null);
     try {
-      const created = await createAdminBarronsChallengeLicensePlan(challengeId, {
+      const created = await createAdminEurekaChallengeLicensePlan(challengeId, {
         ...draftToPayload(draft),
         position: plans.length,
       });
@@ -251,7 +251,7 @@ export function BarronsChallengeLicensePlansManager({
     setPending(true);
     setError(null);
     try {
-      const updated = await updateAdminBarronsChallengeLicensePlan(id, draftToPayload(editingDraft));
+      const updated = await updateAdminEurekaChallengeLicensePlan(id, draftToPayload(editingDraft));
       onChange(plans.map((p) => (p.id === id ? updated : p)));
       setEditingId(null);
     } catch (err) {
@@ -265,7 +265,7 @@ export function BarronsChallengeLicensePlansManager({
     if (!window.confirm("Supprimer définitivement cette licence ?")) return;
     setError(null);
     try {
-      await deleteAdminBarronsChallengeLicensePlan(id);
+      await deleteAdminEurekaChallengeLicensePlan(id);
       onChange(plans.filter((p) => p.id !== id));
     } catch (err) {
       setError(extractApiError(err, "Impossible de supprimer cette licence."));
@@ -310,7 +310,7 @@ export function BarronsChallengeLicensePlansManager({
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/challenge-barrons/${challengeSlug}#plan-${plan.id}`}>Voir la page</Link>}
+                    render={<Link href={`/challenge-eureka/${challengeSlug}#plan-${plan.id}`}>Voir la page</Link>}
                   />
                   <Button
                     variant="outline"

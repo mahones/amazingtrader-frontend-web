@@ -10,21 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BarronsChallengePostPurchaseDetailsForm } from "@/components/purchase/BarronsChallengePostPurchaseDetailsForm";
+import { EurekaChallengePostPurchaseDetailsForm } from "@/components/purchase/EurekaChallengePostPurchaseDetailsForm";
 import { toast } from "@/lib/toast";
-import type { UserBarronsChallengeLicense } from "@/types/barronsChallenge";
+import type { UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 
-export function EditBarronsChallengePurchaseDetailsDialog({
+export function EditEurekaChallengePurchaseDetailsDialog({
   license,
   onUpdated,
 }: {
-  license: UserBarronsChallengeLicense;
-  onUpdated: (license: UserBarronsChallengeLicense) => void;
+  license: UserEurekaChallengeLicense;
+  onUpdated: (license: UserEurekaChallengeLicense) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const numberOfAccounts = license.number_of_accounts ?? license.barrons_challenge_license_plan.number_of_accounts;
+  const numberOfAccounts = license.number_of_accounts ?? license.eureka_challenge_license_plan.number_of_accounts;
 
-  function handleSubmitted(result: UserBarronsChallengeLicense) {
+  function handleSubmitted(result: UserEurekaChallengeLicense) {
     if (result.pending_purchase_details) {
       toast.info("Votre demande a été envoyée et est en attente d'approbation par un administrateur.");
       onUpdated({
@@ -50,7 +50,7 @@ export function EditBarronsChallengePurchaseDetailsDialog({
             avant de prendre effet.
           </DialogDescription>
         </DialogHeader>
-        <BarronsChallengePostPurchaseDetailsForm
+        <EurekaChallengePostPurchaseDetailsForm
           licenseId={license.id}
           numberOfAccounts={numberOfAccounts}
           initialValues={license.purchase_details ?? undefined}

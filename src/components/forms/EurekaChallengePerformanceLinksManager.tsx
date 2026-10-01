@@ -9,11 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { extractApiError } from "@/lib/api/client";
 import {
-  createAdminBarronsChallengePerformanceLink,
-  deleteAdminBarronsChallengePerformanceLink,
-  updateAdminBarronsChallengePerformanceLink,
+  createAdminEurekaChallengePerformanceLink,
+  deleteAdminEurekaChallengePerformanceLink,
+  updateAdminEurekaChallengePerformanceLink,
 } from "@/lib/api/admin";
-import type { BarronsChallengePerformanceLink, PerformancePlatform } from "@/types/barronsChallenge";
+import type { EurekaChallengePerformanceLink, PerformancePlatform } from "@/types/eurekaChallenge";
 
 const PLATFORM_LABELS: Record<PerformancePlatform, string> = {
   myfxbook: "Myfxbook",
@@ -71,14 +71,14 @@ function LinkFields({ value, onChange }: { value: LinkDraft; onChange: (next: Li
   );
 }
 
-export function BarronsChallengePerformanceLinksManager({
+export function EurekaChallengePerformanceLinksManager({
   challengeId,
   links,
   onChange,
 }: {
   challengeId: number;
-  links: BarronsChallengePerformanceLink[];
-  onChange: (next: BarronsChallengePerformanceLink[]) => void;
+  links: EurekaChallengePerformanceLink[];
+  onChange: (next: EurekaChallengePerformanceLink[]) => void;
 }) {
   const [draft, setDraft] = useState<LinkDraft>(EMPTY_DRAFT);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -92,7 +92,7 @@ export function BarronsChallengePerformanceLinksManager({
     setPending(true);
     setError(null);
     try {
-      const created = await createAdminBarronsChallengePerformanceLink(challengeId, {
+      const created = await createAdminEurekaChallengePerformanceLink(challengeId, {
         ...draft,
         position: links.length,
       });
@@ -109,7 +109,7 @@ export function BarronsChallengePerformanceLinksManager({
     setPending(true);
     setError(null);
     try {
-      const updated = await updateAdminBarronsChallengePerformanceLink(id, editingDraft);
+      const updated = await updateAdminEurekaChallengePerformanceLink(id, editingDraft);
       onChange(links.map((l) => (l.id === id ? updated : l)));
       setEditingId(null);
     } catch (err) {
@@ -120,7 +120,7 @@ export function BarronsChallengePerformanceLinksManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBarronsChallengePerformanceLink(id);
+    await deleteAdminEurekaChallengePerformanceLink(id);
     onChange(links.filter((l) => l.id !== id));
   }
 

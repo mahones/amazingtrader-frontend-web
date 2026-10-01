@@ -6,28 +6,28 @@ import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { BarronsChallengeForm } from "@/components/forms/BarronsChallengeForm";
-import { BarronsChallengeRequirementsManager } from "@/components/forms/BarronsChallengeRequirementsManager";
-import { BarronsChallengeInstructionsManager } from "@/components/forms/BarronsChallengeInstructionsManager";
-import { BarronsChallengePerformanceLinksManager } from "@/components/forms/BarronsChallengePerformanceLinksManager";
-import { BarronsChallengeLicensePlansManager } from "@/components/forms/BarronsChallengeLicensePlansManager";
-import { BarronsChallengeFilesManager } from "@/components/admin/BarronsChallengeFilesManager";
+import { EurekaChallengeForm } from "@/components/forms/EurekaChallengeForm";
+import { EurekaChallengeRequirementsManager } from "@/components/forms/EurekaChallengeRequirementsManager";
+import { EurekaChallengeInstructionsManager } from "@/components/forms/EurekaChallengeInstructionsManager";
+import { EurekaChallengePerformanceLinksManager } from "@/components/forms/EurekaChallengePerformanceLinksManager";
+import { EurekaChallengeLicensePlansManager } from "@/components/forms/EurekaChallengeLicensePlansManager";
+import { EurekaChallengeFilesManager } from "@/components/admin/EurekaChallengeFilesManager";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { deleteAdminBarronsChallenge, fetchAdminBarronsChallenge, fetchAdminBarronsChallengeFiles } from "@/lib/api/admin";
+import { deleteAdminEurekaChallenge, fetchAdminEurekaChallenge, fetchAdminEurekaChallengeFiles } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
-import type { BarronsChallenge, BarronsChallengeFile } from "@/types/barronsChallenge";
+import type { EurekaChallenge, EurekaChallengeFile } from "@/types/eurekaChallenge";
 
-export default function EditBarronsChallengePage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditEurekaChallengePage({ params }: { params: Promise<{ id: string }> }) {
   useRequireRole(["admin", "developer"]);
   const { id } = use(params);
   const router = useRouter();
-  const [challenge, setChallenge] = useState<BarronsChallenge | null>(null);
-  const [files, setFiles] = useState<BarronsChallengeFile[]>([]);
+  const [challenge, setChallenge] = useState<EurekaChallenge | null>(null);
+  const [files, setFiles] = useState<EurekaChallengeFile[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAdminBarronsChallenge(Number(id)).then(setChallenge);
-    fetchAdminBarronsChallengeFiles(Number(id)).then(setFiles);
+    fetchAdminEurekaChallenge(Number(id)).then(setChallenge);
+    fetchAdminEurekaChallengeFiles(Number(id)).then(setFiles);
   }, [id]);
 
   async function handleDelete() {
@@ -35,8 +35,8 @@ export default function EditBarronsChallengePage({ params }: { params: Promise<{
     if (!window.confirm("Supprimer définitivement ce challenge ?")) return;
     setError(null);
     try {
-      await deleteAdminBarronsChallenge(challenge.id);
-      router.push("/dashboard/barrons-challenges");
+      await deleteAdminEurekaChallenge(challenge.id);
+      router.push("/dashboard/eureka-challenges");
     } catch (err) {
       setError(extractApiError(err, "Impossible de supprimer ce challenge."));
     }
@@ -49,7 +49,7 @@ export default function EditBarronsChallengePage({ params }: { params: Promise<{
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Modifier {challenge.name}</h1>
-          <Link href={`/challenge-barrons/${challenge.slug}`} className="text-sm text-primary hover:underline">
+          <Link href={`/challenge-eureka/${challenge.slug}`} className="text-sm text-primary hover:underline">
             Voir la page publique →
           </Link>
         </div>
@@ -74,34 +74,34 @@ export default function EditBarronsChallengePage({ params }: { params: Promise<{
 
       {error && <Alert variant="error">{error}</Alert>}
 
-      <BarronsChallengeRequirementsManager
+      <EurekaChallengeRequirementsManager
         challengeId={challenge.id}
         requirements={challenge.requirements ?? []}
         onChange={(requirements) => setChallenge({ ...challenge, requirements })}
       />
 
-      <BarronsChallengeInstructionsManager
+      <EurekaChallengeInstructionsManager
         challengeId={challenge.id}
         instructions={challenge.instructions ?? []}
         onChange={(instructions) => setChallenge({ ...challenge, instructions })}
       />
 
-      <BarronsChallengePerformanceLinksManager
+      <EurekaChallengePerformanceLinksManager
         challengeId={challenge.id}
         links={challenge.performance_links ?? []}
         onChange={(performance_links) => setChallenge({ ...challenge, performance_links })}
       />
 
-      <BarronsChallengeLicensePlansManager
+      <EurekaChallengeLicensePlansManager
         challengeId={challenge.id}
         challengeSlug={challenge.slug}
         plans={challenge.license_plans ?? []}
         onChange={(license_plans) => setChallenge({ ...challenge, license_plans })}
       />
 
-      <BarronsChallengeFilesManager challengeId={challenge.id} files={files} onChange={setFiles} />
+      <EurekaChallengeFilesManager challengeId={challenge.id} files={files} onChange={setFiles} />
 
-      <BarronsChallengeForm challenge={challenge} onSaved={setChallenge} />
+      <EurekaChallengeForm challenge={challenge} onSaved={setChallenge} />
     </div>
   );
 }

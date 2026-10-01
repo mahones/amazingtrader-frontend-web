@@ -8,20 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { extractApiError } from "@/lib/api/client";
 import {
-  createAdminBarronsChallengeRequirement,
-  deleteAdminBarronsChallengeRequirement,
-  updateAdminBarronsChallengeRequirement,
+  createAdminEurekaChallengeRequirement,
+  deleteAdminEurekaChallengeRequirement,
+  updateAdminEurekaChallengeRequirement,
 } from "@/lib/api/admin";
-import type { BarronsChallengeRequirement } from "@/types/barronsChallenge";
+import type { EurekaChallengeRequirement } from "@/types/eurekaChallenge";
 
-export function BarronsChallengeRequirementsManager({
+export function EurekaChallengeRequirementsManager({
   challengeId,
   requirements,
   onChange,
 }: {
   challengeId: number;
-  requirements: BarronsChallengeRequirement[];
-  onChange: (next: BarronsChallengeRequirement[]) => void;
+  requirements: EurekaChallengeRequirement[];
+  onChange: (next: EurekaChallengeRequirement[]) => void;
 }) {
   const [label, setLabel] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -35,7 +35,7 @@ export function BarronsChallengeRequirementsManager({
     setPending(true);
     setError(null);
     try {
-      const created = await createAdminBarronsChallengeRequirement(challengeId, {
+      const created = await createAdminEurekaChallengeRequirement(challengeId, {
         label,
         position: requirements.length,
       });
@@ -52,7 +52,7 @@ export function BarronsChallengeRequirementsManager({
     setPending(true);
     setError(null);
     try {
-      const updated = await updateAdminBarronsChallengeRequirement(id, { label: editingLabel });
+      const updated = await updateAdminEurekaChallengeRequirement(id, { label: editingLabel });
       onChange(requirements.map((r) => (r.id === id ? updated : r)));
       setEditingId(null);
     } catch (err) {
@@ -63,7 +63,7 @@ export function BarronsChallengeRequirementsManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBarronsChallengeRequirement(id);
+    await deleteAdminEurekaChallengeRequirement(id);
     onChange(requirements.filter((r) => r.id !== id));
   }
 
@@ -117,9 +117,9 @@ export function BarronsChallengeRequirementsManager({
 
         <form onSubmit={handleAdd} className="flex items-end gap-2 border-t border-border pt-4">
           <div className="flex-1 space-y-2">
-            <Label htmlFor="new-barrons-requirement">Nouvelle exigence</Label>
+            <Label htmlFor="new-eureka-requirement">Nouvelle exigence</Label>
             <Input
-              id="new-barrons-requirement"
+              id="new-eureka-requirement"
               placeholder="Ex : Dépôt minimum : 200 $"
               value={label}
               onChange={(e) => setLabel(e.target.value)}

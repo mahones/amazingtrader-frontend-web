@@ -41,7 +41,7 @@ function useSidebarNavItems() {
     { href: "/dashboard/vip-formations", label: "Formations VIP", icon: Sparkles },
     { href: "/dashboard/auto-trading", label: "Auto-trading", icon: KeyRound },
     { href: "/dashboard/bots", label: "Mes Bots", icon: Bot },
-    { href: "/dashboard/barrons-challenges", label: "Challenges Barrons", icon: Trophy },
+    { href: "/dashboard/eureka-challenges", label: "Challenges Eureka", icon: Trophy },
     { href: "/dashboard/events", label: "Événements", icon: CalendarDays },
   ];
 

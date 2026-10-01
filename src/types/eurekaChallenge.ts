@@ -1,23 +1,23 @@
 import type { Broker } from "./broker";
 import type { LicenseDurationUnit } from "./license";
 
-export type BarronsChallengeLicenseOfferType = "time_limited" | "lifetime";
+export type EurekaChallengeLicenseOfferType = "time_limited" | "lifetime";
 export type PerformancePlatform = "myfxbook" | "mql5" | "other";
 
-export interface BarronsChallengeRequirement {
+export interface EurekaChallengeRequirement {
   id: number;
   label: string;
   position: number;
 }
 
-export interface BarronsChallengeInstruction {
+export interface EurekaChallengeInstruction {
   id: number;
   title: string;
   url: string;
   position: number;
 }
 
-export interface BarronsChallengePerformanceLink {
+export interface EurekaChallengePerformanceLink {
   id: number;
   platform: PerformancePlatform;
   label: string;
@@ -25,10 +25,10 @@ export interface BarronsChallengePerformanceLink {
   position: number;
 }
 
-export interface BarronsChallengeLicensePlan {
+export interface EurekaChallengeLicensePlan {
   id: number;
-  barrons_challenge_id: number;
-  offer_type: BarronsChallengeLicenseOfferType;
+  eureka_challenge_id: number;
+  offer_type: EurekaChallengeLicenseOfferType;
   name: string;
   description: string | null;
   duration_value: number | null;
@@ -41,10 +41,10 @@ export interface BarronsChallengeLicensePlan {
   position: number;
   purchase_count?: number;
   has_active_subscribers?: boolean;
-  barrons_challenge?: BarronsChallenge;
+  eureka_challenge?: EurekaChallenge;
 }
 
-export interface BarronsChallengeFile {
+export interface EurekaChallengeFile {
   id: number;
   label: string;
   original_filename: string;
@@ -54,7 +54,7 @@ export interface BarronsChallengeFile {
   created_at: string;
 }
 
-export interface BarronsChallenge {
+export interface EurekaChallenge {
   id: number;
   name: string;
   slug: string;
@@ -68,33 +68,33 @@ export interface BarronsChallenge {
   is_active: boolean;
   position: number;
   has_active_subscribers?: boolean;
-  requirements?: BarronsChallengeRequirement[];
-  performance_links?: BarronsChallengePerformanceLink[];
-  license_plans?: BarronsChallengeLicensePlan[];
-  instructions?: BarronsChallengeInstruction[];
+  requirements?: EurekaChallengeRequirement[];
+  performance_links?: EurekaChallengePerformanceLink[];
+  license_plans?: EurekaChallengeLicensePlan[];
+  instructions?: EurekaChallengeInstruction[];
   brokers?: Broker[];
 }
 
-export interface BarronsChallengeAccountCredentials {
+export interface EurekaChallengeAccountCredentials {
   id: string;
   password: string;
   server: string;
   license_keys: string[];
 }
 
-export type BarronsChallengePurchaseDetails = BarronsChallengeAccountCredentials[];
+export type EurekaChallengePurchaseDetails = EurekaChallengeAccountCredentials[];
 
-export interface UserBarronsChallengeLicense {
+export interface UserEurekaChallengeLicense {
   id: number;
   status: "active" | "expired" | "revoked";
   is_activated: boolean;
-  purchase_details: BarronsChallengePurchaseDetails | null;
-  pending_purchase_details: Array<Pick<BarronsChallengeAccountCredentials, "id" | "password" | "server">> | null;
+  purchase_details: EurekaChallengePurchaseDetails | null;
+  pending_purchase_details: Array<Pick<EurekaChallengeAccountCredentials, "id" | "password" | "server">> | null;
   pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
   product_snapshot?: Record<string, unknown> | null;
   number_of_accounts?: number;
-  barrons_challenge_license_plan: BarronsChallengeLicensePlan;
-  files?: BarronsChallengeFile[];
+  eureka_challenge_license_plan: EurekaChallengeLicensePlan;
+  files?: EurekaChallengeFile[];
 }

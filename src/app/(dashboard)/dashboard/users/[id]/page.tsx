@@ -10,23 +10,23 @@ import { Switch } from "@/components/ui/switch";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
-import { BarronsChallengeLicenseKeysManager } from "@/components/admin/BarronsChallengeLicenseKeysManager";
+import { EurekaChallengeLicenseKeysManager } from "@/components/admin/EurekaChallengeLicenseKeysManager";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
-  activateUserBarronsChallengeLicense,
+  activateUserEurekaChallengeLicense,
   activateUserBotLicense,
   activateUserLicense,
-  approveBarronsChallengeLicensePurchaseDetailsChange,
+  approveEurekaChallengeLicensePurchaseDetailsChange,
   approveBotLicensePurchaseDetailsChange,
   approveLicensePurchaseDetailsChange,
-  fetchAdminBarronsChallenges,
+  fetchAdminEurekaChallenges,
   fetchAdminLicensePlans,
   fetchAdminTradingBots,
   fetchAdminUserProfile,
-  rejectBarronsChallengeLicensePurchaseDetailsChange,
+  rejectEurekaChallengeLicensePurchaseDetailsChange,
   rejectBotLicensePurchaseDetailsChange,
   rejectLicensePurchaseDetailsChange,
   requestCredentialsUpdate,
@@ -36,7 +36,7 @@ import {
 import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
-import type { BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
+import type { EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 import type { LicensePlan } from "@/types/license";
 import type { Partner } from "@/types/partner";
 import type { UserProfile } from "@/types/user";
@@ -104,8 +104,8 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
-  const [barronsChallengeLicensePlans, setBarronsChallengeLicensePlans] = useState<
-    (BarronsChallengeLicensePlan & { challengeName: string })[]
+  const [eurekaChallengeLicensePlans, setEurekaChallengeLicensePlans] = useState<
+    (EurekaChallengeLicensePlan & { challengeName: string })[]
   >([]);
 
   useEffect(() => {
@@ -117,11 +117,11 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
       );
       setBotLicensePlans(plans);
     });
-    fetchAdminBarronsChallenges().then((challenges) => {
+    fetchAdminEurekaChallenges().then((challenges) => {
       const plans = challenges.flatMap((challenge) =>
         (challenge.license_plans ?? []).map((plan) => ({ ...plan, challengeName: challenge.name }))
       );
-      setBarronsChallengeLicensePlans(plans);
+      setEurekaChallengeLicensePlans(plans);
     });
   }, [id]);
 
@@ -215,13 +215,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
-  async function handleActivateBarronsChallengeLicense(licenseId: number) {
-    const updated = await activateUserBarronsChallengeLicense(licenseId);
+  async function handleActivateEurekaChallengeLicense(licenseId: number) {
+    const updated = await activateUserEurekaChallengeLicense(licenseId);
     setProfile((prev) =>
       prev
         ? {
             ...prev,
-            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+            user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.map((l) =>
               l.id === licenseId ? { ...l, ...updated } : l
             ),
           }
@@ -229,13 +229,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
-  async function handleApproveBarronsChallengeLicenseChange(licenseId: number) {
-    const updated = await approveBarronsChallengeLicensePurchaseDetailsChange(licenseId);
+  async function handleApproveEurekaChallengeLicenseChange(licenseId: number) {
+    const updated = await approveEurekaChallengeLicensePurchaseDetailsChange(licenseId);
     setProfile((prev) =>
       prev
         ? {
             ...prev,
-            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+            user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.map((l) =>
               l.id === licenseId ? { ...l, ...updated } : l
             ),
           }
@@ -243,13 +243,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
     );
   }
 
-  async function handleRejectBarronsChallengeLicenseChange(licenseId: number) {
-    const updated = await rejectBarronsChallengeLicensePurchaseDetailsChange(licenseId);
+  async function handleRejectEurekaChallengeLicenseChange(licenseId: number) {
+    const updated = await rejectEurekaChallengeLicensePurchaseDetailsChange(licenseId);
     setProfile((prev) =>
       prev
         ? {
             ...prev,
-            user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+            user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.map((l) =>
               l.id === licenseId ? { ...l, ...updated } : l
             ),
           }
@@ -294,7 +294,7 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
             whatsappNumber={profile.whatsapp_number}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
-            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
+            eurekaChallengeLicensePlans={eurekaChallengeLicensePlans}
             onLicenseAssigned={(license) =>
               setProfile((prev) => (prev ? { ...prev, user_licenses: [...prev.user_licenses, license] } : prev))
             }
@@ -303,10 +303,10 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                 prev ? { ...prev, user_bot_licenses: [...prev.user_bot_licenses, license] } : prev
               )
             }
-            onBarronsChallengeLicenseAssigned={(license) =>
+            onEurekaChallengeLicenseAssigned={(license) =>
               setProfile((prev) =>
                 prev
-                  ? { ...prev, user_barrons_challenge_licenses: [...prev.user_barrons_challenge_licenses, license] }
+                  ? { ...prev, user_eureka_challenge_licenses: [...prev.user_eureka_challenge_licenses, license] }
                   : prev
               )
             }
@@ -517,25 +517,25 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
 
       <Card>
         <CardHeader>
-          <CardTitle>Challenges Barrons ({profile.user_barrons_challenge_licenses.length})</CardTitle>
+          <CardTitle>Challenges Eureka ({profile.user_eureka_challenge_licenses.length})</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {profile.user_barrons_challenge_licenses.length === 0 && (
+          {profile.user_eureka_challenge_licenses.length === 0 && (
             <p className="text-sm text-muted-foreground">Aucune licence de challenge.</p>
           )}
-          {profile.user_barrons_challenge_licenses.map((license) => (
+          {profile.user_eureka_challenge_licenses.map((license) => (
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">
-                    {license.barrons_challenge_license_plan.barrons_challenge?.name ?? "Challenge inconnu"}
+                    {license.eureka_challenge_license_plan.eureka_challenge?.name ?? "Challenge inconnu"}
                   </p>
-                  <p className="text-sm text-muted-foreground">{license.barrons_challenge_license_plan.name}</p>
+                  <p className="text-sm text-muted-foreground">{license.eureka_challenge_license_plan.name}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <ActivationBadge isActivated={license.is_activated} />
                   {!license.is_activated && (
-                    <Button size="sm" onClick={() => handleActivateBarronsChallengeLicense(license.id)}>
+                    <Button size="sm" onClick={() => handleActivateEurekaChallengeLicense(license.id)}>
                       Activer
                     </Button>
                   )}
@@ -573,27 +573,27 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleApproveBarronsChallengeLicenseChange(license.id)}>
+                    <Button size="sm" onClick={() => handleApproveEurekaChallengeLicenseChange(license.id)}>
                       Approuver
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleRejectBarronsChallengeLicenseChange(license.id)}
+                      onClick={() => handleRejectEurekaChallengeLicenseChange(license.id)}
                     >
                       Rejeter
                     </Button>
                   </div>
                 </div>
               )}
-              <BarronsChallengeLicenseKeysManager
+              <EurekaChallengeLicenseKeysManager
                 license={license}
                 onChange={(updated) =>
                   setProfile((prev) =>
                     prev
                       ? {
                           ...prev,
-                          user_barrons_challenge_licenses: prev.user_barrons_challenge_licenses.map((l) =>
+                          user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.map((l) =>
                             l.id === updated.id ? updated : l
                           ),
                         }

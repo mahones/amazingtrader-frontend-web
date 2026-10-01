@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function BarronsChallengeHero() {
+export function EurekaChallengeHero() {
   return (
     <section className="relative overflow-hidden border-b border-border/60 bg-background">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,theme(colors.primary/15%),transparent_60%)]" />
@@ -19,7 +19,7 @@ export function BarronsChallengeHero() {
             <Trophy className="size-7" />
           </span>
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-            Le <span className="text-primary">Challenge des Barrons</span>
+            Le <span className="text-primary">Challenge Eureka</span>
           </h1>
           <p className="mt-4 text-lg text-pretty text-muted-foreground">
             Réservé à nos membres connectés : relevez le challenge sur un ou plusieurs comptes et

@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
-  fetchAdminBarronsChallenges,
+  fetchAdminEurekaChallenges,
   fetchAdminLicensePlans,
   fetchAdminPartnerRewardClaims,
   fetchAdminTradingBots,
@@ -19,7 +19,7 @@ import { extractApiError } from "@/lib/api/client";
 import { formatDateTime } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan } from "@/types/bot";
-import type { BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
+import type { EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 import type { LicensePlan } from "@/types/license";
 import type { AdminPartnerRewardClaim } from "@/types/partner";
 
@@ -27,13 +27,13 @@ function RewardClaimCard({
   claim,
   licensePlans,
   botLicensePlans,
-  barronsChallengeLicensePlans,
+  eurekaChallengeLicensePlans,
   onFulfilled,
 }: {
   claim: AdminPartnerRewardClaim;
   licensePlans: LicensePlan[];
   botLicensePlans: (BotLicensePlan & { botName: string })[];
-  barronsChallengeLicensePlans: (BarronsChallengeLicensePlan & { challengeName: string })[];
+  eurekaChallengeLicensePlans: (EurekaChallengeLicensePlan & { challengeName: string })[];
   onFulfilled: (claim: AdminPartnerRewardClaim) => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -79,10 +79,10 @@ function RewardClaimCard({
             whatsappNumber={claim.partner.user?.whatsapp_number ?? null}
             licensePlans={licensePlans}
             botLicensePlans={botLicensePlans}
-            barronsChallengeLicensePlans={barronsChallengeLicensePlans}
+            eurekaChallengeLicensePlans={eurekaChallengeLicensePlans}
             onLicenseAssigned={handleLicenseAssigned}
             onBotLicenseAssigned={handleLicenseAssigned}
-            onBarronsChallengeLicenseAssigned={handleLicenseAssigned}
+            onEurekaChallengeLicenseAssigned={handleLicenseAssigned}
             open={dialogOpen}
             onOpenChange={setDialogOpen}
             trigger={<Button size="sm">Traiter</Button>}
@@ -99,8 +99,8 @@ export default function DashboardRewardClaimsPage() {
   const [claims, setClaims] = useState<AdminPartnerRewardClaim[] | null>(null);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
-  const [barronsChallengeLicensePlans, setBarronsChallengeLicensePlans] = useState<
-    (BarronsChallengeLicensePlan & { challengeName: string })[]
+  const [eurekaChallengeLicensePlans, setEurekaChallengeLicensePlans] = useState<
+    (EurekaChallengeLicensePlan & { challengeName: string })[]
   >([]);
 
   useEffect(() => {
@@ -112,11 +112,11 @@ export default function DashboardRewardClaimsPage() {
       );
       setBotLicensePlans(plans);
     });
-    fetchAdminBarronsChallenges().then((challenges) => {
+    fetchAdminEurekaChallenges().then((challenges) => {
       const plans = challenges.flatMap((challenge) =>
         (challenge.license_plans ?? []).map((plan) => ({ ...plan, challengeName: challenge.name }))
       );
-      setBarronsChallengeLicensePlans(plans);
+      setEurekaChallengeLicensePlans(plans);
     });
   }, []);
 
@@ -155,7 +155,7 @@ export default function DashboardRewardClaimsPage() {
               claim={claim}
               licensePlans={licensePlans}
               botLicensePlans={botLicensePlans}
-              barronsChallengeLicensePlans={barronsChallengeLicensePlans}
+              eurekaChallengeLicensePlans={eurekaChallengeLicensePlans}
               onFulfilled={handleFulfilled}
             />
           ))}
@@ -172,7 +172,7 @@ export default function DashboardRewardClaimsPage() {
                 claim={claim}
                 licensePlans={licensePlans}
                 botLicensePlans={botLicensePlans}
-                barronsChallengeLicensePlans={barronsChallengeLicensePlans}
+                eurekaChallengeLicensePlans={eurekaChallengeLicensePlans}
                 onFulfilled={handleFulfilled}
               />
             ))}

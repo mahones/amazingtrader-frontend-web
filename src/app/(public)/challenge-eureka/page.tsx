@@ -2,23 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BarronsChallengeCard } from "@/components/cards/BarronsChallengeCard";
-// import { BarronsChallengeHero } from "@/components/barrons-challenge/BarronsChallengeHero";
+import { EurekaChallengeCard } from "@/components/cards/EurekaChallengeCard";
+// import { EurekaChallengeHero } from "@/components/eureka-challenge/EurekaChallengeHero";
 // import { PhotoTestimonialsSection } from "@/components/home/PhotoTestimonialsSection";
 import { ContactCtaSection } from "@/components/auto-trading/ContactCtaSection";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { fetchBarronsChallenges } from "@/lib/api/barronsChallenges";
-import type { BarronsChallenge } from "@/types/barronsChallenge";
+import { fetchEurekaChallenges } from "@/lib/api/eurekaChallenges";
+import type { EurekaChallenge } from "@/types/eurekaChallenge";
 
-export default function ChallengeBarronsPage() {
+export default function ChallengeEurekaPage() {
   const { user, isLoading: authLoading } = useRequireAuth();
-  const [challenges, setChallenges] = useState<BarronsChallenge[] | null>(null);
+  const [challenges, setChallenges] = useState<EurekaChallenge[] | null>(null);
 
   useEffect(() => {
     if (!user) return;
     let isActive = true;
 
-    fetchBarronsChallenges()
+    fetchEurekaChallenges()
       .then((data) => {
         if (isActive) setChallenges(data);
       })
@@ -42,11 +42,10 @@ export default function ChallengeBarronsPage() {
       >
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-4xl font-bold sm:text-5xl">
-            <span className="text-primary">Challenge</span> des Barrons
+            <span className="text-primary">Eurêka</span> Programme
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
-            Choisissez le challenge qui correspond à votre profil et suivez son évolution
-            depuis votre tableau de bord.
+            Un programme de trading algorithmique pour ceux qui aiment le high risk
           </p>
         </div>
 
@@ -64,10 +63,10 @@ export default function ChallengeBarronsPage() {
           {challenges?.map((challenge) => (
             <Link
               key={challenge.id}
-              href={`/challenge-barrons/${challenge.slug}`}
+              href={`/challenge-eureka/${challenge.slug}`}
               className="block"
             >
-              <BarronsChallengeCard challenge={challenge} />
+              <EurekaChallengeCard challenge={challenge} />
             </Link>
           ))}
         </div>
@@ -75,9 +74,9 @@ export default function ChallengeBarronsPage() {
 
 
       <ContactCtaSection
-        title="Prêt à relever le Challenge des Barrons ?"
+        title="Prêt à relever le Challenge Eureka ?"
         subtitle="Contactez-nous dès maintenant pour choisir le challenge adapté à votre profil."
-        whatsappUrl="https://wa.me/22879920432?text=je%20souhaite%20b%C3%A9n%C3%A9ficier%20du%20challenge%20des%20barrons."
+        whatsappUrl="https://wa.me/22879920432?text=je%20souhaite%20b%C3%A9n%C3%A9ficier%20du%20challenge%20des%20eureka."
       />
     </>
   );

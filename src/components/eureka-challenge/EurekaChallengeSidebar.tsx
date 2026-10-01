@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { Trophy, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { BarronsChallenge } from "@/types/barronsChallenge";
+import type { EurekaChallenge } from "@/types/eurekaChallenge";
 import type { Broker } from "@/types/broker";
 
-export function BarronsChallengeSidebar({
+export function EurekaChallengeSidebar({
   currentSlug,
   otherChallenges,
   brokers,
 }: {
   currentSlug: string;
-  otherChallenges: BarronsChallenge[];
+  otherChallenges: EurekaChallenge[];
   brokers: Broker[];
 }) {
   const others = otherChallenges.filter((challenge) => challenge.slug !== currentSlug);
@@ -19,14 +19,14 @@ export function BarronsChallengeSidebar({
     <aside className="sticky top-20 self-start space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Autres challenges Barrons</CardTitle>
+          <CardTitle className="text-base">Autres challenges Eureka</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2">
             {others.map((challenge) => (
               <li key={challenge.id}>
                 <Link
-                  href={`/challenge-barrons/${challenge.slug}`}
+                  href={`/challenge-eureka/${challenge.slug}`}
                   className="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 hover:bg-accent"
                 >
                   {challenge.image_url ? (

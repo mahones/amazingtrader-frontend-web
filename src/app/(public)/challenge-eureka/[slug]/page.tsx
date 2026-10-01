@@ -4,28 +4,28 @@ import { use, useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { BarronsChallengeSidebar } from "@/components/barrons-challenge/BarronsChallengeSidebar";
-import { BarronsChallengeLicensePurchaseGrid } from "@/components/purchase/BarronsChallengeLicensePurchaseGrid";
+import { EurekaChallengeSidebar } from "@/components/eureka-challenge/EurekaChallengeSidebar";
+import { EurekaChallengeLicensePurchaseGrid } from "@/components/purchase/EurekaChallengeLicensePurchaseGrid";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { fetchBarronsChallenge, fetchBarronsChallenges } from "@/lib/api/barronsChallenges";
+import { fetchEurekaChallenge, fetchEurekaChallenges } from "@/lib/api/eurekaChallenges";
 import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
-import type { BarronsChallenge } from "@/types/barronsChallenge";
+import type { EurekaChallenge } from "@/types/eurekaChallenge";
 
-export default function BarronsChallengeDetailPage({
+export default function EurekaChallengeDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
   const { user, isLoading: authLoading } = useRequireAuth();
-  const [challenge, setChallenge] = useState<BarronsChallenge | null | undefined>(undefined);
-  const [otherChallenges, setOtherChallenges] = useState<BarronsChallenge[]>([]);
+  const [challenge, setChallenge] = useState<EurekaChallenge | null | undefined>(undefined);
+  const [otherChallenges, setOtherChallenges] = useState<EurekaChallenge[]>([]);
 
   useEffect(() => {
     if (!user) return;
     let isActive = true;
 
-    fetchBarronsChallenge(slug)
+    fetchEurekaChallenge(slug)
       .then((data) => {
         if (isActive) setChallenge(data);
       })
@@ -33,7 +33,7 @@ export default function BarronsChallengeDetailPage({
         if (isActive) setChallenge(null);
       });
 
-    fetchBarronsChallenges()
+    fetchEurekaChallenges()
       .then((data) => {
         if (isActive) setOtherChallenges(data);
       })
@@ -138,12 +138,12 @@ export default function BarronsChallengeDetailPage({
               Choisissez la licence qui correspond le mieux à vos besoins.
             </p>
             <div className="mt-6">
-              <BarronsChallengeLicensePurchaseGrid plans={challenge.license_plans ?? []} />
+              <EurekaChallengeLicensePurchaseGrid plans={challenge.license_plans ?? []} />
             </div>
           </div>
         </article>
 
-        <BarronsChallengeSidebar
+        <EurekaChallengeSidebar
           currentSlug={challenge.slug}
           otherChallenges={otherChallenges}
           brokers={challenge.brokers ?? []}

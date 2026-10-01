@@ -8,20 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { extractApiError } from "@/lib/api/client";
 import {
-  createAdminBarronsChallengeInstruction,
-  deleteAdminBarronsChallengeInstruction,
-  updateAdminBarronsChallengeInstruction,
+  createAdminEurekaChallengeInstruction,
+  deleteAdminEurekaChallengeInstruction,
+  updateAdminEurekaChallengeInstruction,
 } from "@/lib/api/admin";
-import type { BarronsChallengeInstruction } from "@/types/barronsChallenge";
+import type { EurekaChallengeInstruction } from "@/types/eurekaChallenge";
 
-export function BarronsChallengeInstructionsManager({
+export function EurekaChallengeInstructionsManager({
   challengeId,
   instructions,
   onChange,
 }: {
   challengeId: number;
-  instructions: BarronsChallengeInstruction[];
-  onChange: (next: BarronsChallengeInstruction[]) => void;
+  instructions: EurekaChallengeInstruction[];
+  onChange: (next: EurekaChallengeInstruction[]) => void;
 }) {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
@@ -37,7 +37,7 @@ export function BarronsChallengeInstructionsManager({
     setPending(true);
     setError(null);
     try {
-      const created = await createAdminBarronsChallengeInstruction(challengeId, {
+      const created = await createAdminEurekaChallengeInstruction(challengeId, {
         title,
         url,
         position: instructions.length,
@@ -56,7 +56,7 @@ export function BarronsChallengeInstructionsManager({
     setPending(true);
     setError(null);
     try {
-      const updated = await updateAdminBarronsChallengeInstruction(id, { title: editingTitle, url: editingUrl });
+      const updated = await updateAdminEurekaChallengeInstruction(id, { title: editingTitle, url: editingUrl });
       onChange(instructions.map((i) => (i.id === id ? updated : i)));
       setEditingId(null);
     } catch (err) {
@@ -67,7 +67,7 @@ export function BarronsChallengeInstructionsManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBarronsChallengeInstruction(id);
+    await deleteAdminEurekaChallengeInstruction(id);
     onChange(instructions.filter((i) => i.id !== id));
   }
 
@@ -134,18 +134,18 @@ export function BarronsChallengeInstructionsManager({
 
         <form onSubmit={handleAdd} className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row sm:items-end">
           <div className="flex-1 space-y-2">
-            <Label htmlFor="new-barrons-instruction-title">Titre</Label>
+            <Label htmlFor="new-eureka-instruction-title">Titre</Label>
             <Input
-              id="new-barrons-instruction-title"
+              id="new-eureka-instruction-title"
               placeholder="Ex : Guide d'installation MT4"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="flex-1 space-y-2">
-            <Label htmlFor="new-barrons-instruction-url">URL</Label>
+            <Label htmlFor="new-eureka-instruction-url">URL</Label>
             <Input
-              id="new-barrons-instruction-url"
+              id="new-eureka-instruction-url"
               placeholder="https://..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}

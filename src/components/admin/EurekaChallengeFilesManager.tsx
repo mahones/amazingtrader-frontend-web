@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { extractApiError } from "@/lib/api/client";
-import { createAdminBarronsChallengeFiles, deleteAdminBarronsChallengeFile } from "@/lib/api/admin";
-import type { BarronsChallengeFile } from "@/types/barronsChallenge";
+import { createAdminEurekaChallengeFiles, deleteAdminEurekaChallengeFile } from "@/lib/api/admin";
+import type { EurekaChallengeFile } from "@/types/eurekaChallenge";
 
 function formatSize(bytes: number | null) {
   if (bytes === null) return "";
@@ -20,16 +20,16 @@ function formatSize(bytes: number | null) {
 /**
  * Files uploaded here live on the CHALLENGE itself (not a specific buyer's
  * license) — every buyer sees the same set once their own license is
- * activated. See BarronsChallengeFilePolicy on the backend.
+ * activated. See EurekaChallengeFilePolicy on the backend.
  */
-export function BarronsChallengeFilesManager({
+export function EurekaChallengeFilesManager({
   challengeId,
   files,
   onChange,
 }: {
   challengeId: number;
-  files: BarronsChallengeFile[];
-  onChange: (next: BarronsChallengeFile[]) => void;
+  files: EurekaChallengeFile[];
+  onChange: (next: EurekaChallengeFile[]) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [label, setLabel] = useState("");
@@ -49,7 +49,7 @@ export function BarronsChallengeFilesManager({
         formData.append(`files[${index}]`, file);
         formData.append(`labels[${index}]`, label || file.name);
       });
-      const created = await createAdminBarronsChallengeFiles(challengeId, formData);
+      const created = await createAdminEurekaChallengeFiles(challengeId, formData);
       onChange(created);
       setLabel("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -61,7 +61,7 @@ export function BarronsChallengeFilesManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBarronsChallengeFile(id);
+    await deleteAdminEurekaChallengeFile(id);
     onChange(files.filter((f) => f.id !== id));
   }
 
@@ -102,17 +102,17 @@ export function BarronsChallengeFilesManager({
 
         <form onSubmit={handleAdd} className="space-y-3 border-t border-border pt-4">
           <div className="space-y-2">
-            <Label htmlFor="barrons-file-label">Libellé (optionnel)</Label>
+            <Label htmlFor="eureka-file-label">Libellé (optionnel)</Label>
             <Input
-              id="barrons-file-label"
+              id="eureka-file-label"
               placeholder="Ex : Règlement du challenge"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="barrons-file-input">Fichier(s)</Label>
-            <Input id="barrons-file-input" ref={fileInputRef} type="file" multiple />
+            <Label htmlFor="eureka-file-input">Fichier(s)</Label>
+            <Input id="eureka-file-input" ref={fileInputRef} type="file" multiple />
           </div>
           <Button type="submit" disabled={pending}>
             {pending ? "Envoi..." : "Ajouter"}

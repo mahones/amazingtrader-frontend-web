@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { extractApiError } from "@/lib/api/client";
-import { updateBarronsChallengeLicensePurchaseDetails } from "@/lib/api/barronsChallenges";
+import { updateEurekaChallengeLicensePurchaseDetails } from "@/lib/api/eurekaChallenges";
 import { digitsOnly } from "@/lib/utils";
-import type { BarronsChallengeAccountCredentials, UserBarronsChallengeLicense } from "@/types/barronsChallenge";
+import type { EurekaChallengeAccountCredentials, UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 
-type AccountDraft = Pick<BarronsChallengeAccountCredentials, "id" | "password" | "server">;
+type AccountDraft = Pick<EurekaChallengeAccountCredentials, "id" | "password" | "server">;
 
 function buildInitialDrafts(
   numberOfAccounts: number,
@@ -24,7 +24,7 @@ function buildInitialDrafts(
   }));
 }
 
-export function BarronsChallengePostPurchaseDetailsForm({
+export function EurekaChallengePostPurchaseDetailsForm({
   licenseId,
   numberOfAccounts,
   initialValues,
@@ -33,7 +33,7 @@ export function BarronsChallengePostPurchaseDetailsForm({
   licenseId: number;
   numberOfAccounts: number;
   initialValues?: AccountDraft[];
-  onSubmitted: (result: UserBarronsChallengeLicense) => void;
+  onSubmitted: (result: UserEurekaChallengeLicense) => void;
 }) {
   const [accounts, setAccounts] = useState<AccountDraft[]>(buildInitialDrafts(numberOfAccounts, initialValues));
   const [pending, setPending] = useState(false);
@@ -48,7 +48,7 @@ export function BarronsChallengePostPurchaseDetailsForm({
     setPending(true);
     setError(null);
     try {
-      const result = await updateBarronsChallengeLicensePurchaseDetails(licenseId, accounts);
+      const result = await updateEurekaChallengeLicensePurchaseDetails(licenseId, accounts);
       onSubmitted(result);
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer ces informations."));

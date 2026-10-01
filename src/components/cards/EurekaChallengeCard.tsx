@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { stripHtml } from "@/lib/utils";
-import type { BarronsChallenge } from "@/types/barronsChallenge";
+import type { EurekaChallenge } from "@/types/eurekaChallenge";
 
-export function BarronsChallengeCard({ challenge }: { challenge: BarronsChallenge }) {
+export function EurekaChallengeCard({ challenge }: { challenge: EurekaChallenge }) {
   const cardImage = challenge.preview_image ?? challenge.image_url;
   const cardExcerpt = challenge.excerpt ?? stripHtml(challenge.description);
 

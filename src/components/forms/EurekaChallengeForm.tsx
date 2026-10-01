@@ -11,8 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RichTextEditor } from "@/components/editor/RichTextEditor";
 import { ImageUploadInput } from "@/components/forms/ImageUploadInput";
 import { extractApiError } from "@/lib/api/client";
-import { createAdminBarronsChallenge, fetchAdminBrokers, updateAdminBarronsChallenge } from "@/lib/api/admin";
-import type { BarronsChallenge } from "@/types/barronsChallenge";
+import { createAdminEurekaChallenge, fetchAdminBrokers, updateAdminEurekaChallenge } from "@/lib/api/admin";
+import type { EurekaChallenge } from "@/types/eurekaChallenge";
 import type { Broker } from "@/types/broker";
 
 function slugify(value: string) {
@@ -28,12 +28,12 @@ function toggleId(ids: number[], id: number): number[] {
   return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id];
 }
 
-export function BarronsChallengeForm({
+export function EurekaChallengeForm({
   challenge,
   onSaved,
 }: {
-  challenge?: BarronsChallenge;
-  onSaved: (challenge: BarronsChallenge) => void;
+  challenge?: EurekaChallenge;
+  onSaved: (challenge: EurekaChallenge) => void;
 }) {
   const isEditing = Boolean(challenge);
 
@@ -83,8 +83,8 @@ export function BarronsChallengeForm({
     try {
       const saved =
         isEditing && challenge
-          ? await updateAdminBarronsChallenge(challenge.id, formData)
-          : await createAdminBarronsChallenge(formData);
+          ? await updateAdminEurekaChallenge(challenge.id, formData)
+          : await createAdminEurekaChallenge(formData);
       onSaved(saved);
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer le challenge."));
@@ -101,14 +101,14 @@ export function BarronsChallengeForm({
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="barrons-name">Nom</Label>
-            <Input id="barrons-name" required value={name} onChange={(e) => setName(e.target.value)} />
+            <Label htmlFor="eureka-name">Nom</Label>
+            <Input id="eureka-name" required value={name} onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-slug">Slug (URL)</Label>
+            <Label htmlFor="eureka-slug">Slug (URL)</Label>
             <Input
-              id="barrons-slug"
+              id="eureka-slug"
               placeholder="auto-généré si laissé vide"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
@@ -116,7 +116,7 @@ export function BarronsChallengeForm({
           </div>
 
           <ImageUploadInput
-            id="barrons-image"
+            id="eureka-image"
             label="Image principale (page détail du challenge)"
             value={imageFile}
             onChange={setImageFile}
@@ -129,7 +129,7 @@ export function BarronsChallengeForm({
           </div>
 
           <ImageUploadInput
-            id="barrons-preview-image"
+            id="eureka-preview-image"
             label="Image de la carte (liste des challenges)"
             value={previewImageFile}
             onChange={setPreviewImageFile}
@@ -137,9 +137,9 @@ export function BarronsChallengeForm({
           />
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-excerpt">Extrait (carte, liste des challenges)</Label>
+            <Label htmlFor="eureka-excerpt">Extrait (carte, liste des challenges)</Label>
             <Textarea
-              id="barrons-excerpt"
+              id="eureka-excerpt"
               rows={2}
               maxLength={500}
               value={excerpt}
@@ -148,9 +148,9 @@ export function BarronsChallengeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-strategy">Résumé de la stratégie</Label>
+            <Label htmlFor="eureka-strategy">Résumé de la stratégie</Label>
             <Textarea
-              id="barrons-strategy"
+              id="eureka-strategy"
               rows={3}
               value={strategySummary}
               onChange={(e) => setStrategySummary(e.target.value)}
@@ -158,9 +158,9 @@ export function BarronsChallengeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-pairs">Paires / actifs tradés (séparés par des virgules)</Label>
+            <Label htmlFor="eureka-pairs">Paires / actifs tradés (séparés par des virgules)</Label>
             <Input
-              id="barrons-pairs"
+              id="eureka-pairs"
               placeholder="EUR/USD, XAU/USD, BTC/USD"
               value={pairsTraded}
               onChange={(e) => setPairsTraded(e.target.value)}
@@ -168,9 +168,9 @@ export function BarronsChallengeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-managed-capital">Capital géré ($)</Label>
+            <Label htmlFor="eureka-managed-capital">Capital géré ($)</Label>
             <Input
-              id="barrons-managed-capital"
+              id="eureka-managed-capital"
               type="number"
               min="0"
               step="0.01"
@@ -200,9 +200,9 @@ export function BarronsChallengeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="barrons-position">Ordre d&apos;affichage</Label>
+            <Label htmlFor="eureka-position">Ordre d&apos;affichage</Label>
             <Input
-              id="barrons-position"
+              id="eureka-position"
               type="number"
               min="1"
               placeholder="Laissé vide = ajouté à la fin"
@@ -212,8 +212,8 @@ export function BarronsChallengeForm({
           </div>
 
           <div className="flex items-center gap-3">
-            <Switch id="barrons-active" checked={isActive} onCheckedChange={setIsActive} />
-            <Label htmlFor="barrons-active">Actif (visible sur le site)</Label>
+            <Switch id="eureka-active" checked={isActive} onCheckedChange={setIsActive} />
+            <Label htmlFor="eureka-active">Actif (visible sur le site)</Label>
           </div>
 
           {error && <Alert variant="error">{error}</Alert>}

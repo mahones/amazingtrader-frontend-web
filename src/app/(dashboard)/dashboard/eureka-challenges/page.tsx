@@ -9,23 +9,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
-import { EditBarronsChallengePurchaseDetailsDialog } from "@/components/licenses/EditBarronsChallengePurchaseDetailsDialog";
+import { EditEurekaChallengePurchaseDetailsDialog } from "@/components/licenses/EditEurekaChallengePurchaseDetailsDialog";
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
-import { downloadBarronsChallengeFile, fetchMyBarronsChallengeLicenses } from "@/lib/api/barronsChallenges";
-import { deleteAdminBarronsChallenge, fetchAdminBarronsChallenges } from "@/lib/api/admin";
+import { downloadEurekaChallengeFile, fetchMyEurekaChallengeLicenses } from "@/lib/api/eurekaChallenges";
+import { deleteAdminEurekaChallenge, fetchAdminEurekaChallenges } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import type { BarronsChallenge, BarronsChallengeFile, UserBarronsChallengeLicense } from "@/types/barronsChallenge";
+import type { EurekaChallenge, EurekaChallengeFile, UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 
-export default function DashboardBarronsChallengesPage() {
+export default function DashboardEurekaChallengesPage() {
   const { isStaff } = useAuth();
-  const [licenses, setLicenses] = useState<UserBarronsChallengeLicense[] | null>(null);
-  const [challenges, setChallenges] = useState<BarronsChallenge[] | null>(null);
+  const [licenses, setLicenses] = useState<UserEurekaChallengeLicense[] | null>(null);
+  const [challenges, setChallenges] = useState<EurekaChallenge[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function reloadChallenges() {
-    const refreshed = await fetchAdminBarronsChallenges();
+    const refreshed = await fetchAdminEurekaChallenges();
     setChallenges(refreshed);
   }
 
@@ -35,15 +35,15 @@ export default function DashboardBarronsChallengesPage() {
     async function loadData() {
       try {
         if (isStaff) {
-          const refreshed = await fetchAdminBarronsChallenges();
+          const refreshed = await fetchAdminEurekaChallenges();
           if (isActive) setChallenges(refreshed);
           return;
         }
 
-        const userLicenses = await fetchMyBarronsChallengeLicenses();
+        const userLicenses = await fetchMyEurekaChallengeLicenses();
         if (isActive) setLicenses(userLicenses);
       } catch (error) {
-        console.error("Erreur lors du chargement des challenges Barrons", error);
+        console.error("Erreur lors du chargement des challenges Eureka", error);
       }
     }
 
@@ -58,7 +58,7 @@ export default function DashboardBarronsChallengesPage() {
     if (!window.confirm("Supprimer définitivement ce challenge ?")) return;
     setError(null);
     try {
-      await deleteAdminBarronsChallenge(id);
+      await deleteAdminEurekaChallenge(id);
       await reloadChallenges();
     } catch (err) {
       setError(extractApiError(err, "Impossible de supprimer ce challenge."));
@@ -70,14 +70,14 @@ export default function DashboardBarronsChallengesPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Challenges Barrons</h1>
+            <h1 className="text-2xl font-bold">Challenges Eureka</h1>
             <p className="text-muted-foreground">
               Gérez les challenges proposés et leurs plans de licence.
             </p>
           </div>
           <Button
             render={
-              <Link href="/dashboard/barrons-challenges/new">
+              <Link href="/dashboard/eureka-challenges/new">
                 <Plus className="mr-1 size-4" /> Nouveau challenge
               </Link>
             }
@@ -106,12 +106,12 @@ export default function DashboardBarronsChallengesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    render={<Link href={`/challenge-barrons/${challenge.slug}`}>Voir la page</Link>}
+                    render={<Link href={`/challenge-eureka/${challenge.slug}`}>Voir la page</Link>}
                   />
                   <Button
                     size="sm"
                     render={
-                      <Link href={`/dashboard/barrons-challenges/${challenge.id}/edit`}>
+                      <Link href={`/dashboard/eureka-challenges/${challenge.id}/edit`}>
                         Modifier le contenu
                       </Link>
                     }
@@ -163,7 +163,7 @@ export default function DashboardBarronsChallengesPage() {
             </Card>
           )}
           {licenses?.map((license) => (
-            <BarronsChallengeLicenseCard
+            <EurekaChallengeLicenseCard
               key={license.id}
               license={license}
               onUpdated={(updated) =>
@@ -177,14 +177,14 @@ export default function DashboardBarronsChallengesPage() {
   );
 }
 
-function BarronsChallengeLicenseCard({
+function EurekaChallengeLicenseCard({
   license,
   onUpdated,
 }: {
-  license: UserBarronsChallengeLicense;
-  onUpdated: (license: UserBarronsChallengeLicense) => void;
+  license: UserEurekaChallengeLicense;
+  onUpdated: (license: UserEurekaChallengeLicense) => void;
 }) {
-  const challenge = license.barrons_challenge_license_plan.barrons_challenge;
+  const challenge = license.eureka_challenge_license_plan.eureka_challenge;
   const accounts = license.purchase_details ?? [];
   const files = license.files ?? [];
 
@@ -193,12 +193,12 @@ function BarronsChallengeLicenseCard({
       <CardHeader>
         <CardTitle className="text-lg">
           {challenge?.name ? `${challenge.name} — ` : ""}
-          {license.barrons_challenge_license_plan.name}
+          {license.eureka_challenge_license_plan.name}
         </CardTitle>
         <CardAction className="flex items-center gap-3">
           {challenge?.slug && (
             <Link
-              href={`/challenge-barrons/${challenge.slug}#plan-${license.barrons_challenge_license_plan.id}`}
+              href={`/challenge-eureka/${challenge.slug}#plan-${license.eureka_challenge_license_plan.id}`}
               className="text-sm font-medium text-primary hover:underline"
             >
               Voir la page
@@ -241,7 +241,7 @@ function BarronsChallengeLicenseCard({
                     </p>
                   )}
                 </div>
-                {index === 0 && <EditBarronsChallengePurchaseDetailsDialog license={license} onUpdated={onUpdated} />}
+                {index === 0 && <EditEurekaChallengePurchaseDetailsDialog license={license} onUpdated={onUpdated} />}
               </div>
             ))}
           </div>
@@ -259,7 +259,7 @@ function BarronsChallengeLicenseCard({
 
         {accounts.length === 0 && (
           <div className="flex justify-end">
-            <EditBarronsChallengePurchaseDetailsDialog license={license} onUpdated={onUpdated} />
+            <EditEurekaChallengePurchaseDetailsDialog license={license} onUpdated={onUpdated} />
           </div>
         )}
 
@@ -267,13 +267,13 @@ function BarronsChallengeLicenseCard({
           <div className="space-y-2 border-t border-border pt-4">
             <p className="text-sm font-medium">Fichiers du challenge</p>
             <ul className="space-y-1.5">
-              {files.map((file: BarronsChallengeFile) => (
+              {files.map((file: EurekaChallengeFile) => (
                 <li key={file.id} className="flex items-center justify-between text-sm">
                   <span>{file.label}</span>
                   <Button
                     size="sm"
                     className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30"
-                    onClick={() => downloadBarronsChallengeFile(file)}
+                    onClick={() => downloadEurekaChallengeFile(file)}
                   >
                     <Download className="mr-1 size-3.5" /> Télécharger
                   </Button>

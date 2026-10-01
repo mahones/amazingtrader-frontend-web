@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency, formatDuration } from "@/lib/utils";
-import type { BarronsChallengeLicenseOfferType, BarronsChallengeLicensePlan } from "@/types/barronsChallenge";
+import type { EurekaChallengeLicenseOfferType, EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 
 function getPlanIdFromHash(): number | null {
   if (typeof window === "undefined") return null;
@@ -20,8 +20,8 @@ function PlanCard({
   onSelect,
   isPending,
 }: {
-  plan: BarronsChallengeLicensePlan;
-  onSelect: (plan: BarronsChallengeLicensePlan) => void;
+  plan: EurekaChallengeLicensePlan;
+  onSelect: (plan: EurekaChallengeLicensePlan) => void;
   isPending?: number | null;
 }) {
   return (
@@ -74,20 +74,20 @@ function PlanCard({
   );
 }
 
-export function BarronsChallengeLicensePricingGrid({
+export function EurekaChallengeLicensePricingGrid({
   plans,
   onSelect,
   isPending,
 }: {
-  plans: BarronsChallengeLicensePlan[];
-  onSelect: (plan: BarronsChallengeLicensePlan) => void;
+  plans: EurekaChallengeLicensePlan[];
+  onSelect: (plan: EurekaChallengeLicensePlan) => void;
   isPending?: number | null;
 }) {
   const timeLimited = plans.filter((p) => p.offer_type === "time_limited");
   const lifetime = plans.filter((p) => p.offer_type === "lifetime");
 
   const targetPlanId = getPlanIdFromHash();
-  const initialOffer: BarronsChallengeLicenseOfferType = lifetime.some((p) => p.id === targetPlanId)
+  const initialOffer: EurekaChallengeLicenseOfferType = lifetime.some((p) => p.id === targetPlanId)
     ? "lifetime"
     : "time_limited";
 
@@ -136,20 +136,20 @@ function OfferTabs({
   isPending,
   initialOffer,
 }: {
-  timeLimited: BarronsChallengeLicensePlan[];
-  lifetime: BarronsChallengeLicensePlan[];
-  onSelect: (plan: BarronsChallengeLicensePlan) => void;
+  timeLimited: EurekaChallengeLicensePlan[];
+  lifetime: EurekaChallengeLicensePlan[];
+  onSelect: (plan: EurekaChallengeLicensePlan) => void;
   isPending?: number | null;
-  initialOffer: BarronsChallengeLicenseOfferType;
+  initialOffer: EurekaChallengeLicenseOfferType;
 }) {
-  const [activeOffer, setActiveOffer] = useState<BarronsChallengeLicenseOfferType>(initialOffer);
+  const [activeOffer, setActiveOffer] = useState<EurekaChallengeLicenseOfferType>(initialOffer);
   const plans = activeOffer === "time_limited" ? timeLimited : lifetime;
 
   return (
     <div>
       <Tabs
         value={activeOffer}
-        onValueChange={(value) => value && setActiveOffer(value as BarronsChallengeLicenseOfferType)}
+        onValueChange={(value) => value && setActiveOffer(value as EurekaChallengeLicenseOfferType)}
       >
         <TabsList>
           <TabsTrigger value="time_limited">Time-limited Offer</TabsTrigger>
