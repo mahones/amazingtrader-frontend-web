@@ -30,7 +30,7 @@ export function PerformanceSection() {
   }, [activeVideo]);
 
   return (
-    <section className="bg-neutral-900 py-16">
+    <section id="performances" className="scroll-mt-20 bg-neutral-900 py-16">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}

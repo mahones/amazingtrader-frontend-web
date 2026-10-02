@@ -1,12 +1,17 @@
 import { ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import type { Broker } from "@/types/broker";
 
 export function BrokerCard({ broker }: { broker: Broker }) {
   return (
-    <Card className="flex flex-col gap-4 p-(--card-spacing) text-left transition-shadow hover:shadow-lg hover:shadow-primary/10 sm:flex-row sm:items-center">
-      <div className="flex min-w-0 flex-1 items-center gap-4">
+    <a
+      href={broker.affiliate_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Créer un compte chez ${broker.name}`}
+      className="group block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    >
+      <Card className="flex-row items-center gap-4 p-(--card-spacing) text-left transition-shadow group-hover:shadow-lg group-hover:shadow-primary/10">
         <div className="relative flex aspect-[2/1] w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted sm:w-40">
           {broker.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time
@@ -26,17 +31,12 @@ export function BrokerCard({ broker }: { broker: Broker }) {
             <p className="line-clamp-2 text-sm text-muted-foreground">{broker.description}</p>
           )}
         </div>
-      </div>
 
-      <Button
-        size="sm"
-        className="w-full shrink-0 sm:w-auto"
-        render={
-          <a href={broker.affiliate_url} target="_blank" rel="noopener noreferrer">
-            Créer un compte <ExternalLink className="ml-1 size-3.5" />
-          </a>
-        }
-      />
-    </Card>
+        <ExternalLink
+          className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+          aria-hidden
+        />
+      </Card>
+    </a>
   );
 }

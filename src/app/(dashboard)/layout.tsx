@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-dvh overflow-hidden bg-background">
       <Sidebar />
       <MobileSidebar open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -82,7 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <CommunityMenu />
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

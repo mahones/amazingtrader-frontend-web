@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const MYFXBOOK_URL = "https://www.myfxbook.com/members/AMAZINGTRADERS";
 
 const HIGHLIGHTS: React.ReactNode[] = [
   <>
@@ -58,8 +57,8 @@ export function BotTradingHero() {
             <Button
               size="lg"
               render={
-                <a href="#bots">
-                  Découvrir nos bots <ArrowRight className="ml-1 size-4" />
+                <a href="/brokers">
+                  Courtier recommendé <ArrowRight className="ml-1 size-4" />
                 </a>
               }
             />
@@ -67,9 +66,7 @@ export function BotTradingHero() {
               size="lg"
               variant="outline"
               render={
-                <a href={MYFXBOOK_URL} target="_blank" rel="noopener noreferrer">
-                  Vérifier nos performances
-                </a>
+                <a href="#performances">Nos performances</a>
               }
             />
           </div>

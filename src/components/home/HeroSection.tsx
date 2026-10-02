@@ -69,7 +69,7 @@ export function HeroSection() {
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button size="lg" render={
-              <Link href="/auto-trading">
+              <Link href="https://www.mql5.com/en/signals/author/amazingtraders3-0-gmail">
                 Voir nos performances <ArrowRight className="ml-1 size-4" />
               </Link>
             } />
