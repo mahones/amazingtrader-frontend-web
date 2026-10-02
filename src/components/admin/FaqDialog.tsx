@@ -39,6 +39,7 @@ export function FaqDialog({
   const [position, setPosition] = useState(faq?.position?.toString() ?? "0");
   const [isFeatured, setIsFeatured] = useState(faq?.is_featured ?? false);
   const [isActive, setIsActive] = useState(faq?.is_active ?? true);
+  const [isEurekaChallenge, setIsEurekaChallenge] = useState(faq?.is_eureka_challenge ?? false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -49,6 +50,7 @@ export function FaqDialog({
     setPosition(faq?.position?.toString() ?? "0");
     setIsFeatured(faq?.is_featured ?? false);
     setIsActive(faq?.is_active ?? true);
+    setIsEurekaChallenge(faq?.is_eureka_challenge ?? false);
     setError(null);
   }
 
@@ -64,6 +66,7 @@ export function FaqDialog({
       position: Number(position) || 0,
       is_featured: isFeatured,
       is_active: isActive,
+      is_eureka_challenge: isEurekaChallenge,
     };
 
     try {
@@ -150,6 +153,21 @@ export function FaqDialog({
           <div className="flex items-center gap-3">
             <Switch id="faq-active" checked={isActive} onCheckedChange={setIsActive} />
             <Label htmlFor="faq-active">Visible publiquement</Label>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <Switch
+                id="faq-eureka"
+                checked={isEurekaChallenge}
+                onCheckedChange={setIsEurekaChallenge}
+              />
+              <Label htmlFor="faq-eureka">Question du Challenge Eureka</Label>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Cette question s&apos;affichera uniquement sur la page Challenge Eureka, à la place de la FAQ
+              générale et de l&apos;accueil.
+            </p>
           </div>
 
           {error && <Alert variant="error">{error}</Alert>}

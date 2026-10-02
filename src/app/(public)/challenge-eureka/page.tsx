@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { EurekaChallengeCard } from "@/components/cards/EurekaChallengeCard";
-// import { EurekaChallengeHero } from "@/components/eureka-challenge/EurekaChallengeHero";
-// import { PhotoTestimonialsSection } from "@/components/home/PhotoTestimonialsSection";
+import { EurekaChallengeFaqSection } from "@/components/eureka-challenge/EurekaChallengeFaqSection";
 import { ContactCtaSection } from "@/components/auto-trading/ContactCtaSection";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { fetchEurekaChallenges } from "@/lib/api/eurekaChallenges";
+import { fetchFaqs } from "@/lib/api/faqs";
 import type { EurekaChallenge } from "@/types/eurekaChallenge";
+import type { Faq } from "@/types/faq";
 
 export default function ChallengeEurekaPage() {
   const { user, isLoading: authLoading } = useRequireAuth();
   const [challenges, setChallenges] = useState<EurekaChallenge[] | null>(null);
+  const [faqs, setFaqs] = useState<Faq[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -24,6 +26,14 @@ export default function ChallengeEurekaPage() {
       })
       .catch(() => {
         if (isActive) setChallenges([]);
+      });
+
+    fetchFaqs({ eureka: true })
+      .then((data) => {
+        if (isActive) setFaqs(data);
+      })
+      .catch(() => {
+        if (isActive) setFaqs([]);
       });
 
     return () => {
@@ -72,6 +82,7 @@ export default function ChallengeEurekaPage() {
         </div>
       </div>
 
+      <EurekaChallengeFaqSection faqs={faqs} />
 
       <ContactCtaSection
         title="Prêt à relever le Challenge Eureka ?"
