@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
 export default function AutoTradingContractPage() {
@@ -184,3 +185,8 @@ export default function AutoTradingContractPage() {
     </LegalPageLayout>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Contrat du trading automatisé",
+  "description": "Conditions de la licence d'utilisation du logiciel de trading automatique Amazing Traders."
+});

@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { FaqCategoryFilter } from "@/components/faq/FaqCategoryFilter";
 import { getFaqs } from "@/lib/api/server";
 
@@ -20,3 +21,8 @@ export default async function FaqPage() {
     </div>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Foire aux questions",
+  "description": "Toutes les réponses à vos questions sur nos formations, licences d'auto-trading, bots et paiements."
+});

@@ -1,13 +1,14 @@
+import { buildMetadata } from "@/lib/seo";
 import { BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { GlossaryExplorer } from "@/components/glossary/GlossaryExplorer";
 import { GLOSSARY_CATEGORIES, getAllGlossaryTerms } from "@/lib/glossary";
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: "Lexique du trading",
   description:
-    "Le lexique trading, forex et crypto d'amazingtraders : des définitions claires et des exemples concrets pour comprendre le vocabulaire des marchés.",
-};
+    "Le lexique trading, forex et crypto d'Amazing Traders : des définitions claires et des exemples concrets pour comprendre le vocabulaire des marchés.",
+});
 
 export default function LexiquePage() {
   const terms = getAllGlossaryTerms();

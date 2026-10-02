@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
 export default function RiskDisclosurePage() {
@@ -89,3 +90,8 @@ export default function RiskDisclosurePage() {
     </LegalPageLayout>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Divulgation des risques",
+  "description": "Le trading comporte des risques élevés pouvant entraîner la perte de vos fonds. Lisez notre avertissement avant d'investir."
+});

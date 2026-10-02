@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OfferingsList } from "@/components/home/OfferingsList";
 import { FounderSection } from "@/components/home/FounderSection";
@@ -26,3 +27,9 @@ export default async function HomePage() {
     </>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Amazing Traders · Formations, auto-trading et bots de trading",
+  "description": "Apprenez le trading avec nos formations, automatisez vos stratégies avec nos licences d'auto-trading et nos bots, et rejoignez la communauté Amazing Traders.",
+  "absoluteTitle": true
+});

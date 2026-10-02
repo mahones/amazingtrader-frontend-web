@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { CourseCard } from "@/components/cards/CourseCard";
 import { VipFormationPurchaseGrid } from "@/components/purchase/VipFormationPurchaseGrid";
 import { FormationsHero } from "@/components/formations/FormationsHero";
@@ -46,3 +47,8 @@ export default async function FormationsPage({
     </>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Formations de trading",
+  "description": "Des formations vidéo complètes pour apprendre le trading pas à pas, du niveau débutant au niveau avancé, avec suivi de progression."
+});

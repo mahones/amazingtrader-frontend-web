@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -11,10 +12,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!term) return {};
 
-  return {
+  return buildMetadata({
     title: `${term.term} : définition`,
     description: term.shortDefinition,
-  };
+  });
 }
 
 export function generateStaticParams() {

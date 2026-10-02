@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
 export default function PrivacyPolicyPage() {
@@ -324,3 +325,8 @@ export default function PrivacyPolicyPage() {
     </LegalPageLayout>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Politique de confidentialité",
+  "description": "Comment Amazing Traders collecte, utilise et protège vos données personnelles."
+});

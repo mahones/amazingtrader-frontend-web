@@ -3,7 +3,20 @@ import { Badge } from "@/components/ui/badge";
 import { ArticleSidebar } from "@/components/articles/ArticleSidebar";
 import { formatDate } from "@/lib/utils";
 import { getPost } from "@/lib/api/server";
+import { buildMetadata, summarize } from "@/lib/seo";
 import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPost(slug).catch(() => null);
+  if (!post) return {};
+
+  return buildMetadata({
+    title: post.title,
+    description: summarize(post.excerpt || post.content) || "Article Amazing Traders.",
+    image: post.preview_image_url || post.cover_image_url,
+  });
+}
 
 export default async function ArticleDetailPage({
   params,

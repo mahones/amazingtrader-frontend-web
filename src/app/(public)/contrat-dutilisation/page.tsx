@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
 export default function BotUsageContractPage() {
@@ -182,3 +183,8 @@ export default function BotUsageContractPage() {
     </LegalPageLayout>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Contrat d'utilisation d'un bot",
+  "description": "Conditions de la licence d'utilisation d'un bot de trading Amazing Traders."
+});

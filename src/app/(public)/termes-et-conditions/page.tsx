@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
 export default function TermsAndConditionsPage() {
@@ -158,3 +159,8 @@ export default function TermsAndConditionsPage() {
     </LegalPageLayout>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Termes et conditions",
+  "description": "Conditions générales d'utilisation du site et des services Amazing Traders."
+});

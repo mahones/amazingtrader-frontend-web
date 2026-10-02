@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { LicensePurchaseGrid } from "@/components/purchase/LicensePurchaseGrid";
 import { getLicensePlans } from "@/lib/api/server";
 import { AutoTradingHero } from "@/components/auto-trading/AutoTradingHero";
@@ -40,3 +41,8 @@ export default async function AutoTradingPage() {
     </>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Licences d'auto-trading",
+  "description": "Choisissez la licence adaptée à votre capital et laissez nos stratégies automatisées trader pour vous sur votre compte courtier."
+});

@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { BrokerCategoryFilter } from "@/components/brokers/BrokerCategoryFilter";
 import { getBrokers, getBrokersPageSettings } from "@/lib/api/server";
 
@@ -23,3 +24,8 @@ export default async function BrokersPage() {
     </div>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Courtiers recommandés",
+  "description": "Ouvrez un compte chez l'un de nos courtiers partenaires recommandés pour exploiter au mieux nos stratégies et nos bots."
+});

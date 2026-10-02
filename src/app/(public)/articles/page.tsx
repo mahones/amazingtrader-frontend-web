@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import { ArticleCard } from "@/components/cards/ArticleCard";
 import { PostFilters } from "@/components/filters/PostFilters";
 import { getPosts } from "@/lib/api/server";
@@ -35,3 +36,8 @@ export default async function ArticlesPage({
     </div>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Articles et actualités",
+  "description": "Analyses de marché, guides pratiques et actualités d'Amazing Traders pour progresser en trading."
+});

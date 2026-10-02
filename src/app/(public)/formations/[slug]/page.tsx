@@ -5,8 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PurchaseButton } from "@/components/purchase/PurchaseButton";
 import { formatCurrency } from "@/lib/utils";
 import { getCourse } from "@/lib/api/server";
+import { buildMetadata, summarize } from "@/lib/seo";
 import { LEVEL_BADGE_CLASSES, LEVEL_LABELS } from "@/lib/course-level";
 import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const course = await getCourse(slug).catch(() => null);
+  if (!course) return {};
+
+  return buildMetadata({
+    title: course.title,
+    description: summarize(course.description) || "Formation de trading Amazing Traders.",
+    image: course.thumbnail_url,
+  });
+}
 
 export default async function CourseDetailPage({
   params,

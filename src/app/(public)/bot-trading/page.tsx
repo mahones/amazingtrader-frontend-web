@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { BotPerformanceCard } from "@/components/cards/BotPerformanceCard";
 // import { Card, CardContent } from "@/components/ui/card";
@@ -59,3 +60,8 @@ export default async function BotTradingPage() {
     </>
   );
 }
+
+export const metadata = buildMetadata({
+  "title": "Bots de trading",
+  "description": "Découvrez nos bots de trading : stratégies, paires tradées, performances historiques et licences pour les connecter à votre compte."
+});

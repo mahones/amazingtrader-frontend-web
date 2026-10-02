@@ -5,8 +5,21 @@ import { Button } from "@/components/ui/button";
 import { BotSidebar } from "@/components/bots/BotSidebar";
 import { BotLicensePurchaseGrid } from "@/components/purchase/BotLicensePurchaseGrid";
 import { getTradingBot } from "@/lib/api/server";
+import { buildMetadata, summarize } from "@/lib/seo";
 import { sanitizeContentHtml } from "@/lib/sanitize-content-html";
 // import { formatCurrency } from "@/lib/utils";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const bot = await getTradingBot(slug).catch(() => null);
+  if (!bot) return {};
+
+  return buildMetadata({
+    title: `Bot ${bot.name}`,
+    description: summarize(bot.excerpt || bot.strategy_summary || bot.description) || "Bot de trading Amazing Traders.",
+    image: bot.preview_image || bot.image_url,
+  });
+}
 
 export default async function BotDetailPage({
   params,
