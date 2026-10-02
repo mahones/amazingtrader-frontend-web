@@ -1,0 +1,2090 @@
+[
+  {
+    "slug": "ecart-de-production-output-gap",
+    "term": "Écart de production (output gap)",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Différence entre la production réelle d'une économie et son potentiel.",
+    "definition": "Un écart positif indique une économie en surchauffe, susceptible de générer de l'inflation ; un écart négatif signale des capacités inutilisées. Les banques centrales le suivent pour calibrer leurs taux.",
+    "example": "Une économie produit 2 % de moins que son potentiel : l'écart est négatif."
+  },
+  {
+    "slug": "ecart-type",
+    "term": "Écart-type",
+    "category": "performance",
+    "shortDefinition": "Mesure de la dispersion des rendements autour de leur moyenne.",
+    "definition": "Plus l'écart-type est élevé, plus les résultats sont variables et le risque important. Il est la base de nombreux indicateurs comme les bandes de Bollinger.",
+    "example": "Deux stratégies rapportent 10 % par an, mais l'une varie de 3 % et l'autre de 15 % : la seconde est plus risquée."
+  },
+  {
+    "slug": "echeance",
+    "term": "Échéance",
+    "category": "instruments",
+    "shortDefinition": "Date à laquelle un contrat, une obligation ou une option arrive à terme.",
+    "definition": "À l'échéance, le contrat est réglé ou expire. Elle détermine la durée de vie du produit et influence fortement son prix.",
+    "example": "Un future sur le pétrole qui expire le 20 du mois."
+  },
+  {
+    "slug": "echeance-des-options-expiration",
+    "term": "Échéance des options (expiration)",
+    "category": "instruments",
+    "shortDefinition": "Date limite à laquelle une option peut être exercée.",
+    "definition": "Après cette date, l'option perd toute valeur. Plus on s'en approche, plus la valeur temps s'érode, ce qui défavorise l'acheteur.",
+    "example": "Une option expirant vendredi perd l'essentiel de sa valeur temps en fin de semaine."
+  },
+  {
+    "slug": "ecn",
+    "term": "ECN",
+    "category": "instruments",
+    "shortDefinition": "Réseau électronique reliant directement les ordres des acteurs du marché.",
+    "definition": "Un courtier ECN transmet les ordres à un pool de liquidité sans intervenir comme contrepartie. Les spreads sont souvent plus fins, mais une commission est facturée.",
+    "example": "Un compte ECN affiche un spread de 0,1 pip plus une commission par lot."
+  },
+  {
+    "slug": "edge-avantage",
+    "term": "Edge (avantage)",
+    "category": "performance",
+    "shortDefinition": "Avantage statistique qui rend une stratégie rentable à long terme.",
+    "definition": "L'edge se mesure par une espérance positive sur un grand nombre de trades. Sans lui, la gestion du risque ne fait que ralentir les pertes.",
+    "example": "Une stratégie gagne en moyenne 0,25 R par trade sur 500 trades."
+  },
+  {
+    "slug": "edge-ratio-e-ratio",
+    "term": "Edge ratio (e-ratio)",
+    "category": "performance",
+    "shortDefinition": "Rapport entre l'excursion favorable et défavorable moyenne des trades.",
+    "definition": "Un e-ratio supérieur à 1 indique que, après l'entrée, le prix va plus souvent dans le bon sens que dans le mauvais. Il sert à évaluer la qualité des entrées.",
+    "example": "Un e-ratio de 1,4 suggère un bon timing d'entrée."
+  },
+  {
+    "slug": "effet-d-eviction",
+    "term": "Effet d'éviction",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Recul de l'investissement privé causé par l'emprunt massif de l'État.",
+    "definition": "Quand l'État emprunte beaucoup, il peut faire monter les taux et rendre le crédit plus cher pour les entreprises, qui investissent moins.",
+    "example": "Un déficit public élevé fait monter les taux d'emprunt des entreprises."
+  },
+  {
+    "slug": "effet-de-base",
+    "term": "Effet de base",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Distorsion d'un taux de croissance due au niveau de la période de comparaison.",
+    "definition": "Si la période de référence était exceptionnellement basse ou haute, la variation annuelle paraît amplifiée ou atténuée. Il faut en tenir compte en lisant l'inflation.",
+    "example": "Après un prix de l'énergie très bas l'an dernier, l'inflation annuelle semble très élevée."
+  },
+  {
+    "slug": "effet-de-cadrage",
+    "term": "Effet de cadrage",
+    "category": "psychologie",
+    "shortDefinition": "Influence de la manière dont une information est présentée sur la décision.",
+    "definition": "Une même situation présentée en gain ou en perte conduit à des choix différents. Le trader doit raisonner en probabilités plutôt qu'en émotions.",
+    "example": "« 70 % de réussite » rassure davantage que « 30 % d'échec », pourtant c'est identique."
+  },
+  {
+    "slug": "effet-de-disposition",
+    "term": "Effet de disposition",
+    "category": "psychologie",
+    "shortDefinition": "Tendance à vendre trop tôt les gagnants et garder trop longtemps les perdants.",
+    "definition": "Il découle de l'aversion à la perte : on veut verrouiller un gain et éviter de matérialiser une perte. Il réduit le ratio gain/perte global.",
+    "example": "Un trader prend 20 $ de profit rapidement mais garde une perte de 100 $."
+  },
+  {
+    "slug": "effet-de-richesse",
+    "term": "Effet de richesse",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Variation de la consommation provoquée par un changement de valeur du patrimoine.",
+    "definition": "Quand les actifs montent, les ménages se sentent plus riches et dépensent davantage ; à la baisse, ils consomment moins. Cela relie les marchés à l'économie réelle.",
+    "example": "Une hausse de l'immobilier encourage la consommation des propriétaires."
+  },
+  {
+    "slug": "effet-dunning-kruger",
+    "term": "Effet Dunning-Kruger",
+    "category": "psychologie",
+    "shortDefinition": "Biais qui pousse les débutants à surestimer leur compétence.",
+    "definition": "Après quelques gains, un novice croit tout maîtriser et prend trop de risques. La confiance retombe quand la complexité des marchés apparaît.",
+    "example": "Un débutant augmente fortement ses lots après trois trades gagnants."
+  },
+  {
+    "slug": "effet-janvier",
+    "term": "Effet janvier",
+    "category": "structures-de-marche",
+    "shortDefinition": "Tendance saisonnière à des rendements supérieurs en janvier, notamment sur les petites capitalisations.",
+    "definition": "Il est parfois expliqué par les réinvestissements en début d'année après les ventes fiscales de décembre. Son intensité a diminué avec le temps.",
+    "example": "Les petites valeurs surperforment en janvier de nombreuses années."
+  },
+  {
+    "slug": "ego-trading",
+    "term": "Ego trading",
+    "category": "psychologie",
+    "shortDefinition": "Trading motivé par l'envie d'avoir raison plutôt que par la logique.",
+    "definition": "Le trader refuse d'admettre une erreur, déplace son stop ou alourdit sa position pour prouver qu'il avait raison.",
+    "example": "Garder une position perdante par fierté."
+  },
+  {
+    "slug": "enveloppes-de-moyennes-mobiles",
+    "term": "Enveloppes de moyennes mobiles",
+    "category": "analyse-technique",
+    "shortDefinition": "Bandes tracées à un pourcentage fixe autour d'une moyenne mobile.",
+    "definition": "Elles délimitent une zone de fluctuation normale ; une sortie de l'enveloppe signale un mouvement étiré ou une accélération.",
+    "example": "Enveloppes à ±2 % autour d'une moyenne mobile 20."
+  },
+  {
+    "slug": "epuisement-exhaustion",
+    "term": "Épuisement (exhaustion)",
+    "category": "analyse-technique",
+    "shortDefinition": "Fin d'un mouvement lorsque l'élan s'essouffle malgré un dernier effort.",
+    "definition": "Il se manifeste par de fortes bougies avec mèches, un volume élevé et un blocage du prix, annonçant souvent un retournement.",
+    "example": "Une dernière bougie très haussière avec une longue mèche haute en fin de tendance."
+  },
+  {
+    "slug": "equilibre-desequilibre",
+    "term": "Équilibre / déséquilibre",
+    "category": "structures-de-marche",
+    "shortDefinition": "Alternance entre phases d'équilibre (range) et de déséquilibre (tendance).",
+    "definition": "À l'équilibre, acheteurs et vendeurs s'accordent sur un prix ; un déséquilibre provoque un déplacement rapide vers un nouveau prix juste.",
+    "example": "Le prix reste coincé 5 jours dans un range avant de partir en tendance."
+  },
+  {
+    "slug": "equite",
+    "term": "Équité",
+    "category": "performance",
+    "shortDefinition": "Valeur totale d'un compte de trading, positions ouvertes comprises.",
+    "definition": "Elle correspond au solde plus ou moins les gains et pertes latents. C'est elle qui détermine le risque réel du compte.",
+    "example": "Solde de 10 000 $ avec 300 $ de perte latente : équité de 9 700 $."
+  },
+  {
+    "slug": "esg",
+    "term": "ESG",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Critères environnementaux, sociaux et de gouvernance utilisés pour évaluer une entreprise.",
+    "definition": "Ils servent à choisir ou exclure des investissements selon leur impact et leur gestion. Ils influencent les flux vers certains fonds.",
+    "example": "Un fonds exclut les sociétés très polluantes selon des critères ESG."
+  },
+  {
+    "slug": "esma",
+    "term": "ESMA",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Autorité européenne des marchés financiers.",
+    "definition": "Elle harmonise la réglementation en Europe et a encadré notamment le levier et la communication sur les CFD.",
+    "example": "L'ESMA limite le levier à 1:30 sur les paires majeures pour les particuliers."
+  },
+  {
+    "slug": "esperance-geometrique",
+    "term": "Espérance géométrique",
+    "category": "performance",
+    "shortDefinition": "Croissance moyenne du capital par trade, en tenant compte de la capitalisation.",
+    "definition": "Elle est plus réaliste que l'espérance arithmétique car elle intègre l'impact des pertes sur le capital restant.",
+    "example": "Perdre 50 % exige ensuite de gagner 100 % pour revenir à l'équilibre."
+  },
+  {
+    "slug": "etf-a-effet-de-levier",
+    "term": "ETF à effet de levier",
+    "category": "instruments",
+    "shortDefinition": "ETF qui amplifie la performance quotidienne d'un indice, par exemple ×2 ou ×3.",
+    "definition": "Le levier est réinitialisé chaque jour, ce qui provoque une érosion sur la durée en marché agité. Ils conviennent surtout au court terme.",
+    "example": "Un ETF ×3 gagne 3 % quand l'indice gagne 1 % sur la journée."
+  },
+  {
+    "slug": "etf-inverse",
+    "term": "ETF inverse",
+    "category": "instruments",
+    "shortDefinition": "ETF dont la valeur évolue à l'inverse de celle de son indice.",
+    "definition": "Il permet de profiter d'une baisse sans vente à découvert, mais il est conçu pour de courtes périodes.",
+    "example": "Un ETF inverse gagne 1 % quand l'indice perd 1 %."
+  },
+  {
+    "slug": "ethereum-eth",
+    "term": "Ethereum (ETH)",
+    "category": "crypto",
+    "shortDefinition": "Blockchain permettant de créer des contrats intelligents et des applications décentralisées.",
+    "definition": "L'ether est la crypto native du réseau ; elle sert à payer les frais de transaction et soutient la DeFi et les NFT.",
+    "example": "On paie des frais en ETH pour effectuer une transaction."
+  },
+  {
+    "slug": "etn",
+    "term": "ETN",
+    "category": "instruments",
+    "shortDefinition": "Titre de créance coté dont la valeur suit un indice, sans détenir le sous-jacent.",
+    "definition": "Contrairement à un ETF, il repose sur la solvabilité de l'émetteur, ce qui ajoute un risque de crédit.",
+    "example": "Un ETN sur le pétrole émis par une banque."
+  },
+  {
+    "slug": "etoile-du-matin-morning-star",
+    "term": "Étoile du matin (morning star)",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de trois bougies annonçant un retournement haussier.",
+    "definition": "Elle comprend une grande bougie baissière, une petite bougie d'indécision, puis une grande bougie haussière.",
+    "example": "Après une baisse, la troisième bougie verte reprend la moitié de la première rouge."
+  },
+  {
+    "slug": "etoile-du-soir-evening-star",
+    "term": "Étoile du soir (evening star)",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de trois bougies annonçant un retournement baissier.",
+    "definition": "Elle est composée d'une grande bougie haussière, d'une petite bougie d'indécision, puis d'une grande bougie baissière.",
+    "example": "Après une hausse, la troisième bougie rouge efface une grande partie de la première."
+  },
+  {
+    "slug": "etoile-filante-shooting-star",
+    "term": "Étoile filante (shooting star)",
+    "category": "analyse-technique",
+    "shortDefinition": "Bougie à longue mèche haute et petit corps en bas, signalant un possible retournement baissier.",
+    "definition": "Apparaissant après une hausse, elle montre que les acheteurs ont été rejetés. Elle est plus significative sur une résistance.",
+    "example": "Une bougie qui monte fortement puis clôture près de son ouverture."
+  },
+  {
+    "slug": "etre-dans-la-zone",
+    "term": "Être « dans la zone »",
+    "category": "psychologie",
+    "shortDefinition": "État de concentration où l'on exécute son plan sans stress ni hésitation.",
+    "definition": "Il résulte de la préparation, de la discipline et de l'acceptation du risque. Il ne se force pas mais se cultive.",
+    "example": "Un trader suit sa checklist calmement, sans se laisser influencer par ses derniers résultats."
+  },
+  {
+    "slug": "euribor",
+    "term": "Euribor",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Taux auquel les banques européennes se prêtent entre elles.",
+    "definition": "Il sert de référence pour de nombreux prêts à taux variable et reflète les anticipations de politique monétaire.",
+    "example": "L'Euribor 3 mois monte après une annonce de la BCE."
+  },
+  {
+    "slug": "euro-stoxx-50",
+    "term": "Euro Stoxx 50",
+    "category": "instruments",
+    "shortDefinition": "Indice regroupant 50 grandes sociétés de la zone euro.",
+    "definition": "Il représente l'économie européenne et sert de référence aux ETF et futures.",
+    "example": "L'Euro Stoxx 50 gagne 0,8 % à la clôture."
+  },
+  {
+    "slug": "eurodollar",
+    "term": "Eurodollar",
+    "category": "instruments",
+    "shortDefinition": "Dollars déposés dans des banques situées hors des États-Unis.",
+    "definition": "Le marché des eurodollars est immense et sert de base à de nombreux contrats de taux.",
+    "example": "Une banque européenne détient des dépôts en dollars."
+  },
+  {
+    "slug": "eventail-de-fibonacci",
+    "term": "Éventail de Fibonacci",
+    "category": "analyse-technique",
+    "shortDefinition": "Outil traçant des lignes de support et résistance à partir d'un mouvement.",
+    "definition": "Il projette des niveaux de retracement selon des proportions de Fibonacci à partir de deux points.",
+    "example": "Éventail tracé entre un creux et un sommet pour repérer des zones de repli."
+  },
+  {
+    "slug": "exces-de-confiance",
+    "term": "Excès de confiance",
+    "category": "psychologie",
+    "shortDefinition": "Surestimation de sa capacité à prédire les marchés.",
+    "definition": "Il pousse à augmenter les tailles de position et à négliger la gestion du risque, surtout après une série de gains.",
+    "example": "Doubler ses lots après une bonne semaine."
+  },
+  {
+    "slug": "exchange-crypto",
+    "term": "Exchange crypto",
+    "category": "crypto",
+    "shortDefinition": "Plateforme permettant d'acheter, vendre et échanger des cryptomonnaies.",
+    "definition": "Elle peut être centralisée (CEX) ou décentralisée (DEX). Le choix influence la sécurité, les frais et la liquidité.",
+    "example": "Acheter du Bitcoin sur un exchange régulé."
+  },
+  {
+    "slug": "execution",
+    "term": "Exécution",
+    "category": "ordres-execution",
+    "shortDefinition": "Moment où un ordre est réellement traité sur le marché.",
+    "definition": "La qualité d'exécution dépend de la vitesse, du glissement et de la liquidité. Elle peut changer significativement les résultats.",
+    "example": "L'ordre est exécuté en 80 millisecondes."
+  },
+  {
+    "slug": "execution-en-scalping",
+    "term": "Exécution en scalping",
+    "category": "ordres-execution",
+    "shortDefinition": "Rapidité et précision d'exécution requises pour les trades très courts.",
+    "definition": "Pour un scalpeur, un spread élevé ou une latence importante peut annuler l'avantage d'une stratégie.",
+    "example": "Un scalpeur choisit un courtier à faible spread et à exécution rapide."
+  },
+  {
+    "slug": "expansion",
+    "term": "Expansion",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Phase du cycle économique où l'activité progresse.",
+    "definition": "Elle se traduit par une hausse de la production, de l'emploi et souvent de l'inflation.",
+    "example": "Le PIB progresse de 3 % pendant plusieurs trimestres."
+  },
+  {
+    "slug": "expected-shortfall-cvar",
+    "term": "Expected Shortfall (CVaR)",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Perte moyenne attendue dans les pires scénarios au-delà d'un seuil.",
+    "definition": "Elle complète la VaR en mesurant l'ampleur des pertes extrêmes, pas seulement leur probabilité.",
+    "example": "Dans les 5 % pires jours, la perte moyenne est de 4 %."
+  },
+  {
+    "slug": "expiration-d-ordre",
+    "term": "Expiration d'ordre",
+    "category": "ordres-execution",
+    "shortDefinition": "Délai après lequel un ordre en attente est annulé automatiquement.",
+    "definition": "On peut le fixer à la journée, à la semaine ou à une date précise pour éviter des exécutions tardives.",
+    "example": "Un ordre limite valable jusqu'à la fin de la journée."
+  },
+  {
+    "slug": "exposition",
+    "term": "Exposition",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Montant de capital soumis au risque de marché.",
+    "definition": "Elle correspond à la taille cumulée des positions ouvertes. Plus l'exposition est élevée, plus le compte est sensible aux variations.",
+    "example": "Trois positions de 10 000 $ sur la même devise représentent 30 000 $ d'exposition."
+  },
+  {
+    "slug": "exposition-globale",
+    "term": "Exposition globale",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Risque total d'un portefeuille toutes positions confondues.",
+    "definition": "Elle prend en compte les corrélations : plusieurs trades corrélés équivalent à un seul gros trade.",
+    "example": "Acheter EUR/USD et GBP/USD revient à doubler l'exposition au dollar."
+  },
+  {
+    "slug": "extension-de-fibonacci",
+    "term": "Extension de Fibonacci",
+    "category": "analyse-technique",
+    "shortDefinition": "Niveaux de prix projetés au-delà d'un mouvement pour fixer des objectifs.",
+    "definition": "Les niveaux courants sont 127,2 %, 161,8 % et 261,8 %. Ils servent de cibles de take profit.",
+    "example": "Objectif placé à l'extension 161,8 % du dernier mouvement."
+  },
+  {
+    "slug": "fader-contrer-le-mouvement",
+    "term": "Fader (contrer le mouvement)",
+    "category": "strategies",
+    "shortDefinition": "Trader à contre-courant d'un mouvement jugé excessif.",
+    "definition": "Faire du fade consiste à vendre un rallye ou acheter une chute en pariant sur un retour. Cette stratégie est risquée en cas de forte tendance.",
+    "example": "Vendre après une hausse parabolique."
+  },
+  {
+    "slug": "fair-value-gap-fvg",
+    "term": "Fair Value Gap (FVG)",
+    "category": "structures-de-marche",
+    "shortDefinition": "Écart de prix laissé par un mouvement rapide, entre trois bougies consécutives.",
+    "definition": "Le marché revient souvent combler ce déséquilibre, d'où son utilisation comme zone d'entrée.",
+    "example": "Un trou entre le plus haut de la première bougie et le plus bas de la troisième."
+  },
+  {
+    "slug": "fanion-pennant",
+    "term": "Fanion (pennant)",
+    "category": "analyse-technique",
+    "shortDefinition": "Petite figure triangulaire de continuation après un mouvement fort.",
+    "definition": "Après une impulsion, le prix consolide dans un triangle étroit avant de reprendre dans la même direction.",
+    "example": "Hausse rapide, fanion, puis nouvelle hausse."
+  },
+  {
+    "slug": "fatigue-decisionnelle",
+    "term": "Fatigue décisionnelle",
+    "category": "psychologie",
+    "shortDefinition": "Baisse de la qualité des décisions après trop d'efforts mentaux.",
+    "definition": "Après de longues heures devant les écrans, le trader devient impulsif ou excessivement prudent. Les pauses et les routines aident.",
+    "example": "Prendre de mauvais trades en fin de journée."
+  },
+  {
+    "slug": "faux-signal-fakeout",
+    "term": "Faux signal (fakeout)",
+    "category": "analyse-technique",
+    "shortDefinition": "Cassure qui échoue et revient rapidement dans sa zone.",
+    "definition": "Il piège les traders entrés trop tôt. Attendre une clôture ou un retest limite ce risque.",
+    "example": "Le prix casse une résistance puis la réintègre dans l'heure."
+  },
+  {
+    "slug": "fermeture-du-week-end",
+    "term": "Fermeture du week-end",
+    "category": "structures-de-marche",
+    "shortDefinition": "Période où les marchés traditionnels sont fermés.",
+    "definition": "Le risque de gap à la réouverture est présent pour les positions maintenues.",
+    "example": "Une annonce survenue le samedi crée un gap le lundi."
+  },
+  {
+    "slug": "fiber",
+    "term": "Fiber",
+    "category": "forex",
+    "shortDefinition": "Surnom de la paire EUR/USD.",
+    "definition": "Le terme est utilisé par les cambistes pour désigner l'euro-dollar.",
+    "example": "« Le fiber progresse avant la BCE. »"
+  },
+  {
+    "slug": "figure-abcd",
+    "term": "Figure ABCD",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure harmonique en quatre points mesurant des mouvements symétriques.",
+    "definition": "Le trajet AB est suivi d'un repli BC puis d'un mouvement CD de longueur comparable à AB. Le point D sert de zone de retournement.",
+    "example": "Un mouvement de 100 pips, un repli, puis un mouvement de 100 pips."
+  },
+  {
+    "slug": "figure-en-elargissement-broadening",
+    "term": "Figure en élargissement (broadening)",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure où l'amplitude des mouvements augmente avec des sommets plus hauts et des creux plus bas.",
+    "definition": "Elle reflète un marché instable et émotionnel, souvent associé à des fins de tendance.",
+    "example": "Un graphique dont les oscillations s'amplifient."
+  },
+  {
+    "slug": "figure-harmonique",
+    "term": "Figure harmonique",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure géométrique fondée sur des ratios de Fibonacci précis.",
+    "definition": "Gartley, Bat, Crab ou Butterfly donnent des zones de retournement potentielles. Elles exigent de la rigueur dans les mesures.",
+    "example": "Zone de retournement identifiée à 78,6 % d'un mouvement."
+  },
+  {
+    "slug": "fill-or-kill-fok",
+    "term": "Fill or Kill (FOK)",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre exécuté immédiatement et intégralement, sinon annulé.",
+    "definition": "Aucune exécution partielle n'est acceptée ; l'ordre disparaît s'il ne peut être rempli à l'instant.",
+    "example": "Un ordre FOK de 5 millions refusé faute de liquidité."
+  },
+  {
+    "slug": "finance-comportementale",
+    "term": "Finance comportementale",
+    "category": "psychologie",
+    "shortDefinition": "Étude de l'influence des biais psychologiques sur les décisions financières.",
+    "definition": "Elle explique pourquoi les marchés ne sont pas toujours rationnels et pourquoi les traders commettent des erreurs prévisibles.",
+    "example": "Les bulles s'expliquent en partie par l'euphorie collective."
+  },
+  {
+    "slug": "fiscalite-du-trading",
+    "term": "Fiscalité du trading",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Règles d'imposition applicables aux gains issus du trading.",
+    "definition": "Elles varient selon le pays, le type d'instrument et le statut du trader. Il est conseillé de consulter un professionnel.",
+    "example": "Les plus-values sont imposées selon un barème dépendant du pays de résidence."
+  },
+  {
+    "slug": "fixed-ratio",
+    "term": "Fixed ratio",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Méthode d'augmentation de la taille de position selon des paliers de profits.",
+    "definition": "On ajoute un lot uniquement après avoir gagné un montant défini, ce qui fait croître la taille de façon progressive.",
+    "example": "Un lot supplémentaire tous les 5 000 $ de bénéfice."
+  },
+  {
+    "slug": "fixing",
+    "term": "Fixing",
+    "category": "forex",
+    "shortDefinition": "Prix de référence calculé à un moment précis de la journée.",
+    "definition": "Il sert aux règlements de grands contrats et provoque parfois de la volatilité autour de l'heure.",
+    "example": "Le fixing de Londres à 16 h."
+  },
+  {
+    "slug": "fixing-d-ouverture-cloture",
+    "term": "Fixing d'ouverture / clôture",
+    "category": "structures-de-marche",
+    "shortDefinition": "Prix de référence déterminé à l'ouverture ou à la clôture d'un marché.",
+    "definition": "Il concentre souvent de gros volumes institutionnels.",
+    "example": "Les ordres au prix de clôture sont exécutés au fixing."
+  },
+  {
+    "slug": "flottant",
+    "term": "Flottant",
+    "category": "instruments",
+    "shortDefinition": "Part des actions d'une société disponibles à la négociation publique.",
+    "definition": "Un flottant faible rend le titre plus volatil.",
+    "example": "Une société dont 20 % des actions sont échangeables."
+  },
+  {
+    "slug": "flottement-dirige",
+    "term": "Flottement dirigé",
+    "category": "forex",
+    "shortDefinition": "Régime de change où la devise flotte mais avec interventions de la banque centrale.",
+    "definition": "La banque centrale intervient pour limiter les mouvements trop brusques.",
+    "example": "Une banque centrale vend des réserves pour freiner la chute de sa monnaie."
+  },
+  {
+    "slug": "flux-d-ordres-order-flow",
+    "term": "Flux d'ordres (order flow)",
+    "category": "analyse-technique",
+    "shortDefinition": "Analyse des ordres réellement exécutés pour comprendre la pression acheteuse et vendeuse.",
+    "definition": "Il s'appuie sur le volume, le delta et le carnet d'ordres pour lire l'intention des acteurs.",
+    "example": "Un fort volume acheteur agressif sur un niveau clé."
+  },
+  {
+    "slug": "flux-de-capitaux",
+    "term": "Flux de capitaux",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Mouvements d'argent entre pays ou classes d'actifs.",
+    "definition": "Les entrées de capitaux soutiennent la devise, les sorties l'affaiblissent.",
+    "example": "Des investisseurs étrangers achètent massivement des obligations d'un pays."
+  },
+  {
+    "slug": "fomc",
+    "term": "FOMC",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Comité de politique monétaire de la Fed qui décide des taux américains.",
+    "definition": "Ses réunions, ses communiqués et ses projections sont parmi les événements les plus suivis par les marchés.",
+    "example": "Une décision du FOMC à 20 h (heure de Paris)."
+  },
+  {
+    "slug": "fonds-commun-de-placement",
+    "term": "Fonds commun de placement",
+    "category": "instruments",
+    "shortDefinition": "Fonds collectif géré par un professionnel.",
+    "definition": "Les investisseurs mettent en commun leurs capitaux pour accéder à un portefeuille diversifié.",
+    "example": "Investir dans un FCP actions européennes."
+  },
+  {
+    "slug": "fonds-souverain",
+    "term": "Fonds souverain",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Fonds d'investissement détenu par un État.",
+    "definition": "Il investit souvent les excédents issus des matières premières ou du commerce.",
+    "example": "Un fonds souverain acquiert des participations dans des entreprises étrangères."
+  },
+  {
+    "slug": "force-relative-des-devises",
+    "term": "Force relative des devises",
+    "category": "forex",
+    "shortDefinition": "Mesure de la vigueur d'une devise par rapport aux autres.",
+    "definition": "Elle aide à choisir la paire à trader en associant une devise forte à une devise faible.",
+    "example": "L'euro est fort, le yen faible : privilégier EUR/JPY à l'achat."
+  },
+  {
+    "slug": "forex-vs-actions",
+    "term": "Forex vs actions",
+    "category": "forex",
+    "shortDefinition": "Comparaison entre le marché des changes et celui des actions.",
+    "definition": "Le forex est ouvert 24 h/24, très liquide et fortement lévérisé ; les actions ont des horaires fixes et reflètent les résultats d'entreprises.",
+    "example": "Un trader préfère le forex pour sa flexibilité horaire."
+  },
+  {
+    "slug": "fork",
+    "term": "Fork",
+    "category": "crypto",
+    "shortDefinition": "Divergence d'une blockchain créant deux versions.",
+    "definition": "Un fork peut être une mise à jour logicielle ou une scission aboutissant à une nouvelle cryptomonnaie.",
+    "example": "Bitcoin Cash est issu d'un fork de Bitcoin."
+  },
+  {
+    "slug": "forward-guidance",
+    "term": "Forward guidance",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Indications données par une banque centrale sur sa politique future.",
+    "definition": "Elle sert à orienter les anticipations des marchés et à réduire l'incertitude.",
+    "example": "La banque centrale annonce qu'elle maintiendra ses taux longtemps."
+  },
+  {
+    "slug": "forward-test",
+    "term": "Forward test",
+    "category": "trading-algo",
+    "shortDefinition": "Test d'une stratégie en temps réel sur de nouvelles données.",
+    "definition": "Il valide les résultats du backtest dans des conditions réelles sans risquer trop de capital.",
+    "example": "Faire tourner un robot en démo pendant deux mois."
+  },
+  {
+    "slug": "fourchette-bid-ask",
+    "term": "Fourchette (bid-ask)",
+    "category": "ordres-execution",
+    "shortDefinition": "Écart entre le meilleur prix d'achat et le meilleur prix de vente.",
+    "definition": "Elle représente le coût immédiat de toute transaction.",
+    "example": "Bid 100,00 / ask 100,05 : fourchette de 0,05."
+  },
+  {
+    "slug": "fournisseur-de-liquidite",
+    "term": "Fournisseur de liquidité",
+    "category": "instruments",
+    "shortDefinition": "Établissement qui propose en continu des prix d'achat et de vente.",
+    "definition": "Banques et teneurs de marché permettent à chacun de trader sans attendre une contrepartie.",
+    "example": "Un courtier se connecte à plusieurs fournisseurs de liquidité."
+  },
+  {
+    "slug": "fractales",
+    "term": "Fractales",
+    "category": "analyse-technique",
+    "shortDefinition": "Figures de cinq bougies repérant des sommets et creux locaux.",
+    "definition": "Elles servent à identifier des niveaux de support, résistance et des retournements potentiels.",
+    "example": "Une bougie avec deux bougies plus basses de chaque côté forme une fractale haussière."
+  },
+  {
+    "slug": "fractionnement-d-actions-split",
+    "term": "Fractionnement d'actions (split)",
+    "category": "instruments",
+    "shortDefinition": "Division d'une action en plusieurs titres sans changer la valeur totale.",
+    "definition": "Le prix par action baisse et le nombre d'actions augmente proportionnellement.",
+    "example": "Un split 2 pour 1 fait passer une action de 200 $ à 100 $."
+  },
+  {
+    "slug": "frais-de-challenge",
+    "term": "Frais de challenge",
+    "category": "strategies",
+    "shortDefinition": "Coût d'inscription à une évaluation de trading.",
+    "definition": "Il est payé pour tenter d'obtenir un compte financé. Parfois remboursé en cas de succès.",
+    "example": "Un challenge à 150 $ pour un compte de 10 000 $."
+  },
+  {
+    "slug": "frais-de-gestion-expense-ratio",
+    "term": "Frais de gestion (expense ratio)",
+    "category": "instruments",
+    "shortDefinition": "Coût annuel d'un fonds exprimé en pourcentage des actifs.",
+    "definition": "Il réduit directement la performance. Les ETF ont généralement des frais plus faibles.",
+    "example": "Un ETF à 0,20 % de frais par an."
+  },
+  {
+    "slug": "frequence-de-payout",
+    "term": "Fréquence de payout",
+    "category": "strategies",
+    "shortDefinition": "Rythme auquel un trader financé peut retirer ses gains.",
+    "definition": "Selon la société, les retraits sont possibles chaque semaine, chaque quinzaine ou chaque mois.",
+    "example": "Un retrait possible tous les 14 jours."
+  },
+  {
+    "slug": "front-running",
+    "term": "Front running",
+    "category": "structures-de-marche",
+    "shortDefinition": "Pratique illégale consistant à trader avant un gros ordre client connu.",
+    "definition": "Elle exploite une information privilégiée et est interdite par les régulateurs.",
+    "example": "Un courtier achète pour son compte avant d'exécuter un gros ordre client."
+  },
+  {
+    "slug": "fud",
+    "term": "FUD",
+    "category": "psychologie",
+    "shortDefinition": "Peur, incertitude et doute répandus pour influencer les prix.",
+    "definition": "Dans le monde crypto, le FUD désigne les rumeurs ou informations alarmistes qui provoquent des ventes.",
+    "example": "Une rumeur de piratage provoque des ventes massives."
+  },
+  {
+    "slug": "fuite-vers-la-qualite",
+    "term": "Fuite vers la qualité",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Mouvement de capitaux vers des actifs jugés sûrs en période de stress.",
+    "definition": "Les investisseurs vendent les actifs risqués pour acheter des obligations d'État, de l'or ou des devises refuges.",
+    "example": "Pendant une crise, les capitaux vont vers les bons du Trésor."
+  },
+  {
+    "slug": "funded-trader-finance",
+    "term": "Funded (trader financé)",
+    "category": "strategies",
+    "shortDefinition": "Trader utilisant le capital d'une société après évaluation.",
+    "definition": "Il garde une part des bénéfices et respecte des règles de risque strictes.",
+    "example": "Un trader financé touche 80 % des profits."
+  },
+  {
+    "slug": "future-sur-le-vix",
+    "term": "Future sur le VIX",
+    "category": "instruments",
+    "shortDefinition": "Contrat à terme sur l'indice de volatilité VIX.",
+    "definition": "Il permet de se positionner sur la volatilité attendue du marché américain.",
+    "example": "Acheter un future VIX avant une période d'incertitude."
+  },
+  {
+    "slug": "futures-contrats-a-terme",
+    "term": "Futures (contrats à terme)",
+    "category": "instruments",
+    "shortDefinition": "Contrats standardisés d'achat ou vente d'un actif à une date future.",
+    "definition": "Ils sont négociés en bourse et utilisés pour spéculer ou se couvrir.",
+    "example": "Un future sur le pétrole à échéance de trois mois."
+  },
+  {
+    "slug": "gain-moyen-perte-moyenne",
+    "term": "Gain moyen / perte moyenne",
+    "category": "performance",
+    "shortDefinition": "Moyenne des gains et des pertes par trade.",
+    "definition": "Leur rapport, combiné au taux de réussite, détermine la rentabilité d'une stratégie.",
+    "example": "Gain moyen de 150 $, perte moyenne de 100 $ : ratio de 1,5."
+  },
+  {
+    "slug": "gap",
+    "term": "Gap",
+    "category": "analyse-technique",
+    "shortDefinition": "Écart de prix entre la clôture d'une période et l'ouverture suivante.",
+    "definition": "Il survient après une annonce ou un week-end. Certains gaps sont comblés rapidement, d'autres marquent le début d'une tendance.",
+    "example": "Le prix ouvre 40 pips au-dessus de la clôture de vendredi."
+  },
+  {
+    "slug": "gap-d-epuisement-exhaustion",
+    "term": "Gap d'épuisement (exhaustion)",
+    "category": "analyse-technique",
+    "shortDefinition": "Gap apparaissant en fin de tendance, suivi d'un retournement.",
+    "definition": "Il traduit un dernier élan avant l'essoufflement.",
+    "example": "Un gap haussier après une longue hausse, puis un retournement."
+  },
+  {
+    "slug": "gap-de-continuation-runaway",
+    "term": "Gap de continuation (runaway)",
+    "category": "analyse-technique",
+    "shortDefinition": "Gap apparaissant au milieu d'une tendance et la confirmant.",
+    "definition": "Il montre la force du mouvement en cours.",
+    "example": "Un gap baissier au cœur d'une baisse soutenue."
+  },
+  {
+    "slug": "gap-de-rupture-breakaway",
+    "term": "Gap de rupture (breakaway)",
+    "category": "analyse-technique",
+    "shortDefinition": "Gap marquant la sortie d'une consolidation.",
+    "definition": "Il signale souvent le début d'une nouvelle tendance, surtout avec un fort volume.",
+    "example": "Un gap au-dessus d'un range de plusieurs semaines."
+  },
+  {
+    "slug": "gartley",
+    "term": "Gartley",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure harmonique à cinq points avec des retracements précis.",
+    "definition": "Elle est considérée comme un schéma de retournement quand les ratios de Fibonacci sont respectés.",
+    "example": "Le point D se situe à 78,6 % du mouvement XA."
+  },
+  {
+    "slug": "gas-frais-de-transaction",
+    "term": "Gas (frais de transaction)",
+    "category": "crypto",
+    "shortDefinition": "Frais payés pour exécuter une transaction sur une blockchain.",
+    "definition": "Ils rémunèrent les validateurs et varient selon la congestion du réseau.",
+    "example": "Un échange coûte 4 $ de gas en période calme."
+  },
+  {
+    "slug": "gas-limit",
+    "term": "Gas limit",
+    "category": "crypto",
+    "shortDefinition": "Quantité maximale de gas qu'on accepte de dépenser pour une transaction.",
+    "definition": "Il évite de payer plus que prévu en cas d'erreur de contrat.",
+    "example": "Définir un gas limit de 21 000 pour un simple transfert."
+  },
+  {
+    "slug": "gestion-de-position",
+    "term": "Gestion de position",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Ensemble des décisions prises après l'entrée dans un trade.",
+    "definition": "Elle concerne le déplacement du stop, les sorties partielles et l'ajout éventuel de positions.",
+    "example": "Déplacer le stop à l'équilibre après 1 R de gain."
+  },
+  {
+    "slug": "gestion-du-risque",
+    "term": "Gestion du risque",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Ensemble des règles visant à limiter les pertes et protéger le capital.",
+    "definition": "Elle inclut la taille de position, les stops et les limites de perte. C'est la clé de la longévité d'un trader.",
+    "example": "Ne jamais risquer plus de 1 % par trade."
+  },
+  {
+    "slug": "gestion-du-risque-en-challenge",
+    "term": "Gestion du risque en challenge",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Adaptation du risque aux règles de drawdown d'une évaluation.",
+    "definition": "Il faut rester bien en deçà des limites pour ne pas échouer sur une série de pertes.",
+    "example": "Risquer 0,5 % par trade au lieu de 1 %."
+  },
+  {
+    "slug": "gestion-du-stress",
+    "term": "Gestion du stress",
+    "category": "psychologie",
+    "shortDefinition": "Techniques pour garder son calme face aux pertes et à la volatilité.",
+    "definition": "Respiration, pauses, routines et réduction de la taille de position aident à décider sereinement.",
+    "example": "Faire une pause après deux pertes consécutives."
+  },
+  {
+    "slug": "graphique-footprint",
+    "term": "Graphique footprint",
+    "category": "analyse-technique",
+    "shortDefinition": "Graphique affichant, pour chaque bougie, les volumes échangés à chaque prix.",
+    "definition": "Il montre où se concentrent les acheteurs et vendeurs agressifs.",
+    "example": "Une bougie avec un fort volume acheteur au sommet."
+  },
+  {
+    "slug": "graphique-renko",
+    "term": "Graphique Renko",
+    "category": "analyse-technique",
+    "shortDefinition": "Graphique en briques fondé sur le prix, sans notion de temps.",
+    "definition": "Une nouvelle brique apparaît seulement quand le prix bouge d'une valeur fixe, ce qui filtre le bruit.",
+    "example": "Briques de 10 pips."
+  },
+  {
+    "slug": "gratification-immediate",
+    "term": "Gratification immédiate",
+    "category": "psychologie",
+    "shortDefinition": "Recherche de résultats rapides au détriment des objectifs long terme.",
+    "definition": "Elle pousse à l'overtrading et à abandonner une stratégie trop tôt.",
+    "example": "Chercher à doubler son compte en un mois."
+  },
+  {
+    "slug": "greenwashing",
+    "term": "Greenwashing",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Mise en avant trompeuse de la responsabilité environnementale d'une entreprise.",
+    "definition": "Il peut fausser le jugement des investisseurs soucieux de critères ESG.",
+    "example": "Un produit étiqueté « vert » sans réelle démarche écologique."
+  },
+  {
+    "slug": "grid-trading",
+    "term": "Grid trading",
+    "category": "strategies",
+    "shortDefinition": "Stratégie plaçant des ordres à intervalles réguliers autour d'un prix.",
+    "definition": "Elle profite des oscillations mais peut accumuler de lourdes pertes en cas de forte tendance.",
+    "example": "Un ordre d'achat tous les 20 pips sous le prix."
+  },
+  {
+    "slug": "gtc-good-till-cancelled",
+    "term": "GTC (Good Till Cancelled)",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre valable jusqu'à son annulation.",
+    "definition": "Il reste actif jusqu'à exécution ou annulation manuelle, sauf limites imposées par le courtier.",
+    "example": "Un ordre limite GTC placé sur un support."
+  },
+  {
+    "slug": "guerre-commerciale",
+    "term": "Guerre commerciale",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Conflit économique où les pays imposent des droits de douane mutuels.",
+    "definition": "Elle freine les échanges, pèse sur la croissance et provoque de la volatilité.",
+    "example": "Deux puissances relèvent leurs droits de douane."
+  },
+  {
+    "slug": "guidance-previsions-d-entreprise",
+    "term": "Guidance (prévisions d'entreprise)",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Prévisions de résultats communiquées par une entreprise.",
+    "definition": "Le marché réagit autant à la guidance qu'aux résultats passés.",
+    "example": "Une société relève ses prévisions de chiffre d'affaires."
+  },
+  {
+    "slug": "gwei",
+    "term": "Gwei",
+    "category": "crypto",
+    "shortDefinition": "Sous-unité de l'ether utilisée pour exprimer les frais de gas.",
+    "definition": "Un gwei vaut un milliardième d'ether.",
+    "example": "Des frais à 30 gwei."
+  },
+  {
+    "slug": "habillage-de-bilan-window-dressing",
+    "term": "Habillage de bilan (window dressing)",
+    "category": "structures-de-marche",
+    "shortDefinition": "Ajustement de portefeuilles en fin de période pour embellir les comptes.",
+    "definition": "Les gérants achètent les gagnants et vendent les perdants avant la clôture trimestrielle.",
+    "example": "Des mouvements inhabituels en fin de trimestre."
+  },
+  {
+    "slug": "handle",
+    "term": "Handle",
+    "category": "forex",
+    "shortDefinition": "Chiffres entiers d'un cours de change.",
+    "definition": "Équivalent de la big figure dans le jargon des cambistes.",
+    "example": "Le handle est 1,08."
+  },
+  {
+    "slug": "harami",
+    "term": "Harami",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de deux bougies où la seconde est contenue dans le corps de la première.",
+    "definition": "Elle signale un ralentissement de l'élan et un possible retournement.",
+    "example": "Petite bougie verte à l'intérieur d'une grande bougie rouge."
+  },
+  {
+    "slug": "hash",
+    "term": "Hash",
+    "category": "crypto",
+    "shortDefinition": "Empreinte numérique unique issue d'une fonction cryptographique.",
+    "definition": "Les hashs relient les blocs entre eux et garantissent l'intégrité des données.",
+    "example": "Chaque bloc contient le hash du précédent."
+  },
+  {
+    "slug": "hashrate",
+    "term": "Hashrate",
+    "category": "crypto",
+    "shortDefinition": "Puissance de calcul du réseau de minage.",
+    "definition": "Plus il est élevé, plus le réseau est sécurisé.",
+    "example": "Le hashrate du Bitcoin atteint un record."
+  },
+  {
+    "slug": "haussier-bullish",
+    "term": "Haussier (bullish)",
+    "category": "structures-de-marche",
+    "shortDefinition": "Se dit d'un marché ou d'un trader anticipant une hausse des prix.",
+    "definition": "Un marché haussier enchaîne des sommets et creux plus hauts.",
+    "example": "Le prix forme des creux de plus en plus hauts."
+  },
+  {
+    "slug": "hedge-fund",
+    "term": "Hedge fund",
+    "category": "instruments",
+    "shortDefinition": "Fonds spéculatif utilisant des stratégies variées pour générer des gains.",
+    "definition": "Il peut recourir au levier, aux ventes à découvert et aux dérivés.",
+    "example": "Un hedge fund parie sur la baisse d'une action."
+  },
+  {
+    "slug": "heikin-ashi",
+    "term": "Heikin-Ashi",
+    "category": "analyse-technique",
+    "shortDefinition": "Type de bougies lissées facilitant la lecture de la tendance.",
+    "definition": "Elles sont calculées à partir de moyennes, ce qui réduit le bruit.",
+    "example": "Une série de bougies vertes sans mèche basse indique une forte tendance."
+  },
+  {
+    "slug": "high-water-mark",
+    "term": "High water mark",
+    "category": "performance",
+    "shortDefinition": "Plus haut historique de la valeur d'un fonds servant de base aux commissions.",
+    "definition": "Le gérant ne touche une commission de performance que s'il dépasse ce niveau.",
+    "example": "Après une perte, le fonds doit retrouver son précédent sommet avant toute commission."
+  },
+  {
+    "slug": "hodl",
+    "term": "HODL",
+    "category": "crypto",
+    "shortDefinition": "Conserver ses cryptos sur le long terme malgré la volatilité.",
+    "definition": "Né d'une faute de frappe de « hold », il symbolise la stratégie du détenteur patient.",
+    "example": "Garder son Bitcoin pendant plusieurs années."
+  },
+  {
+    "slug": "horizon-d-investissement",
+    "term": "Horizon d'investissement",
+    "category": "strategies",
+    "shortDefinition": "Durée pendant laquelle on prévoit de conserver une position.",
+    "definition": "Il détermine le type de stratégie, les actifs et le niveau de risque acceptable.",
+    "example": "Un horizon de dix ans pour un plan retraite."
+  },
+  {
+    "slug": "iceberg-ordre",
+    "term": "Iceberg (ordre)",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre dont seule une petite partie est visible dans le carnet.",
+    "definition": "Il permet de cacher la taille réelle d'un gros ordre pour limiter l'impact sur le prix.",
+    "example": "Un ordre de 10 000 lots affiché par tranches de 100."
+  },
+  {
+    "slug": "ichimoku",
+    "term": "Ichimoku",
+    "category": "analyse-technique",
+    "shortDefinition": "Système d'indicateurs japonais fournissant tendance, support, résistance et momentum.",
+    "definition": "Le nuage (Kumo) indique les zones clés ; le prix au-dessus du nuage est haussier, en dessous baissier.",
+    "example": "Le prix repasse au-dessus du nuage : signal haussier."
+  },
+  {
+    "slug": "in-the-money-itm",
+    "term": "In the money (ITM)",
+    "category": "instruments",
+    "shortDefinition": "Option ayant une valeur intrinsèque positive.",
+    "definition": "Un call est ITM si le prix du sous-jacent dépasse le prix d'exercice.",
+    "example": "Un call à 100 est ITM quand l'action cote 110."
+  },
+  {
+    "slug": "indicateur-avance",
+    "term": "Indicateur avancé",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Donnée économique qui anticipe l'évolution future de l'activité.",
+    "definition": "Les commandes ou la confiance des entreprises en sont des exemples.",
+    "example": "Les indices PMI annoncent le ralentissement avant le PIB."
+  },
+  {
+    "slug": "indicateur-retarde",
+    "term": "Indicateur retardé",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Donnée qui confirme une tendance déjà installée.",
+    "definition": "Le chômage ou l'inflation sont souvent des indicateurs retardés.",
+    "example": "Le taux de chômage monte après la récession."
+  },
+  {
+    "slug": "indice-boursier",
+    "term": "Indice boursier",
+    "category": "instruments",
+    "shortDefinition": "Panier de valeurs représentant un marché ou un secteur.",
+    "definition": "Il permet de suivre la performance globale d'un marché.",
+    "example": "Le S&P 500 regroupe 500 grandes entreprises américaines."
+  },
+  {
+    "slug": "indice-de-volatilite-vix",
+    "term": "Indice de volatilité (VIX)",
+    "category": "instruments",
+    "shortDefinition": "Indice mesurant la volatilité attendue du S&P 500.",
+    "definition": "Surnommé indice de la peur, il monte quand les marchés baissent.",
+    "example": "Le VIX dépasse 30 en période de panique."
+  },
+  {
+    "slug": "indice-du-dollar-dxy",
+    "term": "Indice du dollar (DXY)",
+    "category": "forex",
+    "shortDefinition": "Indice mesurant la valeur du dollar face à un panier de devises.",
+    "definition": "Il est dominé par l'euro et sert de baromètre de la force du dollar.",
+    "example": "Le DXY passe de 102 à 105."
+  },
+  {
+    "slug": "inflation",
+    "term": "Inflation",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Hausse générale et durable des prix.",
+    "definition": "Elle réduit le pouvoir d'achat et pousse les banques centrales à relever leurs taux.",
+    "example": "L'inflation annuelle atteint 5 %."
+  },
+  {
+    "slug": "interets-composes",
+    "term": "Intérêts composés",
+    "category": "performance",
+    "shortDefinition": "Mécanisme où les gains génèrent eux-mêmes des gains.",
+    "definition": "Sur le long terme, la capitalisation accélère la croissance du capital.",
+    "example": "10 % par an pendant 10 ans multiplient le capital par environ 2,6."
+  },
+  {
+    "slug": "intraday",
+    "term": "Intraday",
+    "category": "strategies",
+    "shortDefinition": "Qui se déroule au sein d'une même journée de bourse.",
+    "definition": "Le trading intraday évite le risque de nuit.",
+    "example": "Un trader intraday clôture tout avant la fermeture."
+  },
+  {
+    "slug": "investissement-actif",
+    "term": "Investissement actif",
+    "category": "strategies",
+    "shortDefinition": "Stratégie cherchant à surperformer le marché.",
+    "definition": "Elle exige une sélection de titres et du timing, avec des frais plus élevés.",
+    "example": "Un gérant choisit les actions qu'il juge sous-évaluées."
+  },
+  {
+    "slug": "investissement-passif",
+    "term": "Investissement passif",
+    "category": "strategies",
+    "shortDefinition": "Stratégie qui réplique un indice au lieu d'essayer de le battre.",
+    "definition": "Elle repose sur des ETF à faibles frais.",
+    "example": "Acheter un ETF MSCI World."
+  },
+  {
+    "slug": "jeton-token",
+    "term": "Jeton (token)",
+    "category": "crypto",
+    "shortDefinition": "Actif numérique émis sur une blockchain existante.",
+    "definition": "Un jeton peut représenter un droit d'usage, un actif ou une part d'un projet.",
+    "example": "Un jeton de gouvernance donne le droit de voter."
+  },
+  {
+    "slug": "jour-ferie-bancaire",
+    "term": "Jour férié bancaire",
+    "category": "structures-de-marche",
+    "shortDefinition": "Journée où certains marchés sont fermés.",
+    "definition": "La liquidité diminue et les spreads peuvent s'élargir.",
+    "example": "Les bourses américaines sont fermées pour Thanksgiving."
+  },
+  {
+    "slug": "jpy-yen-japonais",
+    "term": "JPY (yen japonais)",
+    "category": "forex",
+    "shortDefinition": "Monnaie du Japon, considérée comme refuge.",
+    "definition": "Il se renforce souvent en période d'aversion au risque et est sensible à la politique de la Banque du Japon.",
+    "example": "Le yen progresse lors d'une crise des marchés."
+  },
+  {
+    "slug": "keltner-canaux",
+    "term": "Keltner (canaux)",
+    "category": "analyse-technique",
+    "shortDefinition": "Bandes basées sur une moyenne mobile et l'ATR.",
+    "definition": "Elles s'adaptent à la volatilité et servent à repérer les cassures ou excès.",
+    "example": "Le prix sort du canal : mouvement fort ou excessif."
+  },
+  {
+    "slug": "kicker",
+    "term": "Kicker",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de deux bougies avec un gap marqué dans le sens opposé.",
+    "definition": "Elle exprime un renversement brutal de sentiment, souvent après une annonce.",
+    "example": "Une bougie rouge suivie d'un gap haussier et d'une grande bougie verte."
+  },
+  {
+    "slug": "kyc",
+    "term": "KYC",
+    "category": "crypto",
+    "shortDefinition": "Procédure de vérification de l'identité d'un client.",
+    "definition": "Les plateformes réglementées l'exigent pour lutter contre le blanchiment.",
+    "example": "Envoyer une pièce d'identité pour ouvrir un compte."
+  },
+  {
+    "slug": "latence",
+    "term": "Latence",
+    "category": "trading-algo",
+    "shortDefinition": "Délai entre l'envoi et l'exécution d'un ordre.",
+    "definition": "Elle est cruciale pour les stratégies rapides.",
+    "example": "Une latence de 10 millisecondes."
+  },
+  {
+    "slug": "levier-maximal",
+    "term": "Levier maximal",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Plafond de levier autorisé par un courtier ou un régulateur.",
+    "definition": "Il varie selon la juridiction et le type d'instrument.",
+    "example": "Levier de 1:30 pour les clients de détail européens."
+  },
+  {
+    "slug": "lexique-du-trader",
+    "term": "Lexique du trader",
+    "category": "psychologie",
+    "shortDefinition": "Vocabulaire propre au trading.",
+    "definition": "Maîtriser le vocabulaire aide à comprendre les analyses et les plateformes.",
+    "example": "Pip, spread, levier, drawdown."
+  },
+  {
+    "slug": "limit-order",
+    "term": "Limit order",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre exécuté seulement à un prix donné ou meilleur.",
+    "definition": "Il garantit le prix mais pas l'exécution.",
+    "example": "Acheter à 100 au maximum."
+  },
+  {
+    "slug": "liquidation",
+    "term": "Liquidation",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Fermeture forcée des positions faute de marge suffisante.",
+    "definition": "Elle protège le courtier mais fait perdre le capital engagé.",
+    "example": "La marge tombe à 20 % : les positions sont fermées."
+  },
+  {
+    "slug": "liquidity-pool",
+    "term": "Liquidity pool",
+    "category": "crypto",
+    "shortDefinition": "Réserve de jetons verrouillés pour permettre les échanges décentralisés.",
+    "definition": "Les fournisseurs reçoivent une part des frais mais s'exposent à la perte impermanente.",
+    "example": "Déposer ETH et USDC dans un pool."
+  },
+  {
+    "slug": "long",
+    "term": "Long",
+    "category": "structures-de-marche",
+    "shortDefinition": "Position d'achat en anticipant une hausse.",
+    "definition": "Le gain augmente quand le prix monte.",
+    "example": "Être long sur l'or."
+  },
+  {
+    "slug": "lot",
+    "term": "Lot",
+    "category": "forex",
+    "shortDefinition": "Unité standardisée de taille de position.",
+    "definition": "Un lot standard vaut 100 000 unités de devise de base.",
+    "example": "Acheter 0,1 lot d'EUR/USD."
+  },
+  {
+    "slug": "macd",
+    "term": "MACD",
+    "category": "analyse-technique",
+    "shortDefinition": "Indicateur de tendance basé sur deux moyennes mobiles exponentielles.",
+    "definition": "Le croisement de la ligne MACD et de sa ligne de signal sert de signal d'achat ou de vente.",
+    "example": "La ligne MACD croise sa ligne de signal à la hausse."
+  },
+  {
+    "slug": "margin-call",
+    "term": "Margin call",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Alerte du courtier lorsque la marge devient insuffisante.",
+    "definition": "Il faut déposer des fonds ou réduire les positions.",
+    "example": "Le courtier demande un dépôt additionnel."
+  },
+  {
+    "slug": "market-maker",
+    "term": "Market maker",
+    "category": "instruments",
+    "shortDefinition": "Acteur fournissant en permanence des prix d'achat et de vente.",
+    "definition": "Il assure la liquidité et gagne sur le spread.",
+    "example": "Une banque cote en continu l'EUR/USD."
+  },
+  {
+    "slug": "market-order",
+    "term": "Market order",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre exécuté immédiatement au meilleur prix disponible.",
+    "definition": "Il garantit l'exécution mais pas le prix.",
+    "example": "Acheter au marché."
+  },
+  {
+    "slug": "martingale",
+    "term": "Martingale",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Stratégie doublant la mise après chaque perte.",
+    "definition": "Elle expose à des pertes catastrophiques en cas de longue série perdante.",
+    "example": "Doubler le lot après chaque perte."
+  },
+  {
+    "slug": "matieres-premieres",
+    "term": "Matières premières",
+    "category": "instruments",
+    "shortDefinition": "Ressources naturelles échangées sur les marchés.",
+    "definition": "Pétrole, or, blé et cuivre en sont des exemples.",
+    "example": "Trader le pétrole brut."
+  },
+  {
+    "slug": "meche-wick",
+    "term": "Mèche (wick)",
+    "category": "analyse-technique",
+    "shortDefinition": "Ligne fine d'une bougie représentant les extrêmes de prix.",
+    "definition": "Une longue mèche indique un rejet de prix.",
+    "example": "Mèche basse de 30 pips : rejet du bas."
+  },
+  {
+    "slug": "metatrader-mt4-mt5",
+    "term": "MetaTrader (MT4/MT5)",
+    "category": "trading-algo",
+    "shortDefinition": "Plateforme de trading très répandue, compatible avec les robots.",
+    "definition": "Elle propose graphiques, indicateurs et exécution automatisée.",
+    "example": "Installer un EA sur MT5."
+  },
+  {
+    "slug": "mining-minage",
+    "term": "Mining (minage)",
+    "category": "crypto",
+    "shortDefinition": "Validation de transactions en échange de récompenses.",
+    "definition": "Il consomme de l'énergie et sécurise les réseaux à preuve de travail.",
+    "example": "Un mineur valide un bloc Bitcoin."
+  },
+  {
+    "slug": "momentum",
+    "term": "Momentum",
+    "category": "analyse-technique",
+    "shortDefinition": "Vitesse et force d'un mouvement de prix.",
+    "definition": "Un momentum fort suggère que la tendance a de l'élan.",
+    "example": "Le prix accélère avec des bougies de plus en plus grandes."
+  },
+  {
+    "slug": "money-management",
+    "term": "Money management",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Gestion globale du capital et du risque.",
+    "definition": "Il définit la taille de position, le risque par trade et la répartition.",
+    "example": "Risquer 1 % par trade."
+  },
+  {
+    "slug": "monnaie-fiduciaire",
+    "term": "Monnaie fiduciaire",
+    "category": "forex",
+    "shortDefinition": "Monnaie dont la valeur repose sur la confiance et non sur un actif physique.",
+    "definition": "Dollar, euro et yen sont des monnaies fiduciaires.",
+    "example": "Le billet de 20 euros."
+  },
+  {
+    "slug": "moyenne-mobile-exponentielle-ema",
+    "term": "Moyenne mobile exponentielle (EMA)",
+    "category": "analyse-technique",
+    "shortDefinition": "Moyenne mobile donnant plus de poids aux prix récents.",
+    "definition": "Elle réagit plus vite que la moyenne simple.",
+    "example": "EMA 50 qui sert de support."
+  },
+  {
+    "slug": "multi-timeframe",
+    "term": "Multi-timeframe",
+    "category": "analyse-technique",
+    "shortDefinition": "Utilisation de plusieurs unités de temps pour une même analyse.",
+    "definition": "Elle confirme la tendance et affine l'entrée.",
+    "example": "Tendance en H4, entrée en M15."
+  },
+  {
+    "slug": "nasdaq-100",
+    "term": "Nasdaq 100",
+    "category": "instruments",
+    "shortDefinition": "Indice des 100 plus grandes valeurs non financières du Nasdaq.",
+    "definition": "Très orienté technologie, il est volatil.",
+    "example": "Le Nasdaq 100 gagne 2 %."
+  },
+  {
+    "slug": "neutre-marche",
+    "term": "Neutre (marché)",
+    "category": "structures-de-marche",
+    "shortDefinition": "Marché sans direction claire.",
+    "definition": "Les stratégies de range y sont souvent privilégiées.",
+    "example": "Le prix oscille sans tendance."
+  },
+  {
+    "slug": "news-trading",
+    "term": "News trading",
+    "category": "strategies",
+    "shortDefinition": "Stratégie fondée sur les annonces économiques.",
+    "definition": "Elle profite de la volatilité mais comporte du slippage et des spreads élargis.",
+    "example": "Trader l'annonce de l'inflation."
+  },
+  {
+    "slug": "nfp-non-farm-payrolls",
+    "term": "NFP (Non-Farm Payrolls)",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Rapport mensuel américain sur les créations d'emplois hors agriculture.",
+    "definition": "Il fait fortement bouger le dollar et les marchés.",
+    "example": "Le NFP dépasse les attentes : le dollar monte."
+  },
+  {
+    "slug": "nft",
+    "term": "NFT",
+    "category": "crypto",
+    "shortDefinition": "Jeton non fongible représentant un objet numérique unique.",
+    "definition": "Il certifie la propriété d'une œuvre ou d'un bien numérique.",
+    "example": "Un NFT d'œuvre d'art numérique."
+  },
+  {
+    "slug": "niveau-psychologique",
+    "term": "Niveau psychologique",
+    "category": "analyse-technique",
+    "shortDefinition": "Prix rond souvent surveillé par les traders.",
+    "definition": "Il agit souvent comme support ou résistance.",
+    "example": "1,1000 sur l'EUR/USD."
+  },
+  {
+    "slug": "nuage-kumo",
+    "term": "Nuage (Kumo)",
+    "category": "analyse-technique",
+    "shortDefinition": "Zone de l'Ichimoku délimitant supports et résistances.",
+    "definition": "Son épaisseur reflète la force du niveau.",
+    "example": "Le prix rebondit sur le haut du nuage."
+  },
+  {
+    "slug": "obligation",
+    "term": "Obligation",
+    "category": "instruments",
+    "shortDefinition": "Titre de dette versant des intérêts jusqu'à l'échéance.",
+    "definition": "Elle est émise par des États ou des entreprises.",
+    "example": "Une obligation à 5 % sur dix ans."
+  },
+  {
+    "slug": "oco-one-cancels-the-other",
+    "term": "OCO (One Cancels the Other)",
+    "category": "ordres-execution",
+    "shortDefinition": "Paire d'ordres où l'exécution de l'un annule l'autre.",
+    "definition": "Elle sert à placer un stop et un objectif simultanément.",
+    "example": "Take profit et stop liés."
+  },
+  {
+    "slug": "offre-et-demande",
+    "term": "Offre et demande",
+    "category": "structures-de-marche",
+    "shortDefinition": "Principe fondamental de formation des prix.",
+    "definition": "Quand la demande dépasse l'offre, les prix montent.",
+    "example": "Beaucoup d'acheteurs, peu de vendeurs : hausse."
+  },
+  {
+    "slug": "option",
+    "term": "Option",
+    "category": "instruments",
+    "shortDefinition": "Contrat donnant un droit d'achat ou de vente.",
+    "definition": "Elle peut servir à spéculer ou à se couvrir.",
+    "example": "Un call sur une action."
+  },
+  {
+    "slug": "order-block",
+    "term": "Order block",
+    "category": "structures-de-marche",
+    "shortDefinition": "Zone où de gros ordres institutionnels ont probablement été placés.",
+    "definition": "Elle sert de zone de réaction potentielle.",
+    "example": "Dernière bougie baissière avant une forte hausse."
+  },
+  {
+    "slug": "oscillateur",
+    "term": "Oscillateur",
+    "category": "analyse-technique",
+    "shortDefinition": "Indicateur évoluant entre des bornes pour repérer surachat et survente.",
+    "definition": "RSI et stochastique en sont des exemples.",
+    "example": "RSI sous 30."
+  },
+  {
+    "slug": "ouverture-de-seance",
+    "term": "Ouverture de séance",
+    "category": "structures-de-marche",
+    "shortDefinition": "Début de la période de négociation d'un marché.",
+    "definition": "Elle s'accompagne souvent de volatilité.",
+    "example": "Ouverture de Londres à 8 h."
+  },
+  {
+    "slug": "overbought-surachat",
+    "term": "Overbought (surachat)",
+    "category": "analyse-technique",
+    "shortDefinition": "Situation où un actif a monté trop vite.",
+    "definition": "Un retour en arrière est possible, mais une tendance forte peut rester en surachat.",
+    "example": "RSI au-dessus de 70."
+  },
+  {
+    "slug": "oversold-survente",
+    "term": "Oversold (survente)",
+    "category": "analyse-technique",
+    "shortDefinition": "Situation où un actif a baissé trop vite.",
+    "definition": "Un rebond est possible.",
+    "example": "RSI sous 30."
+  },
+  {
+    "slug": "paire-de-devises",
+    "term": "Paire de devises",
+    "category": "forex",
+    "shortDefinition": "Cotation d'une devise contre une autre.",
+    "definition": "La première est la devise de base, la seconde la devise de cotation.",
+    "example": "EUR/USD."
+  },
+  {
+    "slug": "paire-majeure",
+    "term": "Paire majeure",
+    "category": "forex",
+    "shortDefinition": "Paire impliquant le dollar et une grande devise.",
+    "definition": "Elles sont très liquides avec des spreads faibles.",
+    "example": "EUR/USD, USD/JPY, GBP/USD."
+  },
+  {
+    "slug": "pending-order",
+    "term": "Pending order",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre en attente d'exécution à un prix donné.",
+    "definition": "Il se déclenche uniquement si le prix atteint le niveau.",
+    "example": "Buy limit placé sous le marché."
+  },
+  {
+    "slug": "perte-impermanente",
+    "term": "Perte impermanente",
+    "category": "crypto",
+    "shortDefinition": "Perte potentielle subie par un fournisseur de liquidité.",
+    "definition": "Elle survient quand le prix des jetons du pool diverge.",
+    "example": "ETH monte fortement, le pool rééquilibre et le gain est inférieur à la simple détention."
+  },
+  {
+    "slug": "phishing",
+    "term": "Phishing",
+    "category": "crypto",
+    "shortDefinition": "Technique d'escroquerie imitant un site légitime pour voler des accès.",
+    "definition": "Il vise les clés privées et mots de passe.",
+    "example": "Un faux site de plateforme demande votre phrase secrète."
+  },
+  {
+    "slug": "pib",
+    "term": "PIB",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Valeur totale de la production d'un pays.",
+    "definition": "Sa croissance mesure la santé économique.",
+    "example": "Le PIB progresse de 0,5 %."
+  },
+  {
+    "slug": "pivot-points",
+    "term": "Pivot points",
+    "category": "analyse-technique",
+    "shortDefinition": "Niveaux calculés à partir du plus haut, du plus bas et de la clôture précédents.",
+    "definition": "Ils servent de supports et résistances intraday.",
+    "example": "Le pivot du jour sert de référence."
+  },
+  {
+    "slug": "pmi",
+    "term": "PMI",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Indice de confiance des directeurs d'achat.",
+    "definition": "Au-dessus de 50, l'activité progresse.",
+    "example": "PMI manufacturier à 52."
+  },
+  {
+    "slug": "position",
+    "term": "Position",
+    "category": "structures-de-marche",
+    "shortDefinition": "Engagement ouvert sur un actif.",
+    "definition": "Elle peut être longue ou courte.",
+    "example": "Une position longue sur l'or."
+  },
+  {
+    "slug": "pour-cent-de-risque",
+    "term": "Pour cent de risque",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Part du capital risquée sur un trade.",
+    "definition": "Elle détermine la taille de position.",
+    "example": "1 % de 10 000 $ = 100 $."
+  },
+  {
+    "slug": "price-action",
+    "term": "Price action",
+    "category": "analyse-technique",
+    "shortDefinition": "Analyse du prix nu sans indicateurs.",
+    "definition": "Elle repose sur les bougies, niveaux et structures.",
+    "example": "Entrer sur une bougie de rejet."
+  },
+  {
+    "slug": "proof-of-stake",
+    "term": "Proof of Stake",
+    "category": "crypto",
+    "shortDefinition": "Mécanisme de consensus où les validateurs bloquent des jetons.",
+    "definition": "Il consomme bien moins d'énergie que la preuve de travail.",
+    "example": "Ethereum fonctionne en PoS."
+  },
+  {
+    "slug": "proof-of-work",
+    "term": "Proof of Work",
+    "category": "crypto",
+    "shortDefinition": "Consensus reposant sur la puissance de calcul.",
+    "definition": "Il sécurise Bitcoin mais consomme beaucoup d'énergie.",
+    "example": "Les mineurs résolvent des calculs."
+  },
+  {
+    "slug": "pullback",
+    "term": "Pullback",
+    "category": "analyse-technique",
+    "shortDefinition": "Repli temporaire dans une tendance.",
+    "definition": "Il offre un point d'entrée dans le sens de la tendance.",
+    "example": "Retour sur la moyenne mobile avant de repartir."
+  },
+  {
+    "slug": "put-option-de-vente",
+    "term": "Put (option de vente)",
+    "category": "instruments",
+    "shortDefinition": "Option donnant le droit de vendre à un prix fixé.",
+    "definition": "Elle gagne en cas de baisse.",
+    "example": "Acheter un put pour se couvrir."
+  },
+  {
+    "slug": "quant",
+    "term": "Quant",
+    "category": "trading-algo",
+    "shortDefinition": "Approche fondée sur les mathématiques et les données.",
+    "definition": "Elle systématise la prise de décision.",
+    "example": "Un modèle statistique génère les signaux."
+  },
+  {
+    "slug": "quantitative-easing",
+    "term": "Quantitative easing",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Voir assouplissement quantitatif : rachat d'actifs par la banque centrale.",
+    "definition": "Il injecte des liquidités dans l'économie.",
+    "example": "La Fed rachète des obligations."
+  },
+  {
+    "slug": "quantitative-tightening",
+    "term": "Quantitative tightening",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Réduction du bilan d'une banque centrale.",
+    "definition": "Elle retire des liquidités du système.",
+    "example": "La banque centrale cesse de réinvestir ses obligations arrivées à échéance."
+  },
+  {
+    "slug": "quote",
+    "term": "Quote",
+    "category": "ordres-execution",
+    "shortDefinition": "Cotation affichée d'un actif.",
+    "definition": "Elle comprend le prix bid et ask.",
+    "example": "1,0850 / 1,0852."
+  },
+  {
+    "slug": "r-multiple",
+    "term": "R-multiple",
+    "category": "performance",
+    "shortDefinition": "Résultat d'un trade exprimé en multiple du risque initial.",
+    "definition": "Un gain de 2 R vaut deux fois le risque pris.",
+    "example": "Risque 50 $, gain 100 $ : 2 R."
+  },
+  {
+    "slug": "range",
+    "term": "Range",
+    "category": "analyse-technique",
+    "shortDefinition": "Zone de prix latérale entre support et résistance.",
+    "definition": "Les stratégies de range achètent bas et vendent haut.",
+    "example": "Le prix oscille entre 1,08 et 1,09."
+  },
+  {
+    "slug": "ratio-de-sortino",
+    "term": "Ratio de Sortino",
+    "category": "performance",
+    "shortDefinition": "Rendement ajusté du risque de baisse uniquement.",
+    "definition": "Il ne pénalise pas la volatilité haussière.",
+    "example": "Un Sortino de 2."
+  },
+  {
+    "slug": "recession",
+    "term": "Récession",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Contraction de l'activité économique sur plusieurs trimestres.",
+    "definition": "Elle entraîne hausse du chômage et baisse des profits.",
+    "example": "Deux trimestres consécutifs de PIB négatif."
+  },
+  {
+    "slug": "rejet-de-prix",
+    "term": "Rejet de prix",
+    "category": "analyse-technique",
+    "shortDefinition": "Réaction rapide du prix sur un niveau.",
+    "definition": "Il se manifeste par une longue mèche.",
+    "example": "Longue mèche haute sur une résistance."
+  },
+  {
+    "slug": "retest",
+    "term": "Retest",
+    "category": "analyse-technique",
+    "shortDefinition": "Retour du prix sur un niveau cassé.",
+    "definition": "Il confirme souvent l'inversion support/résistance.",
+    "example": "Résistance cassée devenue support."
+  },
+  {
+    "slug": "retournement",
+    "term": "Retournement",
+    "category": "analyse-technique",
+    "shortDefinition": "Changement de direction d'une tendance.",
+    "definition": "Il est confirmé par une cassure de structure.",
+    "example": "Une tendance haussière devient baissière."
+  },
+  {
+    "slug": "retracement-de-fibonacci",
+    "term": "Retracement de Fibonacci",
+    "category": "analyse-technique",
+    "shortDefinition": "Niveaux de repli potentiels d'un mouvement.",
+    "definition": "Les niveaux 38,2 %, 50 % et 61,8 % sont les plus suivis.",
+    "example": "Le prix rebondit à 61,8 %."
+  },
+  {
+    "slug": "risk-off",
+    "term": "Risk off",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Climat où les investisseurs évitent le risque.",
+    "definition": "Les valeurs refuges progressent.",
+    "example": "Le yen et l'or montent."
+  },
+  {
+    "slug": "risk-on",
+    "term": "Risk on",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Climat où les investisseurs recherchent du rendement.",
+    "definition": "Les actions et devises à haut rendement progressent.",
+    "example": "Le dollar australien monte."
+  },
+  {
+    "slug": "roll-over-swap",
+    "term": "Roll over (swap)",
+    "category": "forex",
+    "shortDefinition": "Frais ou crédit appliqué à une position conservée la nuit.",
+    "definition": "Il dépend du différentiel de taux.",
+    "example": "Un swap positif sur une position longue."
+  },
+  {
+    "slug": "rug-pull",
+    "term": "Rug pull",
+    "category": "crypto",
+    "shortDefinition": "Escroquerie où les créateurs d'un projet abandonnent et emportent les fonds.",
+    "definition": "Elle touche surtout les jetons récents.",
+    "example": "Le développeur retire toute la liquidité."
+  },
+  {
+    "slug": "sentiment-de-marche",
+    "term": "Sentiment de marché",
+    "category": "structures-de-marche",
+    "shortDefinition": "État d'esprit dominant des investisseurs.",
+    "definition": "Il peut être optimiste ou pessimiste et influence les prix.",
+    "example": "Un indicateur de peur et cupidité."
+  },
+  {
+    "slug": "session-asiatique",
+    "term": "Session asiatique",
+    "category": "structures-de-marche",
+    "shortDefinition": "Période d'activité des marchés d'Asie.",
+    "definition": "Elle est généralement moins volatile.",
+    "example": "Tokyo ouvre à 1 h (heure de Paris)."
+  },
+  {
+    "slug": "session-de-londres",
+    "term": "Session de Londres",
+    "category": "structures-de-marche",
+    "shortDefinition": "Période d'activité de la place londonienne.",
+    "definition": "Elle concentre un volume important de forex.",
+    "example": "Ouverture à 9 h."
+  },
+  {
+    "slug": "session-de-new-york",
+    "term": "Session de New York",
+    "category": "structures-de-marche",
+    "shortDefinition": "Période d'activité des marchés américains.",
+    "definition": "Elle se chevauche avec Londres, source de volatilité.",
+    "example": "15 h à 17 h (Paris) : chevauchement."
+  },
+  {
+    "slug": "short",
+    "term": "Short",
+    "category": "structures-de-marche",
+    "shortDefinition": "Position de vente en anticipant une baisse.",
+    "definition": "Le gain augmente quand le prix baisse.",
+    "example": "Être short sur l'euro."
+  },
+  {
+    "slug": "signal",
+    "term": "Signal",
+    "category": "trading-algo",
+    "shortDefinition": "Condition déclenchant une entrée ou sortie.",
+    "definition": "Il peut venir d'un indicateur ou d'un modèle.",
+    "example": "Croisement de moyennes."
+  },
+  {
+    "slug": "slippage-negatif",
+    "term": "Slippage négatif",
+    "category": "ordres-execution",
+    "shortDefinition": "Exécution à un prix moins favorable.",
+    "definition": "Il survient en cas de volatilité.",
+    "example": "Acheter à 1,0855 au lieu de 1,0850."
+  },
+  {
+    "slug": "smart-contract",
+    "term": "Smart contract",
+    "category": "crypto",
+    "shortDefinition": "Programme autonome exécuté sur une blockchain.",
+    "definition": "Il applique automatiquement des conditions prédéfinies.",
+    "example": "Un prêt débloqué après dépôt de garantie."
+  },
+  {
+    "slug": "smart-money",
+    "term": "Smart money",
+    "category": "structures-de-marche",
+    "shortDefinition": "Capitaux des acteurs institutionnels et expérimentés.",
+    "definition": "Les traders tentent de suivre leurs traces.",
+    "example": "Absorption de liquidité."
+  },
+  {
+    "slug": "stablecoin",
+    "term": "Stablecoin",
+    "category": "crypto",
+    "shortDefinition": "Cryptomonnaie indexée sur un actif stable comme le dollar.",
+    "definition": "Elle limite la volatilité.",
+    "example": "USDC et USDT."
+  },
+  {
+    "slug": "stochastique",
+    "term": "Stochastique",
+    "category": "analyse-technique",
+    "shortDefinition": "Oscillateur comparant la clôture à la fourchette de prix récente.",
+    "definition": "Il signale surachat et survente.",
+    "example": "Stochastique sous 20."
+  },
+  {
+    "slug": "stop-out",
+    "term": "Stop out",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Fermeture automatique des positions à un niveau de marge.",
+    "definition": "Il survient avant que le compte ne devienne négatif.",
+    "example": "Stop out à 50 % de marge."
+  },
+  {
+    "slug": "structure-de-marche",
+    "term": "Structure de marché",
+    "category": "structures-de-marche",
+    "shortDefinition": "Organisation des sommets et creux successifs.",
+    "definition": "Elle définit la tendance.",
+    "example": "Sommets plus hauts, creux plus hauts."
+  },
+  {
+    "slug": "surapprentissage-overfitting",
+    "term": "Surapprentissage (overfitting)",
+    "category": "trading-algo",
+    "shortDefinition": "Adaptation excessive d'un modèle aux données passées.",
+    "definition": "La stratégie échoue sur de nouvelles données.",
+    "example": "Un robot parfait en backtest mais perdant en réel."
+  },
+  {
+    "slug": "swap",
+    "term": "Swap",
+    "category": "forex",
+    "shortDefinition": "Frais ou revenu lié à la conservation d'une position la nuit.",
+    "definition": "Il dépend des taux d'intérêt des devises.",
+    "example": "Un swap négatif de 5 $ par nuit."
+  },
+  {
+    "slug": "taux-de-change",
+    "term": "Taux de change",
+    "category": "forex",
+    "shortDefinition": "Prix d'une devise exprimé dans une autre.",
+    "definition": "Il fluctue selon l'offre et la demande.",
+    "example": "1 EUR = 1,08 USD."
+  },
+  {
+    "slug": "taux-de-chomage",
+    "term": "Taux de chômage",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Part de la population active sans emploi.",
+    "definition": "Il reflète la santé économique.",
+    "example": "Chômage à 4 %."
+  },
+  {
+    "slug": "taux-directeur",
+    "term": "Taux directeur",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Taux fixé par la banque centrale influençant le coût du crédit.",
+    "definition": "Il influence les devises et les marchés.",
+    "example": "Le taux passe de 4 % à 4,25 %."
+  },
+  {
+    "slug": "teneur-de-marche",
+    "term": "Teneur de marché",
+    "category": "instruments",
+    "shortDefinition": "Autre nom du market maker.",
+    "definition": "Il fournit de la liquidité en continu.",
+    "example": "Une banque cote les devises."
+  },
+  {
+    "slug": "tete-et-epaules",
+    "term": "Tête et épaules",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de retournement en trois sommets.",
+    "definition": "La cassure de la ligne de cou confirme.",
+    "example": "Épaule gauche, tête, épaule droite."
+  },
+  {
+    "slug": "tick",
+    "term": "Tick",
+    "category": "ordres-execution",
+    "shortDefinition": "Plus petite variation de prix possible.",
+    "definition": "Il sert d'unité sur les futures.",
+    "example": "Un tick vaut 0,25 point."
+  },
+  {
+    "slug": "time-frame",
+    "term": "Time frame",
+    "category": "analyse-technique",
+    "shortDefinition": "Unité de temps d'une bougie.",
+    "definition": "Elle va de la minute au mois.",
+    "example": "H1."
+  },
+  {
+    "slug": "token-jeton",
+    "term": "Token (jeton)",
+    "category": "crypto",
+    "shortDefinition": "Actif numérique émis sur une blockchain.",
+    "definition": "Il peut avoir diverses fonctions.",
+    "example": "Un token de gouvernance."
+  },
+  {
+    "slug": "trading-algorithmique",
+    "term": "Trading algorithmique",
+    "category": "trading-algo",
+    "shortDefinition": "Trading automatisé par des règles programmées.",
+    "definition": "Il supprime les émotions.",
+    "example": "Un robot exécute les ordres."
+  },
+  {
+    "slug": "trading-de-range",
+    "term": "Trading de range",
+    "category": "strategies",
+    "shortDefinition": "Stratégie jouant les rebonds entre support et résistance.",
+    "definition": "Elle fonctionne en marché sans tendance.",
+    "example": "Acheter bas, vendre haut."
+  },
+  {
+    "slug": "trading-de-tendance",
+    "term": "Trading de tendance",
+    "category": "strategies",
+    "shortDefinition": "Stratégie suivant le sens dominant du marché.",
+    "definition": "Elle laisse courir les gains.",
+    "example": "Acheter les replis en tendance haussière."
+  },
+  {
+    "slug": "trading-plan",
+    "term": "Trading plan",
+    "category": "psychologie",
+    "shortDefinition": "Document décrivant stratégie, risque et règles.",
+    "definition": "Il évite les décisions impulsives.",
+    "example": "Plan écrit avec risque de 1 %."
+  },
+  {
+    "slug": "trailing-stop",
+    "term": "Trailing stop",
+    "category": "ordres-execution",
+    "shortDefinition": "Stop qui suit le prix à distance fixe.",
+    "definition": "Il protège les gains en tendance.",
+    "example": "Stop à 30 pips derrière le prix."
+  },
+  {
+    "slug": "triangle",
+    "term": "Triangle",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de consolidation à lignes convergentes.",
+    "definition": "La cassure indique souvent la suite.",
+    "example": "Triangle ascendant."
+  },
+  {
+    "slug": "triple-sommet",
+    "term": "Triple sommet",
+    "category": "analyse-technique",
+    "shortDefinition": "Figure de retournement avec trois sommets proches.",
+    "definition": "La cassure du creux intermédiaire confirme.",
+    "example": "Trois échecs sur 1,1000."
+  },
+  {
+    "slug": "tvl",
+    "term": "TVL",
+    "category": "crypto",
+    "shortDefinition": "Valeur totale verrouillée dans un protocole DeFi.",
+    "definition": "Elle mesure la confiance et l'adoption.",
+    "example": "TVL de 2 milliards de dollars."
+  },
+  {
+    "slug": "unite-de-temps-superieure",
+    "term": "Unité de temps supérieure",
+    "category": "analyse-technique",
+    "shortDefinition": "Période longue servant de contexte.",
+    "definition": "Elle donne la tendance de fond.",
+    "example": "Le daily."
+  },
+  {
+    "slug": "usd-dollar-americain",
+    "term": "USD (dollar américain)",
+    "category": "forex",
+    "shortDefinition": "Monnaie de réserve mondiale.",
+    "definition": "Il intervient dans la majorité des échanges.",
+    "example": "EUR/USD."
+  },
+  {
+    "slug": "utilisation-de-marge",
+    "term": "Utilisation de marge",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Part de la marge engagée par rapport à l'équité.",
+    "definition": "Elle indique le degré d'exposition.",
+    "example": "30 % de marge utilisée."
+  },
+  {
+    "slug": "vague-d-elliott",
+    "term": "Vague d'Elliott",
+    "category": "analyse-technique",
+    "shortDefinition": "Théorie décrivant le marché en cycles de cinq vagues.",
+    "definition": "Elle repose sur la psychologie collective.",
+    "example": "Cinq vagues impulsives suivies de trois correctives."
+  },
+  {
+    "slug": "valeur-refuge",
+    "term": "Valeur refuge",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Actif recherché en période d'incertitude.",
+    "definition": "L'or, le yen et le franc suisse en sont des exemples.",
+    "example": "L'or monte pendant une crise."
+  },
+  {
+    "slug": "var-value-at-risk",
+    "term": "VaR (Value at Risk)",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Perte maximale probable sur une période à un niveau de confiance donné.",
+    "definition": "Elle estime le risque de marché.",
+    "example": "VaR de 2 % à 95 % sur un jour."
+  },
+  {
+    "slug": "vente-a-decouvert",
+    "term": "Vente à découvert",
+    "category": "structures-de-marche",
+    "shortDefinition": "Vente d'un actif emprunté en anticipant sa baisse.",
+    "definition": "Le risque est théoriquement illimité.",
+    "example": "Vendre une action à 100, la racheter à 80."
+  },
+  {
+    "slug": "volatilite-implicite",
+    "term": "Volatilité implicite",
+    "category": "instruments",
+    "shortDefinition": "Volatilité anticipée par le marché des options.",
+    "definition": "Elle influence le prix des options.",
+    "example": "Volatilité implicite à 25 %."
+  },
+  {
+    "slug": "volume",
+    "term": "Volume",
+    "category": "analyse-technique",
+    "shortDefinition": "Quantité d'actifs échangés sur une période.",
+    "definition": "Un fort volume confirme un mouvement.",
+    "example": "Cassure avec volume."
+  },
+  {
+    "slug": "vwap",
+    "term": "VWAP",
+    "category": "analyse-technique",
+    "shortDefinition": "Prix moyen pondéré par les volumes.",
+    "definition": "Il sert de référence intraday.",
+    "example": "Prix au-dessus du VWAP : biais haussier."
+  },
+  {
+    "slug": "wallet-portefeuille-crypto",
+    "term": "Wallet (portefeuille crypto)",
+    "category": "crypto",
+    "shortDefinition": "Outil permettant de stocker et gérer ses cryptos.",
+    "definition": "Il peut être logiciel ou matériel.",
+    "example": "Un portefeuille matériel."
+  },
+  {
+    "slug": "whale-baleine",
+    "term": "Whale (baleine)",
+    "category": "crypto",
+    "shortDefinition": "Détenteur d'une très grande quantité de cryptos.",
+    "definition": "Ses mouvements peuvent influencer le marché.",
+    "example": "Une baleine transfère 10 000 BTC."
+  },
+  {
+    "slug": "whitepaper",
+    "term": "Whitepaper",
+    "category": "crypto",
+    "shortDefinition": "Document présentant un projet crypto.",
+    "definition": "Il détaille la technologie et les objectifs.",
+    "example": "Le whitepaper du Bitcoin."
+  },
+  {
+    "slug": "win-rate",
+    "term": "Win rate",
+    "category": "performance",
+    "shortDefinition": "Pourcentage de trades gagnants.",
+    "definition": "Il doit être lu avec le ratio gain/risque.",
+    "example": "Win rate de 55 %."
+  },
+  {
+    "slug": "wyckoff",
+    "term": "Wyckoff",
+    "category": "analyse-technique",
+    "shortDefinition": "Méthode décrivant les phases d'accumulation et de distribution.",
+    "definition": "Elle étudie volume et prix.",
+    "example": "Phase d'accumulation avec ressort."
+  },
+  {
+    "slug": "xau-usd",
+    "term": "XAU/USD",
+    "category": "instruments",
+    "shortDefinition": "Cotation de l'or contre le dollar.",
+    "definition": "L'once d'or est valorisée en dollars.",
+    "example": "XAU/USD à 2 350."
+  },
+  {
+    "slug": "xrp",
+    "term": "XRP",
+    "category": "crypto",
+    "shortDefinition": "Cryptomonnaie liée au réseau de paiement Ripple.",
+    "definition": "Elle est conçue pour des transferts rapides.",
+    "example": "Un transfert international en XRP."
+  },
+  {
+    "slug": "yen-carry-trade",
+    "term": "Yen carry trade",
+    "category": "strategies",
+    "shortDefinition": "Carry trade empruntant en yen.",
+    "definition": "Il est sensible aux retournements brutaux.",
+    "example": "Emprunter en yen pour acheter des actifs à rendement."
+  },
+  {
+    "slug": "yield-rendement",
+    "term": "Yield (rendement)",
+    "category": "performance",
+    "shortDefinition": "Revenu annuel d'un investissement exprimé en pourcentage.",
+    "definition": "Il peut provenir de dividendes ou d'intérêts.",
+    "example": "Rendement de 4 %."
+  },
+  {
+    "slug": "yield-farming",
+    "term": "Yield farming",
+    "category": "crypto",
+    "shortDefinition": "Pratique consistant à placer des cryptos pour obtenir des récompenses.",
+    "definition": "Les rendements peuvent être élevés mais risqués.",
+    "example": "Déposer des jetons dans un pool."
+  },
+  {
+    "slug": "zero-ligne-de-zero",
+    "term": "Zéro (ligne de zéro)",
+    "category": "analyse-technique",
+    "shortDefinition": "Niveau central de certains oscillateurs.",
+    "definition": "Son franchissement indique un changement de momentum.",
+    "example": "MACD passe au-dessus de zéro."
+  },
+  {
+    "slug": "zone-d-offre",
+    "term": "Zone d'offre",
+    "category": "structures-de-marche",
+    "shortDefinition": "Zone où la pression vendeuse a été forte.",
+    "definition": "Elle peut provoquer de nouvelles baisses.",
+    "example": "Zone de départ d'une chute."
+  },
+  {
+    "slug": "zone-de-demande",
+    "term": "Zone de demande",
+    "category": "structures-de-marche",
+    "shortDefinition": "Zone où la pression acheteuse a été forte.",
+    "definition": "Elle peut provoquer de nouveaux rebonds.",
+    "example": "Zone de départ d'une hausse."
+  },
+  {
+    "slug": "zone-de-liquidite",
+    "term": "Zone de liquidité",
+    "category": "structures-de-marche",
+    "shortDefinition": "Niveau où se concentrent beaucoup d'ordres.",
+    "definition": "Le prix y est souvent attiré.",
+    "example": "Au-dessus d'un plus haut évident."
+  },
+  {
+    "slug": "zone-euro",
+    "term": "Zone euro",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Ensemble des pays utilisant l'euro.",
+    "definition": "La BCE y mène la politique monétaire.",
+    "example": "Vingt pays membres."
+  }
+]

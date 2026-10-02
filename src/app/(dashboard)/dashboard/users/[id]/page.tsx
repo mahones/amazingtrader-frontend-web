@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
+import { ConfirmDeleteDialog } from "@/components/admin/ConfirmDeleteDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
 import { EurekaChallengeLicenseKeysManager } from "@/components/admin/EurekaChallengeLicenseKeysManager";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
@@ -19,6 +20,9 @@ import {
   activateUserEurekaChallengeLicense,
   activateUserBotLicense,
   activateUserLicense,
+  deleteUserBotLicense,
+  deleteUserEurekaChallengeLicense,
+  deleteUserLicense,
   approveEurekaChallengeLicensePurchaseDetailsChange,
   approveBotLicensePurchaseDetailsChange,
   approveLicensePurchaseDetailsChange,
@@ -33,6 +37,7 @@ import {
   setUserCommunityAccess,
   updateAdminUserStatus,
 } from "@/lib/api/admin";
+import { extractApiError } from "@/lib/api/client";
 import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
@@ -40,6 +45,9 @@ import type { EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 import type { LicensePlan } from "@/types/license";
 import type { Partner } from "@/types/partner";
 import type { UserProfile } from "@/types/user";
+
+const DELETE_BUTTON_CLASS =
+  "border-transparent bg-red-500/10 text-red-700 hover:bg-red-500/20 dark:bg-red-500/20 dark:text-red-400 dark:hover:bg-red-500/30";
 
 function ActivationBadge({ isActivated }: { isActivated: boolean }) {
   return isActivated ? (
@@ -104,6 +112,7 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
+  const [pendingDelete, setPendingDelete] = useState<{ kind: "auto" | "bot" | "eureka"; id: number } | null>(null);
   const [eurekaChallengeLicensePlans, setEurekaChallengeLicensePlans] = useState<
     (EurekaChallengeLicensePlan & { challengeName: string })[]
   >([]);
@@ -167,6 +176,59 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           }
         : prev
     );
+  }
+
+  async function handleDeleteLicense(licenseId: number) {
+    try {
+      await deleteUserLicense(licenseId);
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de supprimer cette licence."));
+      return;
+    }
+    setProfile((prev) =>
+      prev ? { ...prev, user_licenses: prev.user_licenses.filter((l) => l.id !== licenseId) } : prev
+    );
+    toast.success("Licence supprimée.");
+  }
+
+  async function handleDeleteBotLicense(licenseId: number) {
+    try {
+      await deleteUserBotLicense(licenseId);
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de supprimer cette licence."));
+      return;
+    }
+    setProfile((prev) =>
+      prev ? { ...prev, user_bot_licenses: prev.user_bot_licenses.filter((l) => l.id !== licenseId) } : prev
+    );
+    toast.success("Licence supprimée.");
+  }
+
+  async function handleDeleteEurekaChallengeLicense(licenseId: number) {
+    try {
+      await deleteUserEurekaChallengeLicense(licenseId);
+    } catch (err) {
+      toast.error(extractApiError(err, "Impossible de supprimer cette licence."));
+      return;
+    }
+    setProfile((prev) =>
+      prev
+        ? {
+            ...prev,
+            user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.filter((l) => l.id !== licenseId),
+          }
+        : prev
+    );
+    toast.success("Licence supprimée.");
+  }
+
+  async function handleConfirmDelete() {
+    if (!pendingDelete) return;
+    const { kind, id: licenseId } = pendingDelete;
+    if (kind === "auto") await handleDeleteLicense(licenseId);
+    else if (kind === "bot") await handleDeleteBotLicense(licenseId);
+    else await handleDeleteEurekaChallengeLicense(licenseId);
+    setPendingDelete(null);
   }
 
   async function handleRequestCredentialsUpdate(licenseId: number) {
@@ -277,6 +339,13 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
 
   return (
     <div className="space-y-6">
+      <ConfirmDeleteDialog
+        open={pendingDelete !== null}
+        title="Supprimer cette licence ?"
+        description="La licence sera supprimée définitivement du compte de l'utilisateur. Cette action est irréversible."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{profile.name}</h1>
@@ -424,6 +493,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                   >
                     Mise à jour des accès
                   </Button>
+                  <Button size="sm" variant="ghost" className={DELETE_BUTTON_CLASS} onClick={() => setPendingDelete({ kind: "auto", id: license.id })}>
+                    Supprimer
+                  </Button>
                 </div>
               </div>
               <LicenseExpiryGauge
@@ -482,6 +554,9 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                       Activer
                     </Button>
                   )}
+                  <Button size="sm" variant="ghost" className={DELETE_BUTTON_CLASS} onClick={() => setPendingDelete({ kind: "bot", id: license.id })}>
+                    Supprimer
+                  </Button>
                 </div>
               </div>
               <LicenseExpiryGauge
@@ -539,6 +614,14 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                       Activer
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className={DELETE_BUTTON_CLASS}
+                    onClick={() => setPendingDelete({ kind: "eureka", id: license.id })}
+                  >
+                    Supprimer
+                  </Button>
                 </div>
               </div>
               <LicenseExpiryGauge

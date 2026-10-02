@@ -1,0 +1,210 @@
+[
+  {
+    "slug": "prise-de-benefices-profit-taking",
+    "term": "Prise de bénéfices (profit taking)",
+    "category": "strategies",
+    "shortDefinition": "Clôture d'une position gagnante pour encaisser le gain.",
+    "definition": "Elle intervient souvent après une forte hausse, quand les participants sécurisent leurs profits. Un afflux de prises de bénéfices peut provoquer un recul temporaire sans remettre en cause la tendance.",
+    "example": "Après trois semaines de hausse, le marché recule sous l'effet des prises de bénéfices."
+  },
+  {
+    "slug": "bear-trap",
+    "term": "Bear trap",
+    "category": "structures-de-marche",
+    "shortDefinition": "Faux signal baissier qui piège les vendeurs avant un retour à la hausse.",
+    "definition": "Le prix casse un support, incite à vendre, puis remonte brutalement au-dessus du niveau. Les vendeurs pris à contre-pied rachètent, ce qui alimente la hausse.",
+    "example": "Le prix perce un support de 20 pips puis repart au-dessus en quelques bougies."
+  },
+  {
+    "slug": "bull-trap",
+    "term": "Bull trap",
+    "category": "structures-de-marche",
+    "shortDefinition": "Faux signal haussier qui piège les acheteurs avant un retour à la baisse.",
+    "definition": "Le prix franchit une résistance, attire les acheteurs, puis retombe sous le niveau. Les acheteurs piégés vendent et accentuent la baisse.",
+    "example": "Une cassure de résistance échoue et le prix retombe de 50 pips."
+  },
+  {
+    "slug": "dead-cat-bounce",
+    "term": "Dead cat bounce",
+    "category": "structures-de-marche",
+    "shortDefinition": "Rebond bref et trompeur après une forte baisse, suivi d'une reprise de la chute.",
+    "definition": "Il donne l'impression d'un retournement alors que la tendance de fond reste baissière. Il se reconnaît à un volume faible et à l'absence de cassure de structure.",
+    "example": "Après une chute de 30 %, l'action remonte de 8 % puis replonge."
+  },
+  {
+    "slug": "rallye-de-soulagement",
+    "term": "Rallye de soulagement",
+    "category": "structures-de-marche",
+    "shortDefinition": "Hausse rapide après une période de stress, portée par une baisse de la peur.",
+    "definition": "Elle apparaît souvent quand une mauvaise nouvelle est digérée ou qu'un risque se dissipe. Elle peut être le début d'une reprise ou un simple rebond technique.",
+    "example": "Les indices bondissent après l'annonce d'un accord diplomatique."
+  },
+  {
+    "slug": "ordre-de-rachat-buy-to-cover",
+    "term": "Ordre de rachat (buy to cover)",
+    "category": "ordres-execution",
+    "shortDefinition": "Ordre d'achat servant à clôturer une position vendeuse.",
+    "definition": "Quand on a vendu à découvert, on rachète l'actif pour solder la position. Le gain est la différence entre le prix de vente et le prix de rachat.",
+    "example": "Vendu à 100, racheté à 90 : gain de 10 par titre."
+  },
+  {
+    "slug": "cloture-de-position",
+    "term": "Clôture de position",
+    "category": "ordres-execution",
+    "shortDefinition": "Opération qui met fin à une position ouverte.",
+    "definition": "Pour clôturer une position acheteuse, on vend ; pour une position vendeuse, on rachète. Le résultat devient alors réalisé et s'ajoute au solde du compte.",
+    "example": "Fermer un achat d'EUR/USD pour encaisser un gain de 40 pips."
+  },
+  {
+    "slug": "bruit-de-marche-noise",
+    "term": "Bruit de marché (noise)",
+    "category": "analyse-technique",
+    "shortDefinition": "Variations de prix aléatoires qui n'apportent pas d'information sur la tendance.",
+    "definition": "Sur les petites unités de temps, le bruit domine et provoque de faux signaux. Les moyennes mobiles, les unités de temps plus longues et les filtres aident à le réduire.",
+    "example": "Sur une bougie d'une minute, la plupart des mouvements sont du bruit."
+  },
+  {
+    "slug": "pente-de-moyenne-mobile",
+    "term": "Pente de moyenne mobile",
+    "category": "analyse-technique",
+    "shortDefinition": "Inclinaison d'une moyenne mobile, indicateur de la force d'une tendance.",
+    "definition": "Une moyenne mobile fortement inclinée vers le haut ou le bas traduit une tendance marquée ; une moyenne plate suggère un marché sans direction.",
+    "example": "La moyenne mobile 50 est plate depuis dix jours : le marché est en range."
+  },
+  {
+    "slug": "canaux-de-donchian",
+    "term": "Canaux de Donchian",
+    "category": "analyse-technique",
+    "shortDefinition": "Canal formé par le plus haut et le plus bas des n dernières périodes.",
+    "definition": "La cassure de la bande haute ou basse sert de signal de suivi de tendance. Il est à la base de méthodes de trading de cassure historiques.",
+    "example": "Acheter quand le prix dépasse le plus haut des 20 derniers jours."
+  },
+  {
+    "slug": "indicateur-aroon",
+    "term": "Indicateur Aroon",
+    "category": "analyse-technique",
+    "shortDefinition": "Indicateur mesurant le temps écoulé depuis le dernier plus haut et plus bas.",
+    "definition": "Il aide à repérer le début d'une tendance et sa force. Une valeur Aroon haussière proche de 100 indique un plus haut très récent.",
+    "example": "L'Aroon haussier passe à 100 : un nouveau plus haut vient d'être atteint."
+  },
+  {
+    "slug": "indicateur-vortex",
+    "term": "Indicateur Vortex",
+    "category": "analyse-technique",
+    "shortDefinition": "Indicateur comparant les mouvements haussiers et baissiers pour détecter une tendance.",
+    "definition": "Deux lignes (VI+ et VI-) se croisent pour signaler un changement de direction. Le croisement est plus fiable quand il s'accompagne d'un écart marqué.",
+    "example": "VI+ passe au-dessus de VI- : signal haussier."
+  },
+  {
+    "slug": "force-index",
+    "term": "Force Index",
+    "category": "analyse-technique",
+    "shortDefinition": "Indicateur combinant variation de prix et volume pour mesurer la pression.",
+    "definition": "Une valeur positive indique une pression acheteuse, négative une pression vendeuse. Les divergences avec le prix peuvent annoncer un essoufflement.",
+    "example": "Le prix monte avec un volume élevé : le Force Index est fortement positif."
+  },
+  {
+    "slug": "graphique-point-et-figure",
+    "term": "Graphique point et figure",
+    "category": "analyse-technique",
+    "shortDefinition": "Graphique qui ne retient que les variations de prix, sans tenir compte du temps.",
+    "definition": "Des colonnes de X (hausse) et de O (baisse) se succèdent quand le prix évolue d'un certain montant. Il filtre le bruit et fait ressortir supports et résistances.",
+    "example": "Une nouvelle colonne de O apparaît après un recul de trois cases."
+  },
+  {
+    "slug": "graphique-en-ligne",
+    "term": "Graphique en ligne",
+    "category": "analyse-technique",
+    "shortDefinition": "Représentation du prix par une ligne reliant les clôtures successives.",
+    "definition": "Il offre une lecture simple de la tendance mais masque les mèches et l'amplitude de chaque période. Il est utile pour une vision d'ensemble.",
+    "example": "Visualiser la tendance annuelle d'un indice avec une simple ligne."
+  },
+  {
+    "slug": "graphique-en-barres-ohlc",
+    "term": "Graphique en barres (OHLC)",
+    "category": "analyse-technique",
+    "shortDefinition": "Graphique affichant ouverture, plus haut, plus bas et clôture par des barres.",
+    "definition": "Chaque barre contient les quatre prix de la période, comme une bougie mais avec un tracé différent. Il est apprécié pour sa lisibilité sur de longues périodes.",
+    "example": "Une barre dont la petite encoche gauche marque l'ouverture et la droite la clôture."
+  },
+  {
+    "slug": "echelle-logarithmique",
+    "term": "Échelle logarithmique",
+    "category": "analyse-technique",
+    "shortDefinition": "Échelle de graphique où les distances représentent des variations en pourcentage.",
+    "definition": "Elle est préférable sur de longues périodes ou pour les actifs qui ont fortement progressé, car elle compare des variations relatives plutôt que des écarts en valeur.",
+    "example": "Un passage de 10 à 20 et de 100 à 200 occupe la même hauteur."
+  },
+  {
+    "slug": "saisonnalite",
+    "term": "Saisonnalité",
+    "category": "analyse-technique",
+    "shortDefinition": "Tendance d'un actif à se comporter de manière récurrente à certaines périodes de l'année.",
+    "definition": "Elle s'observe sur certaines matières premières, indices ou paires de devises. Elle doit être confirmée sur de nombreuses années et ne garantit pas la répétition.",
+    "example": "Le gaz naturel tend à monter à l'approche de l'hiver."
+  },
+  {
+    "slug": "effet-de-fin-de-mois",
+    "term": "Effet de fin de mois",
+    "category": "structures-de-marche",
+    "shortDefinition": "Flux inhabituels dus aux ajustements de portefeuilles en fin de mois.",
+    "definition": "Les gérants rééquilibrent leurs allocations, ce qui peut provoquer des mouvements sur les devises et indices lors des derniers jours du mois.",
+    "example": "Un mouvement du dollar lors du fixing de fin de mois."
+  },
+  {
+    "slug": "prime-de-liquidite",
+    "term": "Prime de liquidité",
+    "category": "analyse-fondamentale",
+    "shortDefinition": "Rendement supplémentaire exigé pour détenir un actif difficile à revendre rapidement.",
+    "definition": "Plus un titre est peu liquide, plus les investisseurs demandent un rendement élevé en compensation du risque de ne pas pouvoir vendre au bon moment.",
+    "example": "Une obligation rarement échangée offre un rendement supérieur à une obligation comparable plus liquide."
+  },
+  {
+    "slug": "volume-relatif",
+    "term": "Volume relatif",
+    "category": "analyse-technique",
+    "shortDefinition": "Comparaison du volume actuel avec le volume moyen habituel.",
+    "definition": "Un volume relatif élevé signale un intérêt inhabituel et donne plus de poids à un mouvement ou à une cassure. Un volume faible suggère un mouvement peu convaincant.",
+    "example": "Un volume deux fois supérieur à la moyenne accompagne une cassure."
+  },
+  {
+    "slug": "spread-de-calendrier",
+    "term": "Spread de calendrier",
+    "category": "strategies",
+    "shortDefinition": "Position combinant l'achat et la vente de contrats de même actif mais d'échéances différentes.",
+    "definition": "Elle profite de l'écart de prix entre deux échéances, avec un risque souvent inférieur à celui d'une position directionnelle sur un seul contrat.",
+    "example": "Acheter le contrat de juin et vendre celui de mars sur le pétrole."
+  },
+  {
+    "slug": "micro-contrat-a-terme",
+    "term": "Micro-contrat à terme",
+    "category": "instruments",
+    "shortDefinition": "Contrat à terme de taille réduite, accessible avec un petit capital.",
+    "definition": "Les micro-contrats représentent une fraction du contrat standard, ce qui permet d'ajuster plus finement la taille de position et le risque.",
+    "example": "Un micro-contrat sur le S&P 500 vaut un dixième du contrat E-mini."
+  },
+  {
+    "slug": "taux-de-rotation-du-portefeuille",
+    "term": "Taux de rotation du portefeuille",
+    "category": "performance",
+    "shortDefinition": "Fréquence à laquelle les titres d'un portefeuille sont remplacés.",
+    "definition": "Un taux élevé implique des frais de transaction plus importants, qui pèsent sur la performance nette. Il reflète le style de gestion, actif ou passif.",
+    "example": "Un fonds qui renouvelle 80 % de ses positions dans l'année."
+  },
+  {
+    "slug": "prise-de-position-progressive-scale-in",
+    "term": "Prise de position progressive (scale in)",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Entrée dans un trade en plusieurs fois plutôt qu'en une seule.",
+    "definition": "Elle permet de répartir le risque de timing et de n'augmenter l'exposition que si le marché confirme. Elle exige de définir à l'avance la taille totale et le risque global.",
+    "example": "Entrer avec la moitié du lot, puis ajouter le reste sur un repli."
+  },
+  {
+    "slug": "trade-de-continuation",
+    "term": "Trade de continuation",
+    "category": "strategies",
+    "shortDefinition": "Trade pris dans le sens de la tendance après une pause ou un repli.",
+    "definition": "Il vise la reprise de la tendance en cours, souvent après une consolidation ou un pullback sur un niveau clé.",
+    "example": "Acheter après un repli sur la moyenne mobile dans une tendance haussière."
+  }
+]

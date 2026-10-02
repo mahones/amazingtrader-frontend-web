@@ -1,0 +1,202 @@
+[
+  {
+    "slug": "ligne-de-cou-neckline",
+    "term": "Ligne de cou (neckline)",
+    "category": "analyse-technique",
+    "shortDefinition": "Niveau reliant les creux ou sommets d'une figure de retournement.",
+    "definition": "Sa cassure confirme les figures comme la tête et épaules. L'objectif de prix se mesure souvent à partir de la hauteur de la figure.",
+    "example": "Le prix casse la ligne de cou à 1,0800 et chute."
+  },
+  {
+    "slug": "zone-de-congestion",
+    "term": "Zone de congestion",
+    "category": "analyse-technique",
+    "shortDefinition": "Zone où le prix a passé beaucoup de temps et où les échanges ont été nombreux.",
+    "definition": "Elle agit souvent comme support ou résistance lors des retours du prix. Plus elle est large, plus la réaction est significative.",
+    "example": "Le prix revient tester une congestion de trois semaines."
+  },
+  {
+    "slug": "bougie-de-rejet",
+    "term": "Bougie de rejet",
+    "category": "analyse-technique",
+    "shortDefinition": "Bougie à longue mèche montrant que le prix a été refusé à un niveau.",
+    "definition": "Elle signale une possible réaction sur un support ou une résistance, surtout si elle se forme sur une unité de temps élevée.",
+    "example": "Une bougie H4 avec une longue mèche basse sur un support."
+  },
+  {
+    "slug": "gap-de-week-end",
+    "term": "Gap de week-end",
+    "category": "structures-de-marche",
+    "shortDefinition": "Écart entre la clôture du vendredi et l'ouverture du lundi.",
+    "definition": "Il résulte d'événements survenus pendant la fermeture des marchés. Il peut être comblé ou se prolonger en tendance.",
+    "example": "L'or ouvre 15 dollars plus haut le lundi."
+  },
+  {
+    "slug": "cloture-hebdomadaire",
+    "term": "Clôture hebdomadaire",
+    "category": "analyse-technique",
+    "shortDefinition": "Prix de clôture d'une semaine de trading, utilisé comme référence.",
+    "definition": "De nombreux traders le surveillent pour juger de la force d'une tendance et de la prochaine direction.",
+    "example": "Une clôture hebdomadaire au-dessus d'une résistance majeure."
+  },
+  {
+    "slug": "setup-de-trading",
+    "term": "Setup de trading",
+    "category": "strategies",
+    "shortDefinition": "Ensemble de conditions qui, réunies, déclenchent une entrée.",
+    "definition": "Un setup précis évite les décisions impulsives et permet de mesurer les résultats de manière cohérente.",
+    "example": "Tendance haussière, repli sur support, bougie de confirmation."
+  },
+  {
+    "slug": "trade-a",
+    "term": "Trade A+",
+    "category": "strategies",
+    "shortDefinition": "Opportunité qui respecte la quasi-totalité des critères d'une stratégie.",
+    "definition": "Se concentrer sur ces trades améliore la qualité des décisions et limite l'overtrading.",
+    "example": "Toutes les conditions de la checklist sont réunies."
+  },
+  {
+    "slug": "taux-de-conversion-d-un-setup",
+    "term": "Taux de conversion d'un setup",
+    "category": "performance",
+    "shortDefinition": "Proportion de fois où un setup mène à un trade gagnant.",
+    "definition": "Elle permet de comparer objectivement les configurations utilisées et de garder les meilleures.",
+    "example": "Un setup qui gagne dans 58 % des cas."
+  },
+  {
+    "slug": "plan-de-sortie",
+    "term": "Plan de sortie",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Règles définissant à l'avance comment et quand clôturer une position.",
+    "definition": "Il prévoit stop, objectif, sorties partielles et conditions d'invalidation, pour éviter les décisions émotionnelles.",
+    "example": "Sortie de la moitié à 1 R, le reste suivi par un trailing stop."
+  },
+  {
+    "slug": "invalidation-d-un-scenario",
+    "term": "Invalidation d'un scénario",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Niveau ou événement qui prouve que l'idée de trade n'est plus valable.",
+    "definition": "Le stop se place naturellement à cet endroit : si le prix l'atteint, l'analyse initiale était erronée.",
+    "example": "Un scénario haussier invalidé sous le dernier creux."
+  },
+  {
+    "slug": "capital-de-depart",
+    "term": "Capital de départ",
+    "category": "performance",
+    "shortDefinition": "Somme initiale avec laquelle on commence à trader.",
+    "definition": "Elle influence la taille de position et l'attitude face au risque. Un capital trop faible pousse à surlever.",
+    "example": "Démarrer avec 1 000 euros."
+  },
+  {
+    "slug": "capital-de-trading-dedie",
+    "term": "Capital de trading dédié",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Part de l'épargne réservée exclusivement au trading.",
+    "definition": "La séparer du reste du patrimoine protège les finances personnelles d'éventuelles pertes.",
+    "example": "Un compte séparé avec 5 % de son épargne."
+  },
+  {
+    "slug": "compte-en-cent-cent-account",
+    "term": "Compte en cent (cent account)",
+    "category": "instruments",
+    "shortDefinition": "Compte dont les montants sont exprimés en centimes pour s'entraîner avec peu de risque.",
+    "definition": "Il permet de trader en réel avec de très petites sommes, utile pour tester ses émotions.",
+    "example": "Un dépôt de 10 dollars apparaît comme 1 000 cents."
+  },
+  {
+    "slug": "depot-minimum",
+    "term": "Dépôt minimum",
+    "category": "instruments",
+    "shortDefinition": "Somme minimale exigée par un courtier pour ouvrir un compte.",
+    "definition": "Elle varie selon le type de compte et le courtier, de quelques dizaines à plusieurs milliers d'euros.",
+    "example": "Un dépôt minimum de 100 dollars."
+  },
+  {
+    "slug": "bonus-de-depot",
+    "term": "Bonus de dépôt",
+    "category": "instruments",
+    "shortDefinition": "Avantage offert par certains courtiers lors de l'alimentation d'un compte.",
+    "definition": "Il s'accompagne souvent de conditions de volume avant tout retrait, qu'il faut lire attentivement.",
+    "example": "Un bonus de 20 % soumis à un volume minimal."
+  },
+  {
+    "slug": "compte-islamique-sans-swap",
+    "term": "Compte islamique (sans swap)",
+    "category": "instruments",
+    "shortDefinition": "Compte sans intérêts de swap, conforme aux principes de la finance islamique.",
+    "definition": "Des frais fixes peuvent remplacer les swaps. Il s'adresse aux traders qui évitent les intérêts.",
+    "example": "Un compte sans swap sur les positions conservées la nuit."
+  },
+  {
+    "slug": "plateforme-de-trading",
+    "term": "Plateforme de trading",
+    "category": "instruments",
+    "shortDefinition": "Logiciel permettant de consulter les marchés et de passer des ordres.",
+    "definition": "MetaTrader, cTrader ou des plateformes web proposent graphiques, indicateurs et exécution.",
+    "example": "Passer un ordre depuis l'application mobile."
+  },
+  {
+    "slug": "trading-mobile",
+    "term": "Trading mobile",
+    "category": "instruments",
+    "shortDefinition": "Fait de trader depuis un smartphone ou une tablette.",
+    "definition": "Il offre de la flexibilité pour surveiller ses positions, mais incite parfois à des décisions impulsives.",
+    "example": "Déplacer un stop depuis son téléphone."
+  },
+  {
+    "slug": "alerte-de-prix",
+    "term": "Alerte de prix",
+    "category": "analyse-technique",
+    "shortDefinition": "Notification déclenchée quand le prix atteint un niveau défini.",
+    "definition": "Elle évite de rester devant l'écran et aide à ne pas rater une entrée sur un niveau clé.",
+    "example": "Alerte lorsque l'EUR/USD atteint 1,0900."
+  },
+  {
+    "slug": "replay-de-marche",
+    "term": "Replay de marché",
+    "category": "analyse-technique",
+    "shortDefinition": "Outil rejouant l'historique des prix bougie par bougie pour s'entraîner.",
+    "definition": "Il permet de pratiquer sa lecture de graphique et sa gestion de trade sans risque.",
+    "example": "Rejouer la séance de New York d'il y a six mois."
+  },
+  {
+    "slug": "calendrier-de-trading-personnel",
+    "term": "Calendrier de trading personnel",
+    "category": "psychologie",
+    "shortDefinition": "Planning des jours, horaires et marchés que l'on s'autorise à trader.",
+    "definition": "Il structure la discipline et évite les entrées en dehors des plages où la stratégie est efficace.",
+    "example": "Trader uniquement entre 9 h et 12 h."
+  },
+  {
+    "slug": "seuil-de-tolerance-a-la-perte",
+    "term": "Seuil de tolérance à la perte",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Niveau de perte que l'on peut supporter sans que les décisions en soient altérées.",
+    "definition": "Il est personnel et détermine la taille de position raisonnable. Le dépasser conduit à des erreurs émotionnelles.",
+    "example": "Une perte de 5 % du compte devient anxiogène."
+  },
+  {
+    "slug": "rendement-irrealiste",
+    "term": "Rendement irréaliste",
+    "category": "gestion-du-risque",
+    "shortDefinition": "Promesse de gains très élevés et réguliers, signe fréquent d'arnaque.",
+    "definition": "Aucun trader ou fonds ne génère des rendements élevés sans risque. La méfiance s'impose face à de telles annonces.",
+    "example": "Gains garantis de 10 % par semaine."
+  },
+  {
+    "slug": "preuve-de-performance",
+    "term": "Preuve de performance",
+    "category": "performance",
+    "shortDefinition": "Documents ou outils vérifiables attestant des résultats annoncés.",
+    "definition": "Un historique indépendant, sur plusieurs mois, est plus crédible que des captures d'écran isolées.",
+    "example": "Un historique vérifié sur plateforme tierce."
+  },
+  {
+    "slug": "capitalisation-quotidienne",
+    "term": "Capitalisation quotidienne",
+    "category": "performance",
+    "shortDefinition": "Réinvestissement des gains à un rythme quotidien.",
+    "definition": "Elle illustre la puissance de la croissance exponentielle, mais aussi la difficulté à maintenir un rendement régulier.",
+    "example": "1 % par jour sur un mois reste irréaliste à long terme."
+  }
+]

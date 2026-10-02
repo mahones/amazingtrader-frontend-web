@@ -136,7 +136,7 @@ export function AssignLicenseDialog({
       ) : (
         <DialogTrigger render={<Button variant="outline" />}>Assigner une licence</DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Assigner une licence</DialogTitle>
           <DialogDescription>
@@ -144,12 +144,12 @@ export function AssignLicenseDialog({
             renseigner lui-même plus tard.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-2">
+        <form onSubmit={handleSubmit} className="min-w-0 space-y-4">
+          <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               variant={type === "auto_trading" ? "default" : "outline"}
-              className="flex-1"
+              className="min-w-fit flex-1"
               onClick={() => {
                 setType("auto_trading");
                 setPlanId("");
@@ -160,7 +160,7 @@ export function AssignLicenseDialog({
             <Button
               type="button"
               variant={type === "bot_trading" ? "default" : "outline"}
-              className="flex-1"
+              className="min-w-fit flex-1"
               onClick={() => {
                 setType("bot_trading");
                 setPlanId("");
@@ -171,7 +171,7 @@ export function AssignLicenseDialog({
             <Button
               type="button"
               variant={type === "eureka_challenge" ? "default" : "outline"}
-              className="flex-1"
+              className="min-w-fit flex-1"
               onClick={() => {
                 setType("eureka_challenge");
                 setPlanId("");

@@ -24,5 +24,6 @@ export interface Order {
   created_enrollment_id?: number;
   created_license_id?: number;
   created_bot_license_id?: number;
+  created_eureka_challenge_license_id?: number;
   created_at: string;
 }

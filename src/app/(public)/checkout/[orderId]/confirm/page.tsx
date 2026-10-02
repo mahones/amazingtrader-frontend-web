@@ -6,9 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EurekaChallengePostPurchaseDetailsForm } from "@/components/purchase/EurekaChallengePostPurchaseDetailsForm";
 import { PostPurchaseDetailsForm } from "@/components/purchase/PostPurchaseDetailsForm";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
+import { fetchMyEurekaChallengeLicenses } from "@/lib/api/eurekaChallenges";
 import {
   capturePayPalPayment,
   fetchOrder,
@@ -24,6 +26,7 @@ const PURCHASABLE_TYPE_BY_CLASS: Record<string, PurchasableType> = {
   Course: "course",
   LicensePlan: "license_plan",
   BotLicensePlan: "bot_license_plan",
+  EurekaChallengeLicensePlan: "eureka_challenge_license_plan",
 };
 
 // PayerURL is real crypto, not instant — a genuine webhook can take a
@@ -52,6 +55,7 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
   const [simulating, setSimulating] = useState<"paid" | "cancel" | null>(null);
   const [simulateError, setSimulateError] = useState<string | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
+  const [eurekaAccounts, setEurekaAccounts] = useState<number | null>(null);
   const hasHandledPaidRedirectRef = useRef(false);
   const hasCapturedPayPalRef = useRef(false);
   const hasVerifiedCinetPayRef = useRef(false);
@@ -151,6 +155,21 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
     hasHandledPaidRedirectRef.current = true;
     router.replace(`/dashboard/formations/${order.created_enrollment_id}`);
   }, [order, router]);
+
+  // The form needs one block of fields per account in the purchased plan,
+  // which the order payload doesn't carry — read it off the created license.
+  const createdEurekaLicenseId = order?.created_eureka_challenge_license_id;
+  useEffect(() => {
+    if (!createdEurekaLicenseId) return;
+    fetchMyEurekaChallengeLicenses()
+      .then((licenses) => {
+        const license = licenses.find((l) => l.id === createdEurekaLicenseId);
+        setEurekaAccounts(
+          license?.number_of_accounts ?? license?.eureka_challenge_license_plan.number_of_accounts ?? 1
+        );
+      })
+      .catch(() => setEurekaAccounts(1));
+  }, [createdEurekaLicenseId]);
 
   async function handleSimulate(outcome: "paid" | "cancel") {
     setSimulating(outcome);
@@ -298,6 +317,29 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
           </CardContent>
         </Card>
       )}
+
+      {order &&
+        order.status === "paid" &&
+        type === "eureka_challenge_license_plan" &&
+        createdEurekaLicenseId &&
+        eurekaAccounts !== null && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Activer votre challenge Eureka</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Renseignez l&apos;identifiant, le mot de passe et le serveur de votre compte MT5 pour chaque
+                compte inclus dans votre challenge.
+              </p>
+              <EurekaChallengePostPurchaseDetailsForm
+                licenseId={createdEurekaLicenseId}
+                numberOfAccounts={eurekaAccounts}
+                onSubmitted={() => router.push("/dashboard/eureka-challenges")}
+              />
+            </CardContent>
+          </Card>
+        )}
 
       {order && order.status === "paid" && type === "course" && (
         <p className="text-muted-foreground">Redirection vers votre formation...</p>

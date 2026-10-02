@@ -763,6 +763,18 @@ export async function activateUserBotLicense(id: number) {
   return data.data;
 }
 
+export async function deleteUserLicense(id: number) {
+  await apiClient.delete(`/admin/user-licenses/${id}`);
+}
+
+export async function deleteUserBotLicense(id: number) {
+  await apiClient.delete(`/admin/user-bot-licenses/${id}`);
+}
+
+export async function deleteUserEurekaChallengeLicense(id: number) {
+  await apiClient.delete(`/admin/user-eureka-challenge-licenses/${id}`);
+}
+
 export async function requestCredentialsUpdate(userLicenseId: number) {
   await apiClient.post(`/admin/user-licenses/${userLicenseId}/request-update`);
 }

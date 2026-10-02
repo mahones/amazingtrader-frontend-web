@@ -58,7 +58,7 @@ export function BotTradingHero() {
               size="lg"
               render={
                 <a href="/brokers">
-                  Courtier recommendé <ArrowRight className="ml-1 size-4" />
+                  Courtiers recommendés <ArrowRight className="ml-1 size-4" />
                 </a>
               }
             />
