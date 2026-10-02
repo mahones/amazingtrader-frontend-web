@@ -257,6 +257,23 @@ function EurekaChallengeLicenseCard({
           </div>
         )}
 
+        {challenge?.instructions && challenge.instructions.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {challenge.instructions.map((instruction) => (
+              <Button
+                key={instruction.id}
+                size="sm"
+                className="bg-foreground text-background hover:bg-foreground/80"
+                render={
+                  <a href={instruction.url} target="_blank" rel="noopener noreferrer">
+                    {instruction.title}
+                  </a>
+                }
+              />
+            ))}
+          </div>
+        )}
+
         {accounts.length === 0 && (
           <div className="flex justify-end">
             <EditEurekaChallengePurchaseDetailsDialog license={license} onUpdated={onUpdated} />

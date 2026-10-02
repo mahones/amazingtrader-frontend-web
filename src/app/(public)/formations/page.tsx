@@ -37,7 +37,7 @@ export default async function FormationsPage({
           </div>
         ) : (
           <p className="mt-12 text-center text-muted-foreground">
-            Aucune formation ne correspond à ces filtres.
+            
           </p>
         )}
 
