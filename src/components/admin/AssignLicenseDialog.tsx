@@ -60,6 +60,8 @@ export function AssignLicenseDialog({
   const [planId, setPlanId] = useState("");
   const [form, setForm] = useState<LicensePurchaseDetails>(emptyForm);
   const [activate, setActivate] = useState(true);
+  const [purchasedAt, setPurchasedAt] = useState("");
+  const [sendEmail, setSendEmail] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,6 +70,8 @@ export function AssignLicenseDialog({
     setPlanId("");
     setForm(emptyForm);
     setActivate(true);
+    setPurchasedAt("");
+    setSendEmail(false);
     setError(null);
   }
 
@@ -89,11 +93,18 @@ export function AssignLicenseDialog({
     }
     setPending(true);
     setError(null);
+    const dating = {
+      ...(purchasedAt ? { purchased_at: purchasedAt } : {}),
+      // Without a purchase date the activation email is sent as before; with a
+      // past date (existing customer) it is opt-in.
+      send_email: purchasedAt ? sendEmail : true,
+    };
     try {
       if (type === "auto_trading") {
         const license = await assignLicenseToUser(userId, {
           license_plan_id: Number(planId),
           activate,
+          ...dating,
           id: form.id,
           password: form.password,
           server: form.server,
@@ -103,6 +114,7 @@ export function AssignLicenseDialog({
         const license = await assignBotLicenseToUser(userId, {
           bot_license_plan_id: Number(planId),
           activate,
+          ...dating,
           id: form.id,
         });
         onBotLicenseAssigned(license);
@@ -110,6 +122,7 @@ export function AssignLicenseDialog({
         const license = await assignEurekaChallengeLicenseToUser(userId, {
           eureka_challenge_license_plan_id: Number(planId),
           activate,
+          ...dating,
         });
         onEurekaChallengeLicenseAssigned(license);
       }
@@ -235,6 +248,33 @@ export function AssignLicenseDialog({
                 <Input id="assign-whatsapp" value={whatsappNumber ?? "Non renseigné"} disabled />
               </div>
             </>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="assign-purchased-at">Date d&apos;achat d&apos;origine (optionnel)</Label>
+            <Input
+              id="assign-purchased-at"
+              type="date"
+              max={new Date().toISOString().slice(0, 10)}
+              value={purchasedAt}
+              onChange={(e) => setPurchasedAt(e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Pour un client qui avait payé avant la plateforme : la durée restante est calculée à partir de cette
+              date. Laissez vide si la licence démarre aujourd&apos;hui.
+            </p>
+          </div>
+
+          {purchasedAt && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                className="accent-primary"
+                checked={sendEmail}
+                onChange={(e) => setSendEmail(e.target.checked)}
+              />
+              Envoyer l&apos;email d&apos;activation au client
+            </label>
           )}
 
           <label className="flex items-center gap-2 text-sm">

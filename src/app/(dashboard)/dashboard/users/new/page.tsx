@@ -9,16 +9,49 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { createAdminUser, fetchAdminCourses, fetchAdminLicensePlans, fetchAdminTradingBots } from "@/lib/api/admin";
+import {
+  createAdminUser,
+  fetchAdminCourses,
+  fetchAdminEurekaChallenges,
+  fetchAdminLicensePlans,
+  fetchAdminTradingBots,
+} from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
 import { digitsOnly } from "@/lib/utils";
 import type { Course } from "@/types/course";
 import type { LicensePlan, LicensePurchaseDetails } from "@/types/license";
 import type { BotLicensePlan } from "@/types/bot";
+import type { EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 
 function toggleId(ids: number[], id: number): number[] {
   return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+// Optional original purchase date, for customers who paid before the platform
+// existed: the remaining licence time is computed from it.
+function PurchasedAtField({
+  id,
+  value,
+  onChange,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-1 sm:col-span-2">
+      <Label htmlFor={id} className="text-xs">
+        Date d&apos;achat d&apos;origine (optionnel)
+      </Label>
+      <Input id={id} type="date" max={today()} value={value} onChange={(e) => onChange(e.target.value)} />
+      <p className="text-xs text-muted-foreground">
+        Pour un client qui avait payé avant la plateforme. Laissez vide si la licence démarre aujourd&apos;hui.
+      </p>
+    </div>
+  );
 }
 
 const emptyLicenseDetails: LicensePurchaseDetails = { id: "", password: "", server: "" };
@@ -38,9 +71,14 @@ export default function NewUserPage() {
   const [botLicensePlanIds, setBotLicensePlanIds] = useState<number[]>([]);
   const [botLicenseDetails, setBotLicenseDetails] = useState<Record<number, string>>({});
 
+  const [eurekaPlanIds, setEurekaPlanIds] = useState<number[]>([]);
+  const [purchasedAt, setPurchasedAt] = useState<Record<string, string>>({});
+
   const [courses, setCourses] = useState<Course[]>([]);
   const [licensePlans, setLicensePlans] = useState<LicensePlan[]>([]);
   const [botLicensePlans, setBotLicensePlans] = useState<(BotLicensePlan & { botName: string })[]>([]);
+
+  const [eurekaPlans, setEurekaPlans] = useState<(EurekaChallengeLicensePlan & { challengeName: string })[]>([]);
 
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -54,7 +92,16 @@ export default function NewUserPage() {
       );
       setBotLicensePlans(plans);
     });
+    fetchAdminEurekaChallenges().then((challenges) =>
+      setEurekaPlans(
+        challenges.flatMap((challenge) =>
+          (challenge.license_plans ?? []).map((plan) => ({ ...plan, challengeName: challenge.name }))
+        )
+      )
+    );
   }, []);
+
+  const dateFor = (key: string) => (purchasedAt[key] ? { purchased_at: purchasedAt[key] } : {});
 
   function toggleLicensePlan(planId: number) {
     setLicensePlanIds((ids) => toggleId(ids, planId));
@@ -87,10 +134,16 @@ export default function NewUserPage() {
         licenses: licensePlanIds.map((planId) => ({
           license_plan_id: planId,
           ...(licenseDetails[planId] ?? emptyLicenseDetails),
+          ...dateFor(`auto-${planId}`),
         })),
         bot_licenses: botLicensePlanIds.map((planId) => ({
           bot_license_plan_id: planId,
           id: botLicenseDetails[planId] ?? "",
+          ...dateFor(`bot-${planId}`),
+        })),
+        eureka_challenge_licenses: eurekaPlanIds.map((planId) => ({
+          eureka_challenge_license_plan_id: planId,
+          ...dateFor(`eureka-${planId}`),
         })),
       });
       toast.success("Utilisateur créé avec succès.");
@@ -214,6 +267,11 @@ export default function NewUserPage() {
                               onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
                             />
                           </div>
+                          <PurchasedAtField
+                            id={`license-${plan.id}-purchased-at`}
+                            value={purchasedAt[`auto-${plan.id}`] ?? ""}
+                            onChange={(v) => setPurchasedAt((prev) => ({ ...prev, [`auto-${plan.id}`]: v }))}
+                          />
                         </div>
                       )}
                     </div>
@@ -242,7 +300,7 @@ export default function NewUserPage() {
                         {plan.botName} — {plan.name}
                       </label>
                       {checked && (
-                        <div className="rounded-lg bg-muted/40 p-3">
+                        <div className="grid gap-2 rounded-lg bg-muted/40 p-3">
                           <div className="space-y-1">
                             <Label htmlFor={`bot-license-${plan.id}-id`} className="text-xs">
                               ID (optionnel)
@@ -257,6 +315,45 @@ export default function NewUserPage() {
                               }
                             />
                           </div>
+                          <PurchasedAtField
+                            id={`bot-license-${plan.id}-purchased-at`}
+                            value={purchasedAt[`bot-${plan.id}`] ?? ""}
+                            onChange={(v) => setPurchasedAt((prev) => ({ ...prev, [`bot-${plan.id}`]: v }))}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Licences Challenge Eureka</Label>
+              <div className="space-y-3 rounded-lg border p-3">
+                {eurekaPlans.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Aucune licence de challenge.</p>
+                )}
+                {eurekaPlans.map((plan) => {
+                  const checked = eurekaPlanIds.includes(plan.id);
+                  return (
+                    <div key={plan.id} className="space-y-2">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="accent-primary"
+                          checked={checked}
+                          onChange={() => setEurekaPlanIds((ids) => toggleId(ids, plan.id))}
+                        />
+                        {plan.challengeName} — {plan.name}
+                      </label>
+                      {checked && (
+                        <div className="grid gap-2 rounded-lg bg-muted/40 p-3">
+                          <PurchasedAtField
+                            id={`eureka-license-${plan.id}-purchased-at`}
+                            value={purchasedAt[`eureka-${plan.id}`] ?? ""}
+                            onChange={(v) => setPurchasedAt((prev) => ({ ...prev, [`eureka-${plan.id}`]: v }))}
+                          />
                         </div>
                       )}
                     </div>

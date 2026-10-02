@@ -555,7 +555,7 @@ export async function updateEurekaChallengeLicenseKeys(
 
 export async function assignEurekaChallengeLicenseToUser(
   userId: number,
-  payload: { eureka_challenge_license_plan_id: number; activate?: boolean }
+  payload: { eureka_challenge_license_plan_id: number; activate?: boolean; purchased_at?: string; send_email?: boolean }
 ) {
   const { data } = await apiClient.post<{ data: UserEurekaChallengeLicense }>(
     `/admin/users/${userId}/eureka-challenge-licenses`,
@@ -615,10 +615,11 @@ export async function createAdminUser(payload: {
   email: string;
   password: string;
   course_ids?: number[];
-  licenses?: Array<{ license_plan_id: number } & Partial<LicensePurchaseDetails>>;
-  bot_licenses?: Array<{ bot_license_plan_id: number } & Partial<BotLicensePurchaseDetails>>;
+  licenses?: Array<{ license_plan_id: number; purchased_at?: string } & Partial<LicensePurchaseDetails>>;
+  bot_licenses?: Array<{ bot_license_plan_id: number; purchased_at?: string } & Partial<BotLicensePurchaseDetails>>;
   eureka_challenge_licenses?: Array<{
     eureka_challenge_license_plan_id: number;
+    purchased_at?: string;
     accounts?: Array<Partial<Pick<EurekaChallengeAccountCredentials, "id" | "password" | "server">>>;
   }>;
 }) {
@@ -628,7 +629,7 @@ export async function createAdminUser(payload: {
 
 export async function assignLicenseToUser(
   userId: number,
-  payload: { license_plan_id: number; activate?: boolean } & Partial<LicensePurchaseDetails>
+  payload: { license_plan_id: number; activate?: boolean; purchased_at?: string; send_email?: boolean } & Partial<LicensePurchaseDetails>
 ) {
   const { data } = await apiClient.post<{ data: UserLicense }>(`/admin/users/${userId}/licenses`, payload);
   return data.data;
@@ -636,7 +637,7 @@ export async function assignLicenseToUser(
 
 export async function assignBotLicenseToUser(
   userId: number,
-  payload: { bot_license_plan_id: number; activate?: boolean } & Partial<BotLicensePurchaseDetails>
+  payload: { bot_license_plan_id: number; activate?: boolean; purchased_at?: string; send_email?: boolean } & Partial<BotLicensePurchaseDetails>
 ) {
   const { data } = await apiClient.post<{ data: UserBotLicense }>(
     `/admin/users/${userId}/bot-licenses`,
