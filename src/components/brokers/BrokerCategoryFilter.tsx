@@ -27,11 +27,11 @@ export function BrokerCategoryFilter({ brokers }: { brokers: Broker[] }) {
   }
 
   return (
-    <div className="mt-12 space-y-10">
+    <div className="mx-auto mt-12 max-w-3xl space-y-10">
       {Array.from(groups.entries()).map(([category, categoryBrokers]) => (
         <div key={category}>
           <h2 className="text-xl font-bold">{category}</h2>
-          <div className="mt-4 grid gap-6 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4">
             {categoryBrokers.map((broker) => (
               <BrokerCard key={broker.id} broker={broker} />
             ))}

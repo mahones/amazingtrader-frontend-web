@@ -26,10 +26,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "amazingtraders",
-    template: "%s · amazingtraders",
+    default: "Amazing Traders",
+    template: "%s · Amazing Traders",
   },
   description: "Formations, licences d'auto-trading et bots de trading professionnels.",
+  applicationName: "Amazing Traders",
+  openGraph: {
+    siteName: "Amazing Traders",
+    title: "Amazing Traders",
+    description: "Formations, licences d'auto-trading et bots de trading professionnels.",
+    type: "website",
+    locale: "fr_FR",
+  },
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -44,7 +52,7 @@ export const metadata: Metadata = {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
-    "apple-mobile-web-app-title": "amazingtraders",
+    "apple-mobile-web-app-title": "Amazing Traders",
   },
 };
 

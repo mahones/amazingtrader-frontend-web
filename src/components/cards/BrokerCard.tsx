@@ -5,25 +5,27 @@ import type { Broker } from "@/types/broker";
 
 export function BrokerCard({ broker }: { broker: Broker }) {
   return (
-    <Card className="flex flex-col items-center gap-4 p-(--card-spacing) text-center transition-shadow hover:shadow-lg hover:shadow-primary/10 sm:flex-row sm:text-left">
-      <div className="relative flex aspect-[2/1] w-32 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted sm:w-40">
-        {broker.logo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time
-          <img
-            src={broker.logo_url}
-            alt={broker.name}
-            className="h-full w-full object-contain p-3"
-          />
-        ) : (
-          <span className="text-sm font-bold text-foreground">{broker.name}</span>
-        )}
-      </div>
+    <Card className="flex flex-col gap-4 p-(--card-spacing) text-left transition-shadow hover:shadow-lg hover:shadow-primary/10 sm:flex-row sm:items-center">
+      <div className="flex min-w-0 flex-1 items-center gap-4">
+        <div className="relative flex aspect-[2/1] w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted sm:w-40">
+          {broker.logo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- admin-entered URL, arbitrary host not known at build time
+            <img
+              src={broker.logo_url}
+              alt={broker.name}
+              className="h-full w-full object-contain p-3"
+            />
+          ) : (
+            <span className="text-sm font-bold text-foreground">{broker.name}</span>
+          )}
+        </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-lg font-semibold">{broker.name}</p>
-        {broker.description && (
-          <p className="line-clamp-2 text-sm text-muted-foreground">{broker.description}</p>
-        )}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-lg font-semibold">{broker.name}</p>
+          {broker.description && (
+            <p className="line-clamp-2 text-sm text-muted-foreground">{broker.description}</p>
+          )}
+        </div>
       </div>
 
       <Button
