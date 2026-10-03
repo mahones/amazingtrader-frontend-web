@@ -205,15 +205,15 @@ export function MonthlyBarChart({
   const hasData = points.some((p) => p.value > 0);
 
   return (
-    <Card className="h-full">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex min-h-56 flex-1 flex-col">
         {loading ? (
-          <Skeleton className="h-40 w-full" />
+          <Skeleton className="min-h-56 w-full flex-1" />
         ) : hasData ? (
-          <div className="flex h-40 items-end justify-between gap-1.5 sm:gap-2.5">
+          <div className="flex min-h-56 flex-1 items-end justify-between gap-1.5 sm:gap-2.5">
             {points.map((p, index) => {
               const monthIndex = Number(p.month.split("-")[1]) - 1;
               const heightPct = max > 0 ? Math.max(4, (p.value / max) * 100) : 4;
@@ -222,7 +222,7 @@ export function MonthlyBarChart({
                 <div key={p.month} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
                   <div className="flex w-full flex-1 items-end">
                     <motion.div
-                      className={cn("w-full rounded-t-md", isCurrent ? "bg-primary" : "bg-primary/25")}
+                      className={cn("w-full", isCurrent ? "bg-primary" : "bg-primary/25")}
                       initial={{ height: 0 }}
                       animate={{ height: `${heightPct}%` }}
                       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -241,7 +241,7 @@ export function MonthlyBarChart({
             })}
           </div>
         ) : (
-          <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</div>
+          <div className="flex min-h-56 flex-1 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</div>
         )}
       </CardContent>
     </Card>
