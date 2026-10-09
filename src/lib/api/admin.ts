@@ -330,11 +330,13 @@ export async function deleteAdminEvent(id: number) {
 }
 
 // Bot files (per user bot license)
-export async function fetchAdminBotFiles(userBotLicenseId: number) {
-  const { data } = await apiClient.get<{ data: BotFile[] }>(
-    `/admin/user-bot-licenses/${userBotLicenseId}/files`
-  );
+export async function createAdminTradingBotFiles(botId: number, formData: FormData) {
+  const { data } = await apiClient.post<{ data: BotFile[] }>(`/admin/trading-bots/${botId}/files`, formData);
   return data.data;
+}
+
+export async function deleteAdminTradingBotFile(id: number) {
+  await apiClient.delete(`/admin/trading-bot-files/${id}`);
 }
 
 export async function createAdminBotFiles(userBotLicenseId: number, formData: FormData) {
@@ -342,11 +344,6 @@ export async function createAdminBotFiles(userBotLicenseId: number, formData: Fo
     `/admin/user-bot-licenses/${userBotLicenseId}/files`,
     formData
   );
-  return data.data;
-}
-
-export async function updateAdminBotFile(id: number, payload: { label?: string; position?: number }) {
-  const { data } = await apiClient.put<{ data: BotFile }>(`/admin/bot-files/${id}`, payload);
   return data.data;
 }
 
@@ -508,14 +505,6 @@ export async function createAdminEurekaChallengeFiles(challengeId: number, formD
   return data.data;
 }
 
-export async function updateAdminEurekaChallengeFile(
-  id: number,
-  payload: { label?: string; position?: number }
-) {
-  const { data } = await apiClient.put<{ data: EurekaChallengeFile }>(`/admin/eureka-challenge-files/${id}`, payload);
-  return data.data;
-}
-
 export async function deleteAdminEurekaChallengeFile(id: number) {
   await apiClient.delete(`/admin/eureka-challenge-files/${id}`);
 }
@@ -565,11 +554,6 @@ export async function assignEurekaChallengeLicenseToUser(
 }
 
 // Users & orders (oversight)
-export async function fetchAdminUsers() {
-  const { data } = await apiClient.get<{ data: User[] }>("/admin/users");
-  return data.data;
-}
-
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {
@@ -577,6 +561,20 @@ export interface PaginatedResponse<T> {
     last_page: number;
     total: number;
   };
+}
+
+/** Every member across all pages (the endpoint paginates at 20). */
+export async function fetchAdminUsers() {
+  const first = await apiClient.get<PaginatedResponse<User>>("/admin/users", { params: { page: 1 } });
+  const lastPage = first.data.meta.last_page;
+  if (lastPage <= 1) return first.data.data;
+
+  const rest = await Promise.all(
+    Array.from({ length: lastPage - 1 }, (_, i) =>
+      apiClient.get<PaginatedResponse<User>>("/admin/users", { params: { page: i + 2 } })
+    )
+  );
+  return [first.data.data, ...rest.map((r) => r.data.data)].flat();
 }
 
 export async function fetchAdminUsersPaged(params: {
@@ -925,5 +923,30 @@ export async function fetchPendingWithdrawalCount() {
 // Reviews
 export async function fetchAdminReviews() {
   const { data } = await apiClient.get<{ data: Review[] }>("/admin/reviews");
+  return data.data;
+}
+
+// Direct admin edit of license credentials (applied immediately, clears any pending change)
+export async function adminUpdateLicensePurchaseDetails(id: number, payload: LicensePurchaseDetails) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(`/admin/user-licenses/${id}/purchase-details`, payload);
+  return data.data;
+}
+
+export async function adminUpdateBotLicensePurchaseDetails(id: number, payload: { id: string }) {
+  const { data } = await apiClient.patch<{ data: UserBotLicense }>(
+    `/admin/user-bot-licenses/${id}/purchase-details`,
+    payload
+  );
+  return data.data;
+}
+
+export async function adminUpdateEurekaChallengeLicensePurchaseDetails(
+  id: number,
+  accounts: Array<{ id: string; password: string; server: string }>
+) {
+  const { data } = await apiClient.patch<{ data: UserEurekaChallengeLicense }>(
+    `/admin/user-eureka-challenge-licenses/${id}/purchase-details`,
+    { accounts }
+  );
   return data.data;
 }

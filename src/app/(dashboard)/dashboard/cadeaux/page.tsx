@@ -85,7 +85,11 @@ function RewardClaimCard({
             onEurekaChallengeLicenseAssigned={handleLicenseAssigned}
             open={dialogOpen}
             onOpenChange={setDialogOpen}
-            trigger={<Button size="sm">Traiter</Button>}
+            trigger={
+              <Button size="sm" disabled={fulfilling}>
+                {fulfilling ? "Traitement..." : "Traiter"}
+              </Button>
+            }
           />
         )
       }

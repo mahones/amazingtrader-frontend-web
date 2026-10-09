@@ -6,11 +6,6 @@ export async function fetchLicensePlans() {
   return data.data;
 }
 
-export async function fetchLicensePlan(slug: string) {
-  const { data } = await apiClient.get<{ data: LicensePlan }>(`/license-plans/${slug}`);
-  return data.data;
-}
-
 export async function fetchMyLicenses() {
   const { data } = await apiClient.get<{ data: UserLicense[] }>("/my/licenses");
   return data.data;

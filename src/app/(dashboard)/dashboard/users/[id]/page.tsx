@@ -11,6 +11,7 @@ import { AssignCourseDialog } from "@/components/admin/AssignCourseDialog";
 import { AssignLicenseDialog } from "@/components/admin/AssignLicenseDialog";
 import { ConfirmDeleteDialog } from "@/components/admin/ConfirmDeleteDialog";
 import { AssignPartnerDialog } from "@/components/admin/AssignPartnerDialog";
+import { AdminEditCredentialsDialog } from "@/components/admin/AdminEditCredentialsDialog";
 import { EurekaChallengeLicenseKeysManager } from "@/components/admin/EurekaChallengeLicenseKeysManager";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
@@ -477,15 +478,27 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           )}
           {profile.user_licenses.map((license) => (
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-medium">{license.license_plan.name}</p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-end gap-2">
                   <ActivationBadge isActivated={license.is_activated} />
                   {!license.is_activated && (
                     <Button size="sm" onClick={() => handleActivateLicense(license.id)}>
                       Activer
                     </Button>
                   )}
+                  <AdminEditCredentialsDialog
+                    kind="auto"
+                    licenseId={license.id}
+                    initial={license.purchase_details}
+                    onSaved={(updated) =>
+                      setProfile((prev) =>
+                        prev
+                          ? { ...prev, user_licenses: prev.user_licenses.map((l) => (l.id === license.id ? { ...l, ...updated } : l)) }
+                          : prev
+                      )
+                    }
+                  />
                   <Button
                     size="sm"
                     variant="destructive"
@@ -540,20 +553,32 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           )}
           {profile.user_bot_licenses.map((license) => (
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-medium">
                     {license.bot_license_plan.trading_bot?.name ?? "Bot inconnu"}
                   </p>
                   <p className="text-sm text-muted-foreground">{license.bot_license_plan.name}</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-end gap-2">
                   <ActivationBadge isActivated={license.is_activated} />
                   {!license.is_activated && (
                     <Button size="sm" onClick={() => handleActivateBotLicense(license.id)}>
                       Activer
                     </Button>
                   )}
+                  <AdminEditCredentialsDialog
+                    kind="bot"
+                    licenseId={license.id}
+                    initial={license.purchase_details}
+                    onSaved={(updated) =>
+                      setProfile((prev) =>
+                        prev
+                          ? { ...prev, user_bot_licenses: prev.user_bot_licenses.map((l) => (l.id === license.id ? { ...l, ...updated } : l)) }
+                          : prev
+                      )
+                    }
+                  />
                   <Button size="sm" variant="ghost" className={DELETE_BUTTON_CLASS} onClick={() => setPendingDelete({ kind: "bot", id: license.id })}>
                     Supprimer
                   </Button>
@@ -600,20 +625,38 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
           )}
           {profile.user_eureka_challenge_licenses.map((license) => (
             <div key={license.id} className="space-y-3 rounded-lg border border-border p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-medium">
                     {license.eureka_challenge_license_plan.eureka_challenge?.name ?? "Challenge inconnu"}
                   </p>
                   <p className="text-sm text-muted-foreground">{license.eureka_challenge_license_plan.name}</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-end gap-2">
                   <ActivationBadge isActivated={license.is_activated} />
                   {!license.is_activated && (
                     <Button size="sm" onClick={() => handleActivateEurekaChallengeLicense(license.id)}>
                       Activer
                     </Button>
                   )}
+                  <AdminEditCredentialsDialog
+                    kind="eureka"
+                    licenseId={license.id}
+                    initial={license.purchase_details}
+                    accountCount={license.number_of_accounts ?? license.eureka_challenge_license_plan.number_of_accounts}
+                    onSaved={(updated) =>
+                      setProfile((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              user_eureka_challenge_licenses: prev.user_eureka_challenge_licenses.map((l) =>
+                                l.id === license.id ? { ...l, ...updated } : l
+                              ),
+                            }
+                          : prev
+                      )
+                    }
+                  />
                   <Button
                     size="sm"
                     variant="ghost"

@@ -12,7 +12,7 @@ import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
-import { downloadBotFile, fetchMyBotLicenses } from "@/lib/api/bots";
+import { downloadBotFile, downloadTradingBotFile, fetchMyBotLicenses } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -205,6 +205,7 @@ function BotLicenseCard({
 }) {
   const bot = license.bot_license_plan.trading_bot;
   const files = license.files ?? [];
+  const sharedFiles = license.bot_files ?? [];
 
   return (
     <Card>
@@ -282,6 +283,26 @@ function BotLicenseCard({
         {!license.purchase_details && (
           <div className="flex justify-end">
             <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
+          </div>
+        )}
+
+        {sharedFiles.length > 0 && (
+          <div className="space-y-2 border-t border-border pt-4">
+            <p className="text-sm font-medium">Fichiers du bot</p>
+            <ul className="space-y-1.5">
+              {sharedFiles.map((file: BotFile) => (
+                <li key={file.id} className="flex items-center justify-between text-sm">
+                  <span>{file.label}</span>
+                  <Button
+                    size="sm"
+                    className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30"
+                    onClick={() => downloadTradingBotFile(file)}
+                  >
+                    <Download className="mr-1 size-3.5" /> Télécharger
+                  </Button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

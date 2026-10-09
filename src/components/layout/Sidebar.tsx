@@ -100,7 +100,7 @@ function useSidebarNavItems() {
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isStaff, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navItems = useSidebarNavItems();
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 

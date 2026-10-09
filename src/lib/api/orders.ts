@@ -49,11 +49,6 @@ export async function payOrder(orderId: number, gateway?: PaymentGateway) {
   return data.data;
 }
 
-export async function fetchMyOrders() {
-  const { data } = await apiClient.get<{ data: Order[] }>("/orders");
-  return data.data;
-}
-
 export async function fetchOrder(orderId: number) {
   const { data } = await apiClient.get<{ data: Order }>(`/orders/${orderId}`);
   return data.data;

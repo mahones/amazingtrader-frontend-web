@@ -7,6 +7,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { BotForm } from "@/components/forms/BotForm";
+import { BotFilesManager } from "@/components/forms/BotFilesManager";
 import { BotRequirementsManager } from "@/components/forms/BotRequirementsManager";
 import { BotInstructionsManager } from "@/components/forms/BotInstructionsManager";
 import { BotPerformanceLinksManager } from "@/components/forms/BotPerformanceLinksManager";
@@ -89,6 +90,12 @@ export default function EditBotPage({ params }: { params: Promise<{ id: string }
         botSlug={bot.slug}
         plans={bot.license_plans ?? []}
         onChange={(license_plans) => setBot({ ...bot, license_plans })}
+      />
+
+      <BotFilesManager
+        tradingBotId={bot.id}
+        files={bot.files ?? []}
+        onChange={(files) => setBot({ ...bot, files })}
       />
 
       <BotForm bot={bot} onSaved={setBot} />

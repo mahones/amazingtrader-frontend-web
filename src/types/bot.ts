@@ -75,6 +75,7 @@ export interface TradingBot {
   license_plans?: BotLicensePlan[];
   bot_instructions?: BotInstruction[];
   brokers?: Broker[];
+  files?: BotFile[];
 }
 
 export interface BotLicensePurchaseDetails {
@@ -93,6 +94,8 @@ export interface UserBotLicense {
   product_snapshot?: Record<string, unknown> | null;
   bot_license_plan: BotLicensePlan;
   files?: BotFile[];
+  /** Shared per-bot files (uploaded at bot creation), present once the license is activated. */
+  bot_files?: BotFile[];
 }
 
 export interface BotAssignment {

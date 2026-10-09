@@ -23,9 +23,6 @@ import { fetchMyEnrollments } from "@/lib/api/courses";
 import { fetchMyLicenses } from "@/lib/api/licenses";
 import { fetchMyBotAssignments } from "@/lib/api/bots";
 import {
-  fetchAdminCourses,
-  fetchAdminLicensePlans,
-  fetchAdminUsers,
   fetchPendingActivationCount,
   fetchPendingCredentialsChangeCount,
   fetchPendingPartnerApplicationCount,
@@ -33,6 +30,7 @@ import {
 } from "@/lib/api/admin";
 import {
   fetchAdminKpiTrends,
+  fetchAdminOverviewStats,
   fetchAdminLicenseDistribution,
   fetchAdminRecentActivity,
   fetchAdminRegistrationStats,
@@ -52,40 +50,22 @@ type Stat = {
   caption?: string;
   attention?: boolean;
   trendPercent?: number | null;
+  /** Real cumulative history (one value per day); no sparkline when absent. */
+  series?: number[];
 };
 
-// Decorative accent curve only — it is not a rendering of real historical
-// data (we don't track per-day history for these counters), just a visual
-// echo of the design reference. Seeded from the stat's own value so it stays
-// stable across re-renders instead of reshuffling on every tick.
-function sparklinePoints(seed: number, count = 10) {
-  const points: number[] = [];
-  let value = 45 + (seed % 20);
-  for (let i = 0; i < count; i++) {
-    const n = Math.sin((seed + 1) * (i + 1) * 12.9898) * 43758.5453;
-    const frac = n - Math.floor(n);
-    value += (frac - 0.32) * 26;
-    value = Math.max(12, Math.min(88, value));
-    points.push(value);
-  }
-  return points;
-}
-
-function Sparkline({ seed, tone = "primary" }: { seed: number; tone?: "primary" | "destructive" }) {
+function Sparkline({ series, tone = "primary" }: { series: number[]; tone?: "primary" | "destructive" }) {
   const width = 100;
   const height = 28;
-  const points = useMemo(() => sparklinePoints(Math.max(1, seed)), [seed]);
-  const coords = points.map((p, i) => ({
-    x: (i / (points.length - 1)) * width,
-    y: height - (p / 100) * height,
+  const min = Math.min(...series);
+  const max = Math.max(...series);
+  const range = max - min || 1;
+  const coords = series.map((v, i) => ({
+    x: (i / (series.length - 1)) * width,
+    // Flat series (no change over the window) sits on the midline.
+    y: max === min ? height / 2 : height - 2 - ((v - min) / range) * (height - 4),
   }));
-
-  let d = `M ${coords[0].x},${coords[0].y}`;
-  for (let i = 0; i < coords.length - 1; i++) {
-    const mid = { x: (coords[i].x + coords[i + 1].x) / 2, y: (coords[i].y + coords[i + 1].y) / 2 };
-    d += ` Q ${coords[i].x},${coords[i].y} ${mid.x},${mid.y}`;
-  }
-  d += ` T ${coords[coords.length - 1].x},${coords[coords.length - 1].y}`;
+  const d = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x},${c.y}`).join(" ");
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-7 w-full overflow-visible" preserveAspectRatio="none">
@@ -101,7 +81,7 @@ function Sparkline({ seed, tone = "primary" }: { seed: number; tone?: "primary" 
   );
 }
 
-function StatTile({ stat, index }: { stat: Stat; index: number }) {
+function StatTile({ stat }: { stat: Stat }) {
   const content = (
     <Card
       className={cn(
@@ -140,9 +120,11 @@ function StatTile({ stat, index }: { stat: Stat; index: number }) {
             </div>
             {stat.caption && <p className="mt-0.5 text-xs text-muted-foreground/70">{stat.caption}</p>}
           </div>
-          <div className="w-20 shrink-0">
-            <Sparkline seed={stat.value + index} tone={stat.attention ? "destructive" : "primary"} />
-          </div>
+          {stat.series && stat.series.length > 1 && (
+            <div className="w-20 shrink-0">
+              <Sparkline series={stat.series} tone={stat.attention ? "destructive" : "primary"} />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -232,47 +214,45 @@ export default function DashboardOverviewPage() {
     async function load() {
       if (isStaff) {
         const [
-          courses,
-          plans,
-          users,
+          overview,
           pendingActivations,
           pendingCredentialsChanges,
           pendingWithdrawals,
           pendingPartnerApplications,
           kpiTrends,
         ] = await Promise.all([
-          fetchAdminCourses(),
-          fetchAdminLicensePlans(),
-          fetchAdminUsers(),
+          fetchAdminOverviewStats(),
           fetchPendingActivationCount(),
           fetchPendingCredentialsChangeCount(),
           fetchPendingWithdrawalCount(),
           fetchPendingPartnerApplicationCount(),
           fetchAdminKpiTrends(),
         ]);
-        const publishedCourses = courses.filter((c) => c.is_published).length;
-        const activePlans = plans.filter((p) => p.is_active).length;
-        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-        const newUsersThisWeek = users.filter((u) => new Date(u.created_at).getTime() >= sevenDaysAgo).length;
 
         setStats([
           {
             label: "Formations publiées",
-            value: publishedCourses,
-            caption: `sur ${courses.length} au total`,
+            value: overview.courses.published,
+            href: "/dashboard/formations",
+            caption: `sur ${overview.courses.total} au total`,
             trendPercent: kpiTrends.formations,
+            series: overview.courses.series,
           },
           {
             label: "Auto-trading créés",
-            value: plans.length,
-            caption: `${activePlans} actif${activePlans > 1 ? "s" : ""}`,
+            value: overview.plans.total,
+            href: "/dashboard/auto-trading",
+            caption: `${overview.plans.active} actif${overview.plans.active > 1 ? "s" : ""}`,
             trendPercent: kpiTrends.auto_trading,
+            series: overview.plans.series,
           },
           {
             label: "Utilisateurs",
-            value: users.length,
-            caption: `+${newUsersThisWeek} cette semaine`,
+            value: overview.users.total,
+            href: "/dashboard/users",
+            caption: `+${overview.users.new_this_week} cette semaine`,
             trendPercent: kpiTrends.users,
+            series: overview.users.series,
           },
           {
             label: "Attente d'activation",
@@ -456,8 +436,8 @@ export default function DashboardOverviewPage() {
           </>
         ) : (
           <>
-            {stats.map((stat, index) => (
-              <StatTile key={stat.label} stat={stat} index={index} />
+            {stats.map((stat) => (
+              <StatTile key={stat.label} stat={stat} />
             ))}
             {!isStaff && (
               <ProgressRingTile
@@ -479,6 +459,7 @@ export default function DashboardOverviewPage() {
         <div className="lg:col-span-2">
           <TrendChartCard
             title={isStaff ? `Revenus des ${period} derniers jours` : `Performance de mes bots sur ${period} jours`}
+            href={isStaff ? "/dashboard/orders" : undefined}
             points={trendPoints}
             loading={trendLoading}
             period={period}
@@ -500,6 +481,7 @@ export default function DashboardOverviewPage() {
       <div className="grid gap-5 lg:grid-cols-2">
         <MonthlyBarChart
           title={isStaff ? "Inscriptions par mois" : "Mes formations par mois"}
+          href={isStaff ? "/dashboard/users" : undefined}
           points={monthlyPoints}
           loading={monthlyLoading}
           emptyLabel={isStaff ? "Aucune inscription récente" : "Aucune formation récente"}

@@ -42,6 +42,7 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
   const [managedCapital, setManagedCapital] = useState(bot?.managed_capital?.toString() ?? "");
   const [position, setPosition] = useState(bot?.position?.toString() ?? "");
   const [isActive, setIsActive] = useState(bot?.is_active ?? true);
+  const [files, setFiles] = useState<File[]>([]);
   const [brokers, setBrokers] = useState<Broker[]>([]);
   const [brokerIds, setBrokerIds] = useState<number[]>(bot?.brokers?.map((b) => b.id) ?? []);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +74,13 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
     brokerIds.forEach((id) => formData.append("broker_ids[]", String(id)));
     if (imageFile) formData.append("image", imageFile);
     if (previewImageFile) formData.append("preview_image_file", previewImageFile);
+    // Files are only sent on creation; once created they are managed from the edit page.
+    if (!isEditing) {
+      files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+        formData.append(`labels[${index}]`, file.name);
+      });
+    }
 
     try {
       const saved =
@@ -204,6 +212,21 @@ export function BotForm({ bot, onSaved }: { bot?: TradingBot; onSaved: (bot: Tra
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>
+
+          {!isEditing && (
+            <div className="space-y-2">
+              <Label htmlFor="bot-files">Fichiers du bot (optionnel)</Label>
+              <Input
+                id="bot-files"
+                type="file"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+              />
+              <p className="text-xs text-muted-foreground">
+                Téléchargeables par les clients ayant acheté ce bot, une fois leur licence activée.
+              </p>
+            </div>
+          )}
 
           <div className="flex items-center gap-3">
             <Switch id="bot-active" checked={isActive} onCheckedChange={setIsActive} />

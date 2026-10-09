@@ -1,6 +1,7 @@
 import { apiClient } from "./client";
 import type {
   ActivityItem,
+  AdminOverviewStats,
   AdminKpiTrends,
   LicenseDistributionPoint,
   MonthlyPoint,
@@ -60,5 +61,10 @@ export async function fetchAdminKpiTrends() {
 
 export async function fetchMyKpiTrends() {
   const { data } = await apiClient.get<{ data: MyKpiTrends }>("/my/stats/kpi-trends");
+  return data.data;
+}
+
+export async function fetchAdminOverviewStats() {
+  const { data } = await apiClient.get<{ data: AdminOverviewStats }>("/admin/stats/overview");
   return data.data;
 }

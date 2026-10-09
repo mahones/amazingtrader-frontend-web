@@ -13,11 +13,6 @@ export async function fetchTradingBots() {
   return data.data;
 }
 
-export async function fetchTradingBot(slug: string) {
-  const { data } = await apiClient.get<{ data: TradingBot }>(`/trading-bots/${slug}`);
-  return data.data;
-}
-
 export async function fetchMyBotAssignments() {
   const { data } = await apiClient.get<{ data: BotAssignment[] }>("/my/bot-assignments");
   return data.data;
@@ -44,6 +39,20 @@ export async function updateBotLicensePurchaseDetails(
     details
   );
   return data.data;
+}
+
+export async function downloadTradingBotFile(botFile: BotFile) {
+  const { data } = await apiClient.get(`/my/trading-bot-files/${botFile.id}/download`, {
+    responseType: "blob",
+  });
+  const url = URL.createObjectURL(data as Blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = botFile.original_filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 export async function downloadBotFile(botFile: BotFile) {

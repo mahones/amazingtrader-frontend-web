@@ -27,13 +27,14 @@ const PURCHASE_FILTERS = [
   { value: "course", label: "Formations payées" },
   { value: "license", label: "Licence auto-trading" },
   { value: "bot_license", label: "Bots de trading achetés" },
+  { value: "eureka_challenge", label: "Challenges Eureka achetés" },
 ];
 
 const LICENSE_FILTERS = [
   { value: "tout", label: "Toutes les licences" },
   { value: "activated", label: "Licences activées" },
   { value: "pending", label: "Licences non activées (En attente)" },
-  { value: "pending_changes", label: "Modifications en attente d'approbation" },
+  { value: "pending_changes", label: "Modifications à approuver" },
 ];
 
 export default function DashboardUsersPage() {

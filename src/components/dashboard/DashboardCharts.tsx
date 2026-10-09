@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -100,6 +101,18 @@ function AreaCurve({ points }: { points: TrendPoint[] }) {
   );
 }
 
+function CardTitleLink({ title, href }: { title: string; href?: string }) {
+  if (!href) return <CardTitle>{title}</CardTitle>;
+  return (
+    <CardTitle>
+      <Link href={href} className="inline-flex items-center gap-1 hover:text-primary">
+        {title}
+        <ArrowUpRight className="size-4 text-muted-foreground" />
+      </Link>
+    </CardTitle>
+  );
+}
+
 export function TrendChartCard({
   title,
   points,
@@ -110,7 +123,9 @@ export function TrendChartCard({
   changePercent,
   changeLabel = "sur la période",
   emptyLabel = "Aucune donnée sur la période",
+  href,
 }: {
+  href?: string;
   title: string;
   points: TrendPoint[];
   loading: boolean;
@@ -131,7 +146,7 @@ export function TrendChartCard({
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
-        <CardTitle>{title}</CardTitle>
+        <CardTitleLink title={title} href={href} />
         <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1">
           {PERIODS.map((p) => (
             <button
@@ -195,7 +210,9 @@ export function MonthlyBarChart({
   points,
   loading,
   emptyLabel = "Aucune donnée",
+  href,
 }: {
+  href?: string;
   title: string;
   points: MonthlyPoint[];
   loading: boolean;
@@ -207,7 +224,7 @@ export function MonthlyBarChart({
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitleLink title={title} href={href} />
       </CardHeader>
       <CardContent className="flex min-h-56 flex-1 flex-col">
         {loading ? (

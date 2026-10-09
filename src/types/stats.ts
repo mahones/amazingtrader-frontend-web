@@ -36,3 +36,9 @@ export interface MyKpiTrends {
   auto_trading: number | null;
   bots: number | null;
 }
+
+export interface AdminOverviewStats {
+  courses: { total: number; published: number; series: number[] };
+  plans: { total: number; active: number; series: number[] };
+  users: { total: number; new_this_week: number; series: number[] };
+}

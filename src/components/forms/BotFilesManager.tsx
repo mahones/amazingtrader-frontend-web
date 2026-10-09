@@ -7,7 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { extractApiError } from "@/lib/api/client";
-import { createAdminBotFiles, deleteAdminBotFile } from "@/lib/api/admin";
+import {
+  createAdminBotFiles,
+  createAdminTradingBotFiles,
+  deleteAdminBotFile,
+  deleteAdminTradingBotFile,
+} from "@/lib/api/admin";
 import type { BotFile } from "@/types/bot";
 
 function formatSize(bytes: number | null) {
@@ -17,12 +22,18 @@ function formatSize(bytes: number | null) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
 }
 
+/**
+ * Manages either the files of one user's bot license (`userBotLicenseId`) or
+ * the files shared by every buyer of a bot (`tradingBotId`).
+ */
 export function BotFilesManager({
   userBotLicenseId,
+  tradingBotId,
   files,
   onChange,
 }: {
-  userBotLicenseId: number;
+  userBotLicenseId?: number;
+  tradingBotId?: number;
   files: BotFile[];
   onChange: (next: BotFile[]) => void;
 }) {
@@ -44,7 +55,10 @@ export function BotFilesManager({
         formData.append(`files[${index}]`, file);
         formData.append(`labels[${index}]`, label || file.name);
       });
-      const created = await createAdminBotFiles(userBotLicenseId, formData);
+      const created =
+        tradingBotId !== undefined
+          ? await createAdminTradingBotFiles(tradingBotId, formData)
+          : await createAdminBotFiles(userBotLicenseId as number, formData);
       onChange(created);
       setLabel("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -56,14 +70,17 @@ export function BotFilesManager({
   }
 
   async function handleDelete(id: number) {
-    await deleteAdminBotFile(id);
+    if (tradingBotId !== undefined) await deleteAdminTradingBotFile(id);
+    else await deleteAdminBotFile(id);
     onChange(files.filter((f) => f.id !== id));
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Fichiers de la licence ({files.length})</CardTitle>
+        <CardTitle>
+          {tradingBotId !== undefined ? "Fichiers du bot (pour tous les acheteurs)" : "Fichiers de la licence"} ({files.length})
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <ul className="divide-y divide-border">

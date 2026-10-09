@@ -6,11 +6,6 @@ export async function fetchCourses(params?: { level?: string; category?: string 
   return data.data;
 }
 
-export async function fetchCourse(slug: string) {
-  const { data } = await apiClient.get<{ data: Course }>(`/courses/${slug}`);
-  return data.data;
-}
-
 export async function fetchMyEnrollments() {
   const { data } = await apiClient.get<{ data: Enrollment[] }>("/my/enrollments");
   return data.data;
