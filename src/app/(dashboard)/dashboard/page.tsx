@@ -8,6 +8,8 @@ import {
   Bot,
   KeyRound,
   MessageSquarePlus,
+  PlayCircle,
+  Plus,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -503,6 +505,12 @@ export default function DashboardOverviewPage() {
             { href: "/dashboard/formations", label: isStaff ? "Gérer les formations" : "Mes formations", icon: BookOpen },
             { href: "/dashboard/auto-trading", label: isStaff ? "Gérer l'auto-trading" : "Mon auto-trading", icon: KeyRound },
             { href: "/dashboard/bots", label: isStaff ? "Gérer les bots" : "Mes bots", icon: Bot },
+            ...(isStaff
+              ? [
+                  { href: "/dashboard/tutoriels/new", label: "Nouveau tutoriel", icon: Plus },
+                  { href: "/dashboard/tutoriels", label: "Tous les tutoriels", icon: PlayCircle },
+                ]
+              : []),
           ].map((link) => (
             <Link
               key={link.href}

@@ -18,6 +18,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  PlayCircle,
   Megaphone,
   MessageSquareText,
   Percent,
@@ -55,6 +56,7 @@ function useSidebarNavItems() {
   const contenu = isStaff
     ? [
         { href: "/dashboard/articles", label: "Articles", icon: FileText },
+        { href: "/dashboard/tutoriels", label: "Tutoriels", icon: PlayCircle },
         { href: "/dashboard/announcements", label: "Annonces", icon: Megaphone },
         { href: "/dashboard/faq", label: "FAQ", icon: HelpCircle },
         { href: "/dashboard/brokers", label: "Courtiers", icon: Building2 },

@@ -26,6 +26,7 @@ import type {
   UserEurekaChallengeLicense,
 } from "@/types/eurekaChallenge";
 import type { Post } from "@/types/post";
+import type { Tutorial } from "@/types/tutorial";
 import type { Event } from "@/types/event";
 import type { Faq } from "@/types/faq";
 import type { User, UserProfile } from "@/types/user";
@@ -949,4 +950,29 @@ export async function adminUpdateEurekaChallengeLicensePurchaseDetails(
     { accounts }
   );
   return data.data;
+}
+
+// Tutorials
+export async function fetchAdminTutorials() {
+  const { data } = await apiClient.get<{ data: Tutorial[] }>("/admin/tutorials");
+  return data.data;
+}
+
+export async function fetchAdminTutorial(id: number) {
+  const { data } = await apiClient.get<{ data: Tutorial }>(`/admin/tutorials/${id}`);
+  return data.data;
+}
+
+export async function createAdminTutorial(payload: Partial<Tutorial>) {
+  const { data } = await apiClient.post<{ data: Tutorial }>("/admin/tutorials", payload);
+  return data.data;
+}
+
+export async function updateAdminTutorial(id: number, payload: Partial<Tutorial>) {
+  const { data } = await apiClient.put<{ data: Tutorial }>(`/admin/tutorials/${id}`, payload);
+  return data.data;
+}
+
+export async function deleteAdminTutorial(id: number) {
+  await apiClient.delete(`/admin/tutorials/${id}`);
 }

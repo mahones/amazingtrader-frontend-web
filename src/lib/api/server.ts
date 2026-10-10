@@ -2,6 +2,7 @@ import type { Course } from "@/types/course";
 import type { LicensePlan } from "@/types/license";
 import type { TradingBot } from "@/types/bot";
 import type { Post } from "@/types/post";
+import type { Tutorial } from "@/types/tutorial";
 import type { Broker } from "@/types/broker";
 import type { Faq } from "@/types/faq";
 import type { VipFormation } from "@/types/vipFormation";
@@ -80,5 +81,15 @@ export async function getFaqs(params?: { category?: string; featured?: boolean }
   if (params?.featured) query.set("featured", "1");
   const qs = query.toString();
   const { data } = await getJson<{ data: Faq[] }>(`/faqs${qs ? `?${qs}` : ""}`);
+  return data;
+}
+
+export async function getTutorials() {
+  const { data } = await getJson<{ data: Tutorial[] }>("/tutorials");
+  return data;
+}
+
+export async function getTutorial(slug: string) {
+  const { data } = await getJson<{ data: Tutorial }>(`/tutorials/${slug}`);
   return data;
 }
