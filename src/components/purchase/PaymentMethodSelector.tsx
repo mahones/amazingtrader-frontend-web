@@ -12,7 +12,7 @@ const METHODS: {
   icon: typeof CreditCard;
   disabled?: boolean;
 }[] = [
-  { value: "paypal", label: "PayPal", description: "Carte bancaire ou solde PayPal", icon: CreditCard },
+  { value: "paypal", label: "Carte / PayPal", description: "Carte bancaire (sans compte) ou PayPal", icon: CreditCard },
   { value: "payerurl", label: "PayerURL", description: "Paiement en cryptomonnaie", icon: Bitcoin },
   {
     value: "cinetpay",

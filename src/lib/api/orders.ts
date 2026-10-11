@@ -75,14 +75,15 @@ export async function simulatePayerUrlPayment(orderId: number, outcome: "paid" |
   return data;
 }
 
-/**
- * PayPal is redirect-based, not synchronous like payOrder(): returns the
- * PayPal approval URL to send the browser to. Once the buyer approves and
- * returns to the checkout confirmation page, call capturePayPalPayment().
- */
-export async function payOrderWithPayPal(orderId: number) {
-  const { data } = await apiClient.post<{ approve_url: string }>(`/orders/${orderId}/pay/paypal`);
-  return data.approve_url;
+/** Creates the PayPal order for the JS SDK buttons (PayPal / card popup, no redirect). */
+export async function createPayPalSdkOrder(orderId: number) {
+  const { data } = await apiClient.post<{ paypal_order_id: string }>(`/orders/${orderId}/pay/paypal/sdk-order`);
+  return data.paypal_order_id;
+}
+
+export async function fetchPayPalConfig() {
+  const { data } = await apiClient.get<{ client_id: string }>("/paypal/config");
+  return data.client_id;
 }
 
 export async function capturePayPalPayment(orderId: number) {

@@ -2,7 +2,7 @@
 
 import { Suspense, use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,6 @@ import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { fetchMyEurekaChallengeLicenses } from "@/lib/api/eurekaChallenges";
 import {
-  capturePayPalPayment,
   fetchOrder,
   fetchPayerUrlConfig,
   simulatePayerUrlPayment,
@@ -47,7 +46,6 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
   const orderId = Number(orderIdParam);
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [fakeMode, setFakeMode] = useState<boolean | null>(null);
@@ -57,7 +55,6 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [eurekaAccounts, setEurekaAccounts] = useState<number | null>(null);
   const hasHandledPaidRedirectRef = useRef(false);
-  const hasCapturedPayPalRef = useRef(false);
   const hasVerifiedCinetPayRef = useRef(false);
 
   async function reload() {
@@ -98,20 +95,6 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fakeMode, order?.gateway, order?.status]);
-
-  // PayPal redirects the buyer back here after approval, with ?PayerID=...
-  // in the URL (absent if they hit "cancel" on PayPal's page instead).
-  // Capture immediately rather than waiting on the webhook, for a fast
-  // confirmation — the webhook is only a fallback for abandoned tabs.
-  useEffect(() => {
-    if (order?.gateway !== "paypal" || order?.status !== "pending" || hasCapturedPayPalRef.current) return;
-    if (!searchParams.get("PayerID")) return;
-
-    hasCapturedPayPalRef.current = true;
-    capturePayPalPayment(orderId)
-      .then((fresh) => setOrder(fresh))
-      .catch((err) => setCaptureError(extractApiError(err, "Impossible de finaliser le paiement PayPal.")));
-  }, [order?.gateway, order?.status, orderId, searchParams]);
 
   // CinetPay redirects the buyer back here whether the mobile-money payment
   // succeeded or failed (success_url === failed_url). Re-check the real
@@ -227,27 +210,6 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
               </div>
             )}
             {fakeMode === false && <Alert>En attente de confirmation du paiement par PayerURL...</Alert>}
-          </CardContent>
-        </Card>
-      )}
-
-      {order && order.status === "pending" && order.gateway === "paypal" && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{formatCurrency(order.total_amount, order.currency)}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {searchParams.get("PayerID") ? (
-              <Alert>Finalisation du paiement PayPal...</Alert>
-            ) : (
-              <Alert variant="error">
-                Paiement PayPal annulé.{" "}
-                <Link href="/" className="font-medium underline">
-                  Retour à l&apos;accueil
-                </Link>
-              </Alert>
-            )}
-            {captureError && <Alert variant="error">{captureError}</Alert>}
           </CardContent>
         </Card>
       )}
