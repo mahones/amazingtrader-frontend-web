@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FUNDING, PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { extractApiError } from "@/lib/api/client";
 import { fetchPayPalConfig } from "@/lib/api/orders";
 
 /**
@@ -23,6 +24,12 @@ export function PayPalSdkButtons({
   onError: (message: string) => void;
 }) {
   const [clientId, setClientId] = useState<string | null>(null);
+  // PayPal expands the card button's iframe in place (absolutely positioned, ~950px tall)
+  // instead of opening a popup, so it would cover the content below. Reserve that room.
+  const [cardFormOpen, setCardFormOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  // The SDK's onError only receives a generic wrapper error; keep our API's real message.
+  const lastCreateError = useRef<string | null>(null);
 
   useEffect(() => {
     fetchPayPalConfig()
@@ -36,24 +43,45 @@ export function PayPalSdkButtons({
   const buttonProps = {
     disabled,
     style: { layout: "vertical", shape: "rect", height: 48 } as const,
-    createOrder,
+    createOrder: async () => {
+      lastCreateError.current = null;
+      try {
+        return await createOrder();
+      } catch (err) {
+        lastCreateError.current = extractApiError(err, "Impossible de créer le paiement.");
+        throw err;
+      }
+    },
     onApprove: async () => {
       try {
         await onApprove();
       } catch (err) {
+        setCardFormOpen(false);
         onError(err instanceof Error ? err.message : "Le paiement a échoué. Veuillez réessayer.");
       }
     },
-    onError: () => onError("Le paiement a échoué. Veuillez réessayer."),
+    onCancel: () => setCardFormOpen(false),
+    onError: (err: unknown) => {
+      console.error("PayPal error", err);
+      setCardFormOpen(false);
+      onError(lastCreateError.current ?? "Le paiement a échoué ou a été refusé par PayPal. Veuillez réessayer ou utiliser une autre carte.");
+    },
   };
+
+  function handleCardClick() {
+    setCardFormOpen(true);
+    setTimeout(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+  }
 
   return (
     <PayPalScriptProvider
       options={{ clientId, currency: currency.toUpperCase(), intent: "capture", components: "buttons", locale: "fr_FR" }}
     >
-      <div className="space-y-3">
+      <div className="isolate space-y-3">
         <PayPalButtons {...buttonProps} fundingSource={FUNDING.PAYPAL} />
-        <PayPalButtons {...buttonProps} fundingSource={FUNDING.CARD} />
+        <div ref={cardRef} className="scroll-mt-32" style={{ minHeight: cardFormOpen ? 1000 : undefined }}>
+          <PayPalButtons {...buttonProps} fundingSource={FUNDING.CARD} onClick={handleCardClick} />
+        </div>
       </div>
     </PayPalScriptProvider>
   );

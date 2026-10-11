@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PaymentMethodSelector, type CheckoutPaymentMethod } from "@/components/purchase/PaymentMethodSelector";
-import { PayPalSdkButtons } from "@/components/purchase/PayPalSdkButtons";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
 import { fetchCourses } from "@/lib/api/courses";
@@ -17,9 +16,7 @@ import { fetchTradingBots } from "@/lib/api/bots";
 import { fetchEurekaChallenges } from "@/lib/api/eurekaChallenges";
 import { fetchVipFormations } from "@/lib/api/vipFormations";
 import {
-  capturePayPalPayment,
   createOrder,
-  createPayPalSdkOrder,
   payOrderWithCinetPay,
   payOrderWithPayerUrl,
   validatePartnerCode,
@@ -69,8 +66,6 @@ function CheckoutPageContent() {
   const [acceptedContract, setAcceptedContract] = useState(false);
   const [pending, setPending] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
-  // Reused across PayPal button clicks so a cancel/retry doesn't pile up pending orders.
-  const paypalOrderIdRef = useRef<number | null>(null);
 
   const [codeInput, setCodeInput] = useState("");
   const [appliedCode, setAppliedCode] = useState<{
@@ -239,35 +234,6 @@ function CheckoutPageContent() {
     setCodeError(null);
   }
 
-  useEffect(() => {
-    paypalOrderIdRef.current = null;
-  }, [appliedCode]);
-
-  async function createPayPalButtonOrder() {
-    if (!type || !canPay) throw new Error("Veuillez accepter les conditions.");
-    setPayError(null);
-    if (paypalOrderIdRef.current === null) {
-      const order = await createOrder(
-        [{ type, id }],
-        appliedCode?.kind === "promo" ? appliedCode.code : undefined,
-        appliedCode?.kind === "partner" ? appliedCode.code : undefined
-      );
-      paypalOrderIdRef.current = order.id;
-    }
-    return createPayPalSdkOrder(paypalOrderIdRef.current);
-  }
-
-  async function capturePayPalButtonOrder() {
-    const orderId = paypalOrderIdRef.current;
-    if (orderId === null) return;
-    try {
-      await capturePayPalPayment(orderId);
-    } catch (err) {
-      throw new Error(extractApiError(err, "Le paiement a été refusé. Veuillez réessayer."));
-    }
-    router.push(`/checkout/${orderId}/confirm`);
-  }
-
   async function handlePay() {
     if (!type || !method || !canPay) return;
     setPending(true);
@@ -278,6 +244,10 @@ function CheckoutPageContent() {
         appliedCode?.kind === "promo" ? appliedCode.code : undefined,
         appliedCode?.kind === "partner" ? appliedCode.code : undefined
       );
+      if (method === "paypal") {
+        router.push(`/checkout/${order.id}/pay`);
+        return;
+      }
       if (method === "payerurl") {
         window.location.href = await payOrderWithPayerUrl(order.id);
         return;
@@ -419,26 +389,9 @@ function CheckoutPageContent() {
 
           {payError && <Alert variant="error">{payError}</Alert>}
 
-          {method === "paypal" ? (
-            <div className="space-y-2">
-              {!canPay && (
-                <p className="text-sm text-muted-foreground">
-                  Acceptez les conditions ci-dessus pour activer le paiement.
-                </p>
-              )}
-              <PayPalSdkButtons
-                disabled={!canPay}
-                currency="USD"
-                createOrder={createPayPalButtonOrder}
-                onApprove={capturePayPalButtonOrder}
-                onError={setPayError}
-              />
-            </div>
-          ) : (
-            <Button onClick={handlePay} disabled={!method || !canPay || pending} className="w-full" size="lg">
-              {pending ? "Traitement..." : "Payer maintenant"}
-            </Button>
-          )}
+          <Button onClick={handlePay} disabled={!method || !canPay || pending} className="w-full" size="lg">
+            {pending ? "Traitement..." : "Payer maintenant"}
+          </Button>
         </>
       )}
     </div>
