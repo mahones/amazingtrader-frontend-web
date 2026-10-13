@@ -23,7 +23,7 @@ export default async function ArticlesPage({
       <div className="mt-8">
         <PostFilters />
       </div>
-
+      {/* ajouter les filtres */}
       {posts.length > 0 ? (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
