@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatDuration } from "@/lib/utils";
 import type { LicensePlan } from "@/types/license";
@@ -41,6 +42,11 @@ export function LicensePricingGrid({
               <span className="text-3xl font-bold text-primary">{formatCurrency(plan.price)}</span>
               <span className="text-sm text-muted-foreground"> / {formatDuration(plan.duration_value, plan.duration_unit)}</span>
             </div>
+            {plan.number_of_accounts > 1 && (
+              <Badge variant="secondary" className="mt-2 w-fit">
+                {plan.number_of_accounts} comptes inclus
+              </Badge>
+            )}
           </CardHeader>
           <CardContent className="flex-1 space-y-3">
             <ul className="space-y-2 text-sm">

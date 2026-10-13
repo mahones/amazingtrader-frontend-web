@@ -3,31 +3,37 @@
 import { useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Label } from "@/components/ui/label";
+import { LicenseAccountsFields } from "@/components/licenses/LicenseAccountsFields";
 import { extractApiError } from "@/lib/api/client";
 import { updatePurchaseDetails } from "@/lib/api/licenses";
 import { updateBotLicensePurchaseDetails } from "@/lib/api/bots";
 import type { PurchasableType } from "@/lib/api/orders";
-import { digitsOnly } from "@/lib/utils";
-import type { UserLicense } from "@/types/license";
+import {
+  AUTO_TRADING_FIELDS,
+  BOT_FIELDS,
+  fillAccounts,
+  toAccountPayload,
+  type AccountDraft,
+} from "@/lib/license-accounts";
+import type { LicenseAccount, UserLicense } from "@/types/license";
 import type { UserBotLicense } from "@/types/bot";
 
 export function PostPurchaseDetailsForm({
   type,
   licenseId,
+  numberOfAccounts = 1,
   initialValues,
   onSubmitted,
 }: {
   type: Extract<PurchasableType, "license_plan" | "bot_license_plan">;
   licenseId: number;
-  initialValues?: Partial<{ id: string; password: string; server: string }>;
+  /** How many accounts the plan includes (one block of fields per account). */
+  numberOfAccounts?: number;
+  initialValues?: Array<Partial<LicenseAccount>> | null;
   onSubmitted: (result: UserLicense | UserBotLicense) => void;
 }) {
-  const [id, setId] = useState(initialValues?.id ?? "");
-  const [password, setPassword] = useState(initialValues?.password ?? "");
-  const [server, setServer] = useState(initialValues?.server ?? "");
+  const fields = type === "license_plan" ? AUTO_TRADING_FIELDS : BOT_FIELDS;
+  const [accounts, setAccounts] = useState<AccountDraft[]>(() => fillAccounts(initialValues, numberOfAccounts));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,11 +43,9 @@ export function PostPurchaseDetailsForm({
     setError(null);
     try {
       if (type === "license_plan") {
-        const result = await updatePurchaseDetails(licenseId, { id, password, server });
-        onSubmitted(result);
+        onSubmitted(await updatePurchaseDetails(licenseId, toAccountPayload(accounts, AUTO_TRADING_FIELDS)));
       } else {
-        const result = await updateBotLicensePurchaseDetails(licenseId, { id });
-        onSubmitted(result);
+        onSubmitted(await updateBotLicensePurchaseDetails(licenseId, toAccountPayload(accounts, BOT_FIELDS)));
       }
     } catch (err) {
       setError(extractApiError(err, "Impossible d'enregistrer ces informations."));
@@ -52,35 +56,7 @@ export function PostPurchaseDetailsForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="ppd-id">ID</Label>
-        <Input
-          id="ppd-id"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={id}
-          onChange={(e) => setId(digitsOnly(e.target.value))}
-          required
-        />
-      </div>
-
-      {type === "license_plan" && (
-        <>
-          <div className="space-y-2">
-            <Label htmlFor="ppd-password">Mot de passe</Label>
-            <PasswordInput
-              id="ppd-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ppd-server">Serveur</Label>
-            <Input id="ppd-server" value={server} onChange={(e) => setServer(e.target.value)} required />
-          </div>
-        </>
-      )}
+      <LicenseAccountsFields idPrefix="ppd" accounts={accounts} onChange={setAccounts} fields={fields} />
 
       {error && <Alert variant="error">{error}</Alert>}
 

@@ -13,20 +13,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { assignEurekaChallengeLicenseToUser, assignBotLicenseToUser, assignLicenseToUser } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import { LicenseAccountsFields } from "@/components/licenses/LicenseAccountsFields";
+import {
+  AUTO_TRADING_FIELDS,
+  BOT_FIELDS,
+  fillAccounts,
+  toAccountPayload,
+  type AccountDraft,
+} from "@/lib/license-accounts";
 import { toast } from "@/lib/toast";
-import { digitsOnly } from "@/lib/utils";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
 import type { EurekaChallengeLicensePlan, UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
-import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
+import type { LicensePlan, UserLicense } from "@/types/license";
 
 type LicenseType = "auto_trading" | "bot_trading" | "eureka_challenge";
-
-const emptyForm: LicensePurchaseDetails = { id: "", password: "", server: "" };
 
 export function AssignLicenseDialog({
   userId,
@@ -58,7 +62,7 @@ export function AssignLicenseDialog({
   const setOpen = onOpenChangeProp ?? setOpenState;
   const [type, setType] = useState<LicenseType>("auto_trading");
   const [planId, setPlanId] = useState("");
-  const [form, setForm] = useState<LicensePurchaseDetails>(emptyForm);
+  const [accounts, setAccounts] = useState<AccountDraft[]>(() => fillAccounts(null, 1));
   const [activate, setActivate] = useState(true);
   const [purchasedAt, setPurchasedAt] = useState("");
   const [sendEmail, setSendEmail] = useState(false);
@@ -68,7 +72,7 @@ export function AssignLicenseDialog({
   function reset() {
     setType("auto_trading");
     setPlanId("");
-    setForm(emptyForm);
+    setAccounts(fillAccounts(null, 1));
     setActivate(true);
     setPurchasedAt("");
     setSendEmail(false);
@@ -84,6 +88,19 @@ export function AssignLicenseDialog({
             value: String(plan.id),
             label: `${plan.challengeName} — ${plan.name}`,
           }));
+
+  // One block of (optional) fields per account of the chosen plan.
+  function selectPlan(nextType: LicenseType, nextPlanId: string) {
+    const plan =
+      nextType === "auto_trading"
+        ? licensePlans.find((p) => String(p.id) === nextPlanId)
+        : nextType === "bot_trading"
+          ? botLicensePlans.find((p) => String(p.id) === nextPlanId)
+          : undefined;
+    setType(nextType);
+    setPlanId(nextPlanId);
+    setAccounts(fillAccounts(null, plan?.number_of_accounts ?? 1));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -105,9 +122,7 @@ export function AssignLicenseDialog({
           license_plan_id: Number(planId),
           activate,
           ...dating,
-          id: form.id,
-          password: form.password,
-          server: form.server,
+          accounts: toAccountPayload(accounts, AUTO_TRADING_FIELDS),
         });
         onLicenseAssigned(license);
       } else if (type === "bot_trading") {
@@ -115,7 +130,7 @@ export function AssignLicenseDialog({
           bot_license_plan_id: Number(planId),
           activate,
           ...dating,
-          id: form.id,
+          accounts: toAccountPayload(accounts, BOT_FIELDS),
         });
         onBotLicenseAssigned(license);
       } else {
@@ -163,10 +178,7 @@ export function AssignLicenseDialog({
               type="button"
               variant={type === "auto_trading" ? "default" : "outline"}
               className="min-w-fit flex-1"
-              onClick={() => {
-                setType("auto_trading");
-                setPlanId("");
-              }}
+              onClick={() => selectPlan("auto_trading", "")}
             >
               Auto-Trading
             </Button>
@@ -174,10 +186,7 @@ export function AssignLicenseDialog({
               type="button"
               variant={type === "bot_trading" ? "default" : "outline"}
               className="min-w-fit flex-1"
-              onClick={() => {
-                setType("bot_trading");
-                setPlanId("");
-              }}
+              onClick={() => selectPlan("bot_trading", "")}
             >
               Bot de Trading
             </Button>
@@ -185,10 +194,7 @@ export function AssignLicenseDialog({
               type="button"
               variant={type === "eureka_challenge" ? "default" : "outline"}
               className="min-w-fit flex-1"
-              onClick={() => {
-                setType("eureka_challenge");
-                setPlanId("");
-              }}
+              onClick={() => selectPlan("eureka_challenge", "")}
             >
               Challenge Eureka
             </Button>
@@ -199,7 +205,7 @@ export function AssignLicenseDialog({
             <Select
               items={planOptions.map(({ value, label }) => ({ value, label }))}
               value={planId}
-              onValueChange={(v) => setPlanId(v ?? "")}
+              onValueChange={(v) => selectPlan(type, v ?? "")}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Sélectionner une licence" />
@@ -214,40 +220,21 @@ export function AssignLicenseDialog({
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="assign-id">ID (optionnel)</Label>
-            <Input
-              id="assign-id"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={form.id}
-              onChange={(e) => setForm((f) => ({ ...f, id: digitsOnly(e.target.value) }))}
+          {type !== "eureka_challenge" && (
+            <LicenseAccountsFields
+              idPrefix="assign"
+              accounts={accounts}
+              onChange={setAccounts}
+              fields={type === "auto_trading" ? AUTO_TRADING_FIELDS : BOT_FIELDS}
+              required={false}
             />
-          </div>
+          )}
 
           {type === "auto_trading" && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="assign-password">Mot de passe (optionnel)</Label>
-                <PasswordInput
-                  id="assign-password"
-                  value={form.password}
-                  onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="assign-server">Serveur (optionnel)</Label>
-                <Input
-                  id="assign-server"
-                  value={form.server}
-                  onChange={(e) => setForm((f) => ({ ...f, server: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="assign-whatsapp">Numéro WhatsApp</Label>
-                <Input id="assign-whatsapp" value={whatsappNumber ?? "Non renseigné"} disabled />
-              </div>
-            </>
+            <div className="space-y-2">
+              <Label htmlFor="assign-whatsapp">Numéro WhatsApp</Label>
+              <Input id="assign-whatsapp" value={whatsappNumber ?? "Non renseigné"} disabled />
+            </div>
           )}
 
           <div className="space-y-2">

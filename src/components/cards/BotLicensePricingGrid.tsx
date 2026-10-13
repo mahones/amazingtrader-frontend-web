@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency, formatDuration } from "@/lib/utils";
@@ -45,6 +46,11 @@ function PlanCard({
             </span>
           )}
         </div>
+        {plan.number_of_accounts > 1 && (
+          <Badge variant="secondary" className="mt-2 w-fit">
+            {plan.number_of_accounts} comptes inclus
+          </Badge>
+        )}
       </CardHeader>
       <CardContent className="flex-1 space-y-3">
         <ul className="space-y-2 text-sm">

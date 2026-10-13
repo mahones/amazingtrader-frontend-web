@@ -40,6 +40,7 @@ export function LicensePlanForm({
   const [durationValue, setDurationValue] = useState(plan?.duration_value?.toString() ?? "1");
   const [durationUnit, setDurationUnit] = useState<LicenseDurationUnit>(plan?.duration_unit ?? "month");
   const [price, setPrice] = useState(plan?.price?.toString() ?? "49");
+  const [numberOfAccounts, setNumberOfAccounts] = useState(plan?.number_of_accounts?.toString() ?? "1");
   const [features, setFeatures] = useState<string[]>(plan?.features ?? []);
   const [guarantees, setGuarantees] = useState<string[]>(plan?.guarantees ?? []);
   const [isActive, setIsActive] = useState(plan?.is_active ?? true);
@@ -58,6 +59,7 @@ export function LicensePlanForm({
       duration_value: Number(durationValue),
       duration_unit: durationUnit,
       price: Number(price),
+      number_of_accounts: Math.max(1, Math.floor(Number(numberOfAccounts) || 1)),
       features: features.map((f) => f.trim()).filter(Boolean),
       guarantees: guarantees.map((g) => g.trim()).filter(Boolean),
       is_active: isActive,
@@ -147,6 +149,22 @@ export function LicensePlanForm({
                 onChange={(e) => setPrice(e.target.value)}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="plan-accounts">Nombre de comptes inclus</Label>
+            <Input
+              id="plan-accounts"
+              type="number"
+              min="1"
+              max="50"
+              step="1"
+              value={numberOfAccounts}
+              onChange={(e) => setNumberOfAccounts(e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Le client devra saisir ID / mot de passe / serveur pour chacun de ces comptes après achat.
+            </p>
           </div>
 
           <StringListEditor

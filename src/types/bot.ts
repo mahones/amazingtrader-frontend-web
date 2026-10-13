@@ -38,6 +38,8 @@ export interface BotLicensePlan {
   duration_unit: LicenseDurationUnit | null;
   price: number;
   features: string[];
+  /** Accounts (MT5 ids) the buyer fills in for one license. */
+  number_of_accounts: number;
   is_featured: boolean;
   is_active: boolean;
   position: number;
@@ -78,7 +80,8 @@ export interface TradingBot {
   files?: BotFile[];
 }
 
-export interface BotLicensePurchaseDetails {
+/** One trading account of a bot license. */
+export interface BotLicenseAccount {
   id: string;
 }
 
@@ -86,12 +89,13 @@ export interface UserBotLicense {
   id: number;
   status: "active" | "expired" | "revoked";
   is_activated: boolean;
-  purchase_details: BotLicensePurchaseDetails | null;
-  pending_purchase_details: BotLicensePurchaseDetails | null;
+  purchase_details: BotLicenseAccount[] | null;
+  pending_purchase_details: BotLicenseAccount[] | null;
   pending_purchase_details_submitted_at: string | null;
   activated_at: string | null;
   expires_at: string | null;
   product_snapshot?: Record<string, unknown> | null;
+  number_of_accounts?: number;
   bot_license_plan: BotLicensePlan;
   files?: BotFile[];
   /** Shared per-bot files (uploaded at bot creation), present once the license is activated. */

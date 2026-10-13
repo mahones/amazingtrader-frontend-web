@@ -7,11 +7,14 @@ import {
   BookOpen,
   Bot,
   KeyRound,
+  Landmark,
   MessageSquarePlus,
   PlayCircle,
   Plus,
+  Trophy,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedNumber } from "@/components/ui/animated-number";
@@ -22,8 +25,6 @@ import { ActivityFeedCard, LicenseDistributionCard, MonthlyBarChart, TrendChartC
 import { cn, formatCurrency } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
-import { fetchMyLicenses } from "@/lib/api/licenses";
-import { fetchMyBotAssignments } from "@/lib/api/bots";
 import {
   fetchPendingActivationCount,
   fetchPendingCredentialsChangeCount,
@@ -37,8 +38,6 @@ import {
   fetchAdminRecentActivity,
   fetchAdminRegistrationStats,
   fetchAdminRevenueStats,
-  fetchMyBotPerformanceStats,
-  fetchMyEnrollmentStats,
   fetchMyKpiTrends,
   fetchMyLicenseDistribution,
   fetchMyRecentActivity,
@@ -196,6 +195,29 @@ function ProgressRingTile({
   );
 }
 
+function EurekaProjectCard() {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Trophy className="size-4 text-primary" />
+          Le projet Eureka
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex h-full flex-col gap-4">
+        <p className="text-sm text-muted-foreground">
+          Relevez le Challenge Eureka : des stratégies de trading gérées, des licences et un accompagnement pour
+          atteindre vos objectifs.
+        </p>
+        <div className="mt-auto flex flex-wrap gap-3">
+          <Button render={<Link href="/challenge-eureka">Découvrir le challenge</Link>} />
+          <Button variant="outline" render={<Link href="/dashboard/eureka-challenges">Mes challenges</Link>} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function DashboardOverviewPage() {
   const { user, isStaff } = useAuth();
   const [stats, setStats] = useState<Stat[]>([]);
@@ -286,14 +308,7 @@ export default function DashboardOverviewPage() {
           },
         ]);
       } else {
-        const [enrollments, licenses, bots, kpiTrends] = await Promise.all([
-          fetchMyEnrollments(),
-          fetchMyLicenses(),
-          fetchMyBotAssignments(),
-          fetchMyKpiTrends(),
-        ]);
-        const activeLicenses = licenses.filter((l) => l.is_activated).length;
-        const activeBots = bots.filter((b) => b.status === "active").length;
+        const [enrollments, kpiTrends] = await Promise.all([fetchMyEnrollments(), fetchMyKpiTrends()]);
         const inProgressCourses = enrollments.filter((e) => e.progress_percent < 100).length;
         const avg =
           enrollments.length > 0
@@ -307,20 +322,6 @@ export default function DashboardOverviewPage() {
             caption: enrollments.length > 0 ? `${inProgressCourses} en cours` : undefined,
             trendPercent: kpiTrends.formations,
           },
-          {
-            label: "Mon auto-trading",
-            value: licenses.length,
-            href: "/dashboard/auto-trading",
-            caption: licenses.length > 0 ? `${activeLicenses} active${activeLicenses > 1 ? "s" : ""}` : undefined,
-            trendPercent: kpiTrends.auto_trading,
-          },
-          {
-            label: "Mes bots",
-            value: bots.length,
-            href: "/dashboard/bots",
-            caption: bots.length > 0 ? `${activeBots} actif${activeBots > 1 ? "s" : ""}` : undefined,
-            trendPercent: kpiTrends.bots,
-          },
         ]);
         setAvgProgress(avg);
         setEnrollmentCount(enrollments.length);
@@ -332,9 +333,10 @@ export default function DashboardOverviewPage() {
 
   useEffect(() => {
     let isActive = true;
+    if (!isStaff) return;
     async function load() {
       setTrendLoading(true);
-      const points = isStaff ? await fetchAdminRevenueStats(period) : await fetchMyBotPerformanceStats(period);
+      const points = await fetchAdminRevenueStats(period);
       if (!isActive) return;
       setTrendPoints(points);
       setTrendLoading(false);
@@ -347,9 +349,10 @@ export default function DashboardOverviewPage() {
 
   useEffect(() => {
     let isActive = true;
+    if (!isStaff) return;
     async function load() {
       setMonthlyLoading(true);
-      const points = isStaff ? await fetchAdminRegistrationStats() : await fetchMyEnrollmentStats();
+      const points = await fetchAdminRegistrationStats();
       if (!isActive) return;
       setMonthlyPoints(points);
       setMonthlyLoading(false);
@@ -390,25 +393,17 @@ export default function DashboardOverviewPage() {
     };
   }, [isStaff]);
 
-  const trendHeadline = isStaff
-    ? formatCurrency(trendPoints.reduce((sum, p) => sum + p.value, 0))
-    : formatCurrency(trendPoints.length > 0 ? trendPoints[trendPoints.length - 1].value : 0);
+  const trendHeadline = formatCurrency(trendPoints.reduce((sum, p) => sum + p.value, 0));
 
   const trendChangePercent = useMemo(() => {
     if (trendPoints.length < 2) return null;
-    // Revenue points are already per-day totals; bot-performance points are a
-    // cumulative running total, so de-cumulate them first for a like-for-like
-    // first-half-vs-second-half comparison.
-    const deltas = isStaff
-      ? trendPoints.map((p) => p.value)
-      : trendPoints.map((p, i) => (i === 0 ? p.value : p.value - trendPoints[i - 1].value));
-
+    const deltas = trendPoints.map((p) => p.value);
     const mid = Math.floor(deltas.length / 2);
     const firstHalf = deltas.slice(0, mid).reduce((sum, v) => sum + v, 0);
     const secondHalf = deltas.slice(mid).reduce((sum, v) => sum + v, 0);
     if (firstHalf === 0) return null;
     return ((secondHalf - firstHalf) / Math.abs(firstHalf)) * 100;
-  }, [trendPoints, isStaff]);
+  }, [trendPoints]);
 
   return (
     <div className="space-y-6">
@@ -423,95 +418,118 @@ export default function DashboardOverviewPage() {
 
       <AnnouncementsBanner />
 
-      <div
-        className={cn(
-          "grid gap-5",
-          "sm:grid-cols-2 lg:grid-cols-4"
-        )}
-      >
-        {loading ? (
-          <>
-            {Array.from({ length: isStaff ? 7 : 3 }).map((_, i) => (
-              <StatTileSkeleton key={i} />
-            ))}
-            {!isStaff && <StatTileSkeleton />}
-          </>
-        ) : (
-          <>
-            {stats.map((stat) => (
-              <StatTile key={stat.label} stat={stat} />
-            ))}
-            {!isStaff && (
-              <ProgressRingTile
-                label="Progression globale"
-                percent={avgProgress}
-                caption={
-                  enrollmentCount > 0
-                    ? `Moyenne sur ${enrollmentCount} formation${enrollmentCount > 1 ? "s" : ""}`
-                    : "Aucune formation en cours"
-                }
-                loading={loading}
+      {isStaff ? (
+        <>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {loading
+              ? Array.from({ length: 7 }).map((_, i) => <StatTileSkeleton key={i} />)
+              : stats.map((stat) => <StatTile key={stat.label} stat={stat} />)}
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <TrendChartCard
+                title={`Revenus des ${period} derniers jours`}
+                href="/dashboard/orders"
+                points={trendPoints}
+                loading={trendLoading}
+                period={period}
+                onPeriodChange={setPeriod}
+                headline={trendHeadline}
+                changePercent={trendChangePercent}
+                changeLabel="sur la période"
+                emptyLabel="Aucun revenu sur la période"
               />
-            )}
-          </>
-        )}
-      </div>
+            </div>
+            <LicenseDistributionCard
+              title="Répartition des licences"
+              points={licensePoints}
+              loading={licenseLoading}
+              emptyLabel="Aucune licence active"
+            />
+          </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <TrendChartCard
-            title={isStaff ? `Revenus des ${period} derniers jours` : `Performance de mes bots sur ${period} jours`}
-            href={isStaff ? "/dashboard/orders" : undefined}
-            points={trendPoints}
-            loading={trendLoading}
-            period={period}
-            onPeriodChange={setPeriod}
-            headline={trendHeadline}
-            changePercent={trendChangePercent}
-            changeLabel={isStaff ? "sur la période" : "ce mois"}
-            emptyLabel={isStaff ? "Aucun revenu sur la période" : "Aucune clôture de trade sur la période"}
-          />
-        </div>
-        <LicenseDistributionCard
-          title={isStaff ? "Répartition des licences" : "Mes licences"}
-          points={licensePoints}
-          loading={licenseLoading}
-          emptyLabel={isStaff ? "Aucune licence active" : "Aucune licence active"}
-        />
-      </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <MonthlyBarChart
+              title="Inscriptions par mois"
+              href="/dashboard/users"
+              points={monthlyPoints}
+              loading={monthlyLoading}
+              emptyLabel="Aucune inscription récente"
+            />
+            <ActivityFeedCard
+              title="Activité récente"
+              items={activity}
+              loading={activityLoading}
+              emptyLabel="Aucune activité récente"
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:col-span-2">
+              {loading ? (
+                <>
+                  <StatTileSkeleton />
+                  <StatTileSkeleton />
+                </>
+              ) : (
+                <>
+                  {stats.map((stat) => (
+                    <StatTile key={stat.label} stat={stat} />
+                  ))}
+                  <ProgressRingTile
+                    label="Progression globale"
+                    percent={avgProgress}
+                    caption={
+                      enrollmentCount > 0
+                        ? `Moyenne sur ${enrollmentCount} formation${enrollmentCount > 1 ? "s" : ""}`
+                        : "Aucune formation en cours"
+                    }
+                    loading={loading}
+                  />
+                </>
+              )}
+            </div>
+            <LicenseDistributionCard
+              title="Mes licences"
+              points={licensePoints}
+              loading={licenseLoading}
+              emptyLabel="Aucune licence active"
+            />
+          </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        <MonthlyBarChart
-          title={isStaff ? "Inscriptions par mois" : "Mes formations par mois"}
-          href={isStaff ? "/dashboard/users" : undefined}
-          points={monthlyPoints}
-          loading={monthlyLoading}
-          emptyLabel={isStaff ? "Aucune inscription récente" : "Aucune formation récente"}
-        />
-        <ActivityFeedCard
-          title={isStaff ? "Activité récente" : "Mes dernières activités"}
-          items={activity}
-          loading={activityLoading}
-          emptyLabel={isStaff ? "Aucune activité récente" : "Aucune activité récente"}
-        />
-      </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <EurekaProjectCard />
+            <ActivityFeedCard
+              title="Mes dernières activités"
+              items={activity}
+              loading={activityLoading}
+              emptyLabel="Aucune activité récente"
+            />
+          </div>
+        </>
+      )}
 
       <Card>
         <CardHeader>
           <CardTitle>Accès rapides</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-3">
-          {[
-            { href: "/dashboard/formations", label: isStaff ? "Gérer les formations" : "Mes formations", icon: BookOpen },
-            { href: "/dashboard/auto-trading", label: isStaff ? "Gérer l'auto-trading" : "Mon auto-trading", icon: KeyRound },
-            { href: "/dashboard/bots", label: isStaff ? "Gérer les bots" : "Mes bots", icon: Bot },
-            ...(isStaff
-              ? [
-                  { href: "/dashboard/tutoriels/new", label: "Nouveau tutoriel", icon: Plus },
-                  { href: "/dashboard/tutoriels", label: "Tous les tutoriels", icon: PlayCircle },
-                ]
-              : []),
-          ].map((link) => (
+          {(isStaff
+            ? [
+                { href: "/dashboard/formations", label: "Gérer les formations", icon: BookOpen },
+                { href: "/dashboard/auto-trading", label: "Gérer l'auto-trading", icon: KeyRound },
+                { href: "/dashboard/bots", label: "Gérer les bots", icon: Bot },
+                { href: "/dashboard/tutoriels/new", label: "Nouveau tutoriel", icon: Plus },
+                { href: "/dashboard/tutoriels", label: "Tous les tutoriels", icon: PlayCircle },
+              ]
+            : [
+                { href: "/brokers", label: "Courtiers recommandés", icon: Landmark },
+                { href: "/tutoriels", label: "Tutoriels", icon: PlayCircle },
+              ]
+          ).map((link) => (
             <Link
               key={link.href}
               href={link.href}

@@ -1,14 +1,14 @@
 import { apiClient } from "./client";
 import type { Announcement } from "@/types/announcement";
 import type { Course, Enrollment, Lesson } from "@/types/course";
-import type { LicensePlan, LicensePurchaseDetails, UserLicense } from "@/types/license";
+import type { LicenseAccount, LicensePlan, UserLicense } from "@/types/license";
 import type {
   BotAssignment,
   BotAssignmentStatus,
   BotFile,
   BotInstruction,
   BotLicensePlan,
-  BotLicensePurchaseDetails,
+  BotLicenseAccount,
   BotPerformanceLink,
   BotRequirement,
   BotTrade,
@@ -614,8 +614,8 @@ export async function createAdminUser(payload: {
   email: string;
   password: string;
   course_ids?: number[];
-  licenses?: Array<{ license_plan_id: number; purchased_at?: string } & Partial<LicensePurchaseDetails>>;
-  bot_licenses?: Array<{ bot_license_plan_id: number; purchased_at?: string } & Partial<BotLicensePurchaseDetails>>;
+  licenses?: Array<{ license_plan_id: number; purchased_at?: string; accounts?: Array<Partial<LicenseAccount>> }>;
+  bot_licenses?: Array<{ bot_license_plan_id: number; purchased_at?: string; accounts?: Array<Partial<BotLicenseAccount>> }>;
   eureka_challenge_licenses?: Array<{
     eureka_challenge_license_plan_id: number;
     purchased_at?: string;
@@ -628,7 +628,13 @@ export async function createAdminUser(payload: {
 
 export async function assignLicenseToUser(
   userId: number,
-  payload: { license_plan_id: number; activate?: boolean; purchased_at?: string; send_email?: boolean } & Partial<LicensePurchaseDetails>
+  payload: {
+    license_plan_id: number;
+    activate?: boolean;
+    purchased_at?: string;
+    send_email?: boolean;
+    accounts?: Array<Partial<LicenseAccount>>;
+  }
 ) {
   const { data } = await apiClient.post<{ data: UserLicense }>(`/admin/users/${userId}/licenses`, payload);
   return data.data;
@@ -636,7 +642,13 @@ export async function assignLicenseToUser(
 
 export async function assignBotLicenseToUser(
   userId: number,
-  payload: { bot_license_plan_id: number; activate?: boolean; purchased_at?: string; send_email?: boolean } & Partial<BotLicensePurchaseDetails>
+  payload: {
+    bot_license_plan_id: number;
+    activate?: boolean;
+    purchased_at?: string;
+    send_email?: boolean;
+    accounts?: Array<Partial<BotLicenseAccount>>;
+  }
 ) {
   const { data } = await apiClient.post<{ data: UserBotLicense }>(
     `/admin/users/${userId}/bot-licenses`,
@@ -928,15 +940,17 @@ export async function fetchAdminReviews() {
 }
 
 // Direct admin edit of license credentials (applied immediately, clears any pending change)
-export async function adminUpdateLicensePurchaseDetails(id: number, payload: LicensePurchaseDetails) {
-  const { data } = await apiClient.patch<{ data: UserLicense }>(`/admin/user-licenses/${id}/purchase-details`, payload);
+export async function adminUpdateLicensePurchaseDetails(id: number, accounts: LicenseAccount[]) {
+  const { data } = await apiClient.patch<{ data: UserLicense }>(`/admin/user-licenses/${id}/purchase-details`, {
+    accounts,
+  });
   return data.data;
 }
 
-export async function adminUpdateBotLicensePurchaseDetails(id: number, payload: { id: string }) {
+export async function adminUpdateBotLicensePurchaseDetails(id: number, accounts: BotLicenseAccount[]) {
   const { data } = await apiClient.patch<{ data: UserBotLicense }>(
     `/admin/user-bot-licenses/${id}/purchase-details`,
-    payload
+    { accounts }
   );
   return data.data;
 }

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
+import { LicenseAccountsFields } from "@/components/licenses/LicenseAccountsFields";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
   createAdminUser,
@@ -17,10 +18,16 @@ import {
   fetchAdminTradingBots,
 } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import {
+  AUTO_TRADING_FIELDS,
+  BOT_FIELDS,
+  fillAccounts,
+  toAccountPayload,
+  type AccountDraft,
+} from "@/lib/license-accounts";
 import { toast } from "@/lib/toast";
-import { digitsOnly } from "@/lib/utils";
 import type { Course } from "@/types/course";
-import type { LicensePlan, LicensePurchaseDetails } from "@/types/license";
+import type { LicensePlan } from "@/types/license";
 import type { BotLicensePlan } from "@/types/bot";
 import type { EurekaChallengeLicensePlan } from "@/types/eurekaChallenge";
 
@@ -54,8 +61,6 @@ function PurchasedAtField({
   );
 }
 
-const emptyLicenseDetails: LicensePurchaseDetails = { id: "", password: "", server: "" };
-
 export default function NewUserPage() {
   useRequireRole(["admin", "developer"]);
   const router = useRouter();
@@ -66,10 +71,11 @@ export default function NewUserPage() {
   const [courseIds, setCourseIds] = useState<number[]>([]);
 
   const [licensePlanIds, setLicensePlanIds] = useState<number[]>([]);
-  const [licenseDetails, setLicenseDetails] = useState<Record<number, LicensePurchaseDetails>>({});
+  // Accounts typed for each ticked plan (one draft per account of the plan).
+  const [licenseDetails, setLicenseDetails] = useState<Record<number, AccountDraft[]>>({});
 
   const [botLicensePlanIds, setBotLicensePlanIds] = useState<number[]>([]);
-  const [botLicenseDetails, setBotLicenseDetails] = useState<Record<number, string>>({});
+  const [botLicenseDetails, setBotLicenseDetails] = useState<Record<number, AccountDraft[]>>({});
 
   const [eurekaPlanIds, setEurekaPlanIds] = useState<number[]>([]);
   const [purchasedAt, setPurchasedAt] = useState<Record<string, string>>({});
@@ -103,21 +109,18 @@ export default function NewUserPage() {
 
   const dateFor = (key: string) => (purchasedAt[key] ? { purchased_at: purchasedAt[key] } : {});
 
-  function toggleLicensePlan(planId: number) {
-    setLicensePlanIds((ids) => toggleId(ids, planId));
-    setLicenseDetails((prev) => (prev[planId] ? prev : { ...prev, [planId]: { ...emptyLicenseDetails } }));
+  function toggleLicensePlan(plan: LicensePlan) {
+    setLicensePlanIds((ids) => toggleId(ids, plan.id));
+    setLicenseDetails((prev) =>
+      prev[plan.id] ? prev : { ...prev, [plan.id]: fillAccounts(null, plan.number_of_accounts) }
+    );
   }
 
-  function updateLicenseDetail(planId: number, field: keyof LicensePurchaseDetails, value: string) {
-    setLicenseDetails((prev) => ({
-      ...prev,
-      [planId]: { ...(prev[planId] ?? emptyLicenseDetails), [field]: value },
-    }));
-  }
-
-  function toggleBotLicensePlan(planId: number) {
-    setBotLicensePlanIds((ids) => toggleId(ids, planId));
-    setBotLicenseDetails((prev) => (prev[planId] !== undefined ? prev : { ...prev, [planId]: "" }));
+  function toggleBotLicensePlan(plan: BotLicensePlan) {
+    setBotLicensePlanIds((ids) => toggleId(ids, plan.id));
+    setBotLicenseDetails((prev) =>
+      prev[plan.id] ? prev : { ...prev, [plan.id]: fillAccounts(null, plan.number_of_accounts) }
+    );
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -133,12 +136,12 @@ export default function NewUserPage() {
         course_ids: courseIds,
         licenses: licensePlanIds.map((planId) => ({
           license_plan_id: planId,
-          ...(licenseDetails[planId] ?? emptyLicenseDetails),
+          accounts: toAccountPayload(licenseDetails[planId] ?? [], AUTO_TRADING_FIELDS),
           ...dateFor(`auto-${planId}`),
         })),
         bot_licenses: botLicensePlanIds.map((planId) => ({
           bot_license_plan_id: planId,
-          id: botLicenseDetails[planId] ?? "",
+          accounts: toAccountPayload(botLicenseDetails[planId] ?? [], BOT_FIELDS),
           ...dateFor(`bot-${planId}`),
         })),
         eureka_challenge_licenses: eurekaPlanIds.map((planId) => ({
@@ -221,7 +224,6 @@ export default function NewUserPage() {
                 {licensePlans.length === 0 && <p className="text-sm text-muted-foreground">Aucune licence.</p>}
                 {licensePlans.map((plan) => {
                   const checked = licensePlanIds.includes(plan.id);
-                  const details = licenseDetails[plan.id] ?? emptyLicenseDetails;
                   return (
                     <div key={plan.id} className="space-y-2">
                       <label className="flex items-center gap-2 text-sm">
@@ -229,44 +231,20 @@ export default function NewUserPage() {
                           type="checkbox"
                           className="accent-primary"
                           checked={checked}
-                          onChange={() => toggleLicensePlan(plan.id)}
+                          onChange={() => toggleLicensePlan(plan)}
                         />
                         {plan.name}
                       </label>
                       {checked && (
-                        <div className="grid gap-2 rounded-lg bg-muted/40 p-3 sm:grid-cols-2">
-                          <div className="space-y-1">
-                            <Label htmlFor={`license-${plan.id}-id`} className="text-xs">
-                              ID (optionnel)
-                            </Label>
-                            <Input
-                              id={`license-${plan.id}-id`}
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={details.id}
-                              onChange={(e) => updateLicenseDetail(plan.id, "id", digitsOnly(e.target.value))}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor={`license-${plan.id}-password`} className="text-xs">
-                              Mot de passe (optionnel)
-                            </Label>
-                            <PasswordInput
-                              id={`license-${plan.id}-password`}
-                              value={details.password}
-                              onChange={(e) => updateLicenseDetail(plan.id, "password", e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor={`license-${plan.id}-server`} className="text-xs">
-                              Serveur (optionnel)
-                            </Label>
-                            <Input
-                              id={`license-${plan.id}-server`}
-                              value={details.server}
-                              onChange={(e) => updateLicenseDetail(plan.id, "server", e.target.value)}
-                            />
-                          </div>
+                        <div className="space-y-2 rounded-lg bg-muted/40 p-3">
+                          <LicenseAccountsFields
+                            idPrefix={`license-${plan.id}`}
+                            accounts={licenseDetails[plan.id] ?? fillAccounts(null, plan.number_of_accounts)}
+                            onChange={(next) => setLicenseDetails((prev) => ({ ...prev, [plan.id]: next }))}
+                            fields={AUTO_TRADING_FIELDS}
+                            required={false}
+                            compact
+                          />
                           <PurchasedAtField
                             id={`license-${plan.id}-purchased-at`}
                             value={purchasedAt[`auto-${plan.id}`] ?? ""}
@@ -295,26 +273,20 @@ export default function NewUserPage() {
                           type="checkbox"
                           className="accent-primary"
                           checked={checked}
-                          onChange={() => toggleBotLicensePlan(plan.id)}
+                          onChange={() => toggleBotLicensePlan(plan)}
                         />
                         {plan.botName} — {plan.name}
                       </label>
                       {checked && (
-                        <div className="grid gap-2 rounded-lg bg-muted/40 p-3">
-                          <div className="space-y-1">
-                            <Label htmlFor={`bot-license-${plan.id}-id`} className="text-xs">
-                              ID (optionnel)
-                            </Label>
-                            <Input
-                              id={`bot-license-${plan.id}-id`}
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              value={botLicenseDetails[plan.id] ?? ""}
-                              onChange={(e) =>
-                                setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: digitsOnly(e.target.value) }))
-                              }
-                            />
-                          </div>
+                        <div className="space-y-2 rounded-lg bg-muted/40 p-3">
+                          <LicenseAccountsFields
+                            idPrefix={`bot-license-${plan.id}`}
+                            accounts={botLicenseDetails[plan.id] ?? fillAccounts(null, plan.number_of_accounts)}
+                            onChange={(next) => setBotLicenseDetails((prev) => ({ ...prev, [plan.id]: next }))}
+                            fields={BOT_FIELDS}
+                            required={false}
+                            compact
+                          />
                           <PurchasedAtField
                             id={`bot-license-${plan.id}-purchased-at`}
                             value={purchasedAt[`bot-${plan.id}`] ?? ""}

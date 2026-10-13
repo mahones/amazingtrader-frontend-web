@@ -131,6 +131,7 @@ function CheckoutPageContent() {
               description: plan.description,
               price: plan.price,
               durationLabel: formatDuration(plan.duration_value, plan.duration_unit),
+              numberOfAccounts: plan.number_of_accounts > 1 ? plan.number_of_accounts : undefined,
             });
           }
         } else if (type === "bot_license_plan") {
@@ -145,6 +146,7 @@ function CheckoutPageContent() {
                 plan.duration_value && plan.duration_unit
                   ? formatDuration(plan.duration_value, plan.duration_unit)
                   : "Accès à vie",
+              numberOfAccounts: plan.number_of_accounts > 1 ? plan.number_of_accounts : undefined,
             });
           }
         } else if (type === "eureka_challenge_license_plan") {

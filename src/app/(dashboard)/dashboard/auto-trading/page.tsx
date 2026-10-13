@@ -21,7 +21,9 @@ import {
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
+import { LicenseAccountsList } from "@/components/licenses/LicenseAccountsList";
 import { useAuth } from "@/context/AuthContext";
+import { hasFilledAccounts } from "@/lib/license-accounts";
 import { formatDate } from "@/lib/utils";
 import { fetchMyLicenses } from "@/lib/api/licenses";
 import {
@@ -246,18 +248,9 @@ function LicenseCard({
           status={license.status}
         />
 
-        {license.purchase_details && (
+        {hasFilledAccounts(license.purchase_details) && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <p>
-                <span className="text-muted-foreground">ID :</span>{" "}
-                {license.purchase_details.id}
-              </p>
-              <p>
-                <span className="text-muted-foreground">Serveur :</span>{" "}
-                {license.purchase_details.server}
-              </p>
-            </div>
+            <LicenseAccountsList accounts={license.purchase_details} fields={["id", "server"]} />
             <EditPurchaseDetailsDialog
               type="license_plan"
               license={license}
@@ -280,7 +273,7 @@ function LicenseCard({
           </div>
         )}
 
-        {!license.purchase_details && (
+        {!hasFilledAccounts(license.purchase_details) && (
           <div className="flex justify-end">
             <EditPurchaseDetailsDialog
               type="license_plan"

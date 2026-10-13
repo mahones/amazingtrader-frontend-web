@@ -11,10 +11,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { EditPurchaseDetailsDialog } from "@/components/licenses/EditPurchaseDetailsDialog";
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
+import { LicenseAccountsList } from "@/components/licenses/LicenseAccountsList";
 import { useAuth } from "@/context/AuthContext";
 import { downloadBotFile, downloadTradingBotFile, fetchMyBotLicenses } from "@/lib/api/bots";
 import { deleteAdminTradingBot, fetchAdminTradingBots } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import { BOT_FIELDS, hasFilledAccounts } from "@/lib/license-accounts";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { BotFile, TradingBot, UserBotLicense } from "@/types/bot";
 
@@ -242,13 +244,9 @@ function BotLicenseCard({
           status={license.status}
         />
 
-        {license.purchase_details && (
+        {hasFilledAccounts(license.purchase_details, BOT_FIELDS) && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm">
-            <div className="flex flex-wrap gap-x-6 gap-y-1">
-              <p>
-                <span className="text-muted-foreground">ID :</span> {license.purchase_details.id}
-              </p>
-            </div>
+            <LicenseAccountsList accounts={license.purchase_details} fields={BOT_FIELDS} />
             <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
           </div>
         )}
@@ -280,7 +278,7 @@ function BotLicenseCard({
           </div>
         )}
 
-        {!license.purchase_details && (
+        {!hasFilledAccounts(license.purchase_details, BOT_FIELDS) && (
           <div className="flex justify-end">
             <EditPurchaseDetailsDialog type="bot_license_plan" license={license} onUpdated={onUpdated} />
           </div>

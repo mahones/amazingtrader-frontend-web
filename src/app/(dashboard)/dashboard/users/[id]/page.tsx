@@ -15,6 +15,7 @@ import { AdminEditCredentialsDialog } from "@/components/admin/AdminEditCredenti
 import { EurekaChallengeLicenseKeysManager } from "@/components/admin/EurekaChallengeLicenseKeysManager";
 import { WhatsappButton } from "@/components/admin/WhatsappButton";
 import { BotFilesManager } from "@/components/forms/BotFilesManager";
+import { LicenseAccountsList } from "@/components/licenses/LicenseAccountsList";
 import { LicenseExpiryGauge } from "@/components/licenses/LicenseExpiryGauge";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import {
@@ -39,6 +40,7 @@ import {
   updateAdminUserStatus,
 } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import { AUTO_TRADING_FIELDS, BOT_FIELDS, hasFilledAccounts, toAccountList } from "@/lib/license-accounts";
 import { formatDate, formatPartnerAmount } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 import type { BotLicensePlan, UserBotLicense } from "@/types/bot";
@@ -61,12 +63,13 @@ function ActivationBadge({ isActivated }: { isActivated: boolean }) {
 }
 
 function PendingChangeReview({
-  pendingDetails,
+  pendingAccounts,
   submittedAt,
   onApprove,
   onReject,
 }: {
-  pendingDetails: Record<string, string | null>;
+  /** One label → value map per pending account. */
+  pendingAccounts: Array<Record<string, string | null>>;
   submittedAt: string | null;
   onApprove: () => void;
   onReject: () => void;
@@ -88,13 +91,18 @@ function PendingChangeReview({
         Modification en attente d&apos;approbation
         {submittedAt && <> depuis le {formatDate(submittedAt)}</>}
       </p>
-      <div className="grid gap-1 sm:grid-cols-2">
-        {Object.entries(pendingDetails).map(([key, value]) => (
-          <p key={key}>
-            <span className="text-muted-foreground">{key} :</span> {value}
-          </p>
-        ))}
-      </div>
+      {pendingAccounts.map((account, index) => (
+        <div key={index} className="space-y-1">
+          {pendingAccounts.length > 1 && <p className="font-medium">Compte {index + 1}</p>}
+          <div className="grid gap-1 sm:grid-cols-2">
+            {Object.entries(account).map(([key, value]) => (
+              <p key={key}>
+                <span className="text-muted-foreground">{key} :</span> {value}
+              </p>
+            ))}
+          </div>
+        </div>
+      ))}
       <div className="flex gap-2">
         <Button size="sm" disabled={pending} onClick={() => handle(async () => onApprove())}>
           Approuver
@@ -491,6 +499,7 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                     kind="auto"
                     licenseId={license.id}
                     initial={license.purchase_details}
+                    accountCount={license.number_of_accounts ?? license.license_plan?.number_of_accounts ?? 1}
                     onSaved={(updated) =>
                       setProfile((prev) =>
                         prev
@@ -516,23 +525,20 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                 expiresAt={license.expires_at}
                 status={license.status}
               />
-              {license.purchase_details && (
-                <div className="grid gap-1.5 text-sm sm:grid-cols-2">
-                  <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
-                  <p><span className="text-muted-foreground">Mot de passe :</span> {license.purchase_details.password}</p>
-                  <p><span className="text-muted-foreground">Serveur :</span> {license.purchase_details.server}</p>
-                  {/* {profile.whatsapp_number && (
-                    <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
-                  )} */}
-                </div>
+              {hasFilledAccounts(license.purchase_details) && (
+                <LicenseAccountsList
+                  accounts={license.purchase_details}
+                  fields={AUTO_TRADING_FIELDS}
+                  className="space-y-1.5 text-sm"
+                />
               )}
               {license.pending_purchase_details && (
                 <PendingChangeReview
-                  pendingDetails={{
-                    ID: license.pending_purchase_details.id,
-                    "Mot de passe": license.pending_purchase_details.password,
-                    Serveur: license.pending_purchase_details.server,
-                  }}
+                  pendingAccounts={toAccountList(license.pending_purchase_details).map((account) => ({
+                    ID: account.id,
+                    "Mot de passe": account.password,
+                    Serveur: account.server,
+                  }))}
                   submittedAt={license.pending_purchase_details_submitted_at}
                   onApprove={() => handleApproveLicenseChange(license.id)}
                   onReject={() => handleRejectLicenseChange(license.id)}
@@ -571,6 +577,7 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                     kind="bot"
                     licenseId={license.id}
                     initial={license.purchase_details}
+                    accountCount={license.number_of_accounts ?? license.bot_license_plan?.number_of_accounts ?? 1}
                     onSaved={(updated) =>
                       setProfile((prev) =>
                         prev
@@ -589,17 +596,18 @@ export default function DashboardUserProfilePage({ params }: { params: Promise<{
                 expiresAt={license.expires_at}
                 status={license.status}
               />
-              {license.purchase_details && (
-                <div className="grid gap-1.5 text-sm sm:grid-cols-2">
-                  <p><span className="text-muted-foreground">ID :</span> {license.purchase_details.id}</p>
-                  {/* {profile.whatsapp_number && (
-                    <p><span className="text-muted-foreground">WhatsApp :</span> {profile.whatsapp_number}</p>
-                  )} */}
-                </div>
+              {hasFilledAccounts(license.purchase_details, BOT_FIELDS) && (
+                <LicenseAccountsList
+                  accounts={license.purchase_details}
+                  fields={BOT_FIELDS}
+                  className="space-y-1.5 text-sm"
+                />
               )}
               {license.pending_purchase_details && (
                 <PendingChangeReview
-                  pendingDetails={{ ID: license.pending_purchase_details.id }}
+                  pendingAccounts={toAccountList(license.pending_purchase_details).map((account) => ({
+                    ID: account.id,
+                  }))}
                   submittedAt={license.pending_purchase_details_submitted_at}
                   onApprove={() => handleApproveBotLicenseChange(license.id)}
                   onReject={() => handleRejectBotLicenseChange(license.id)}

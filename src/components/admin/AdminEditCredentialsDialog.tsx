@@ -20,6 +20,7 @@ import {
 } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
 import { toast } from "@/lib/toast";
+import { fillAccounts } from "@/lib/license-accounts";
 import type { UserBotLicense } from "@/types/bot";
 import type { UserEurekaChallengeLicense } from "@/types/eurekaChallenge";
 import type { UserLicense } from "@/types/license";
@@ -27,8 +28,20 @@ import type { UserLicense } from "@/types/license";
 type Account = { id: string; password: string; server: string };
 
 type Props =
-  | { kind: "auto"; licenseId: number; initial: Partial<Account> | null; onSaved: (license: UserLicense) => void }
-  | { kind: "bot"; licenseId: number; initial: Partial<Account> | null; onSaved: (license: UserBotLicense) => void }
+  | {
+      kind: "auto";
+      licenseId: number;
+      initial: Partial<Account>[] | null;
+      accountCount: number;
+      onSaved: (license: UserLicense) => void;
+    }
+  | {
+      kind: "bot";
+      licenseId: number;
+      initial: Partial<Account>[] | null;
+      accountCount: number;
+      onSaved: (license: UserBotLicense) => void;
+    }
   | {
       kind: "eureka";
       licenseId: number;
@@ -44,8 +57,9 @@ const blank = (a?: Partial<Account> | null): Account => ({
 });
 
 /**
- * Admin-only direct edit of a license's id/password/server. Applied
- * immediately (no approval step) and supersedes any pending user change.
+ * Admin-only direct edit of a license's accounts (id/password/server per
+ * account). Applied immediately (no approval step) and supersedes any pending
+ * user change.
  */
 export function AdminEditCredentialsDialog(props: Props) {
   const [open, setOpen] = useState(false);
@@ -58,7 +72,8 @@ export function AdminEditCredentialsDialog(props: Props) {
       const count = Math.max(props.accountCount, existing.length, 1);
       return Array.from({ length: count }, (_, i) => blank(existing[i]));
     }
-    return [blank(props.initial)];
+    // Exactly the plan's number of accounts: that is what the API accepts.
+    return fillAccounts(props.initial, props.accountCount);
   };
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
 
@@ -72,9 +87,14 @@ export function AdminEditCredentialsDialog(props: Props) {
     setError(null);
     try {
       if (props.kind === "auto") {
-        props.onSaved(await adminUpdateLicensePurchaseDetails(props.licenseId, accounts[0]));
+        props.onSaved(await adminUpdateLicensePurchaseDetails(props.licenseId, accounts));
       } else if (props.kind === "bot") {
-        props.onSaved(await adminUpdateBotLicensePurchaseDetails(props.licenseId, { id: accounts[0].id }));
+        props.onSaved(
+          await adminUpdateBotLicensePurchaseDetails(
+            props.licenseId,
+            accounts.map(({ id }) => ({ id }))
+          )
+        );
       } else {
         props.onSaved(await adminUpdateEurekaChallengeLicensePurchaseDetails(props.licenseId, accounts));
       }
@@ -109,7 +129,7 @@ export function AdminEditCredentialsDialog(props: Props) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {accounts.map((account, index) => (
             <div key={index} className="space-y-3 rounded-md bg-muted/50 p-3">
-              {props.kind === "eureka" && <p className="text-sm font-medium">Compte {index + 1}</p>}
+              {accounts.length > 1 && <p className="text-sm font-medium">Compte {index + 1}</p>}
               <div className="space-y-1.5">
                 <Label htmlFor={`cred-id-${index}`}>ID</Label>
                 <Input

@@ -2,7 +2,7 @@ import { apiClient } from "./client";
 import type {
   BotAssignment,
   BotFile,
-  BotLicensePurchaseDetails,
+  BotLicenseAccount,
   BotTrade,
   TradingBot,
   UserBotLicense,
@@ -30,13 +30,15 @@ export async function fetchMyBotLicenses() {
   return data.data;
 }
 
-export async function updateBotLicensePurchaseDetails(
-  id: number,
-  details: BotLicensePurchaseDetails
-) {
+export async function fetchMyBotLicense(id: number) {
+  const { data } = await apiClient.get<{ data: UserBotLicense }>(`/my/bot-licenses/${id}`);
+  return data.data;
+}
+
+export async function updateBotLicensePurchaseDetails(id: number, accounts: BotLicenseAccount[]) {
   const { data } = await apiClient.patch<{ data: UserBotLicense }>(
     `/my/bot-licenses/${id}/purchase-details`,
-    details
+    { accounts }
   );
   return data.data;
 }

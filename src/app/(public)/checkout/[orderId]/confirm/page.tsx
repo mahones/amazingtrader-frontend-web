@@ -10,7 +10,9 @@ import { EurekaChallengePostPurchaseDetailsForm } from "@/components/purchase/Eu
 import { PostPurchaseDetailsForm } from "@/components/purchase/PostPurchaseDetailsForm";
 import { useAuth } from "@/context/AuthContext";
 import { extractApiError } from "@/lib/api/client";
+import { fetchMyBotLicense } from "@/lib/api/bots";
 import { fetchMyEurekaChallengeLicenses } from "@/lib/api/eurekaChallenges";
+import { fetchMyLicense } from "@/lib/api/licenses";
 import {
   fetchOrder,
   fetchPayerUrlConfig,
@@ -54,6 +56,9 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
   const [simulateError, setSimulateError] = useState<string | null>(null);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [eurekaAccounts, setEurekaAccounts] = useState<number | null>(null);
+  const [licenseAccounts, setLicenseAccounts] = useState<number | null>(null);
+  const [botLicenseAccounts, setBotLicenseAccounts] = useState<number | null>(null);
+  const [accountsError, setAccountsError] = useState<string | null>(null);
   const hasHandledPaidRedirectRef = useRef(false);
   const hasVerifiedCinetPayRef = useRef(false);
 
@@ -154,6 +159,26 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
       .catch(() => setEurekaAccounts(1));
   }, [createdEurekaLicenseId]);
 
+  // Same for auto-trading and bot licenses: the plan decides how many accounts
+  // the buyer has to fill in.
+  const createdLicenseId = order?.created_license_id;
+  useEffect(() => {
+    if (!createdLicenseId) return;
+    fetchMyLicense(createdLicenseId)
+      .then((license) => setLicenseAccounts(license.number_of_accounts ?? license.license_plan?.number_of_accounts ?? 1))
+      .catch((err) => setAccountsError(extractApiError(err, "Impossible de charger votre licence.")));
+  }, [createdLicenseId]);
+
+  const createdBotLicenseId = order?.created_bot_license_id;
+  useEffect(() => {
+    if (!createdBotLicenseId) return;
+    fetchMyBotLicense(createdBotLicenseId)
+      .then((license) =>
+        setBotLicenseAccounts(license.number_of_accounts ?? license.bot_license_plan?.number_of_accounts ?? 1)
+      )
+      .catch((err) => setAccountsError(extractApiError(err, "Impossible de charger votre licence.")));
+  }, [createdBotLicenseId]);
+
   async function handleSimulate(outcome: "paid" | "cancel") {
     setSimulating(outcome);
     setSimulateError(null);
@@ -244,41 +269,57 @@ function CheckoutConfirmPageContent({ params }: { params: Promise<{ orderId: str
         </Alert>
       )}
 
-      {order && order.status === "paid" && type === "bot_license_plan" && order.created_bot_license_id && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Activer votre bot de trading</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Renseignez l&apos;identifiant de votre compte MT5 sur lequel le bot sera installé.
-            </p>
-            <PostPurchaseDetailsForm
-              type="bot_license_plan"
-              licenseId={order.created_bot_license_id}
-              onSubmitted={() => router.push("/dashboard/bots")}
-            />
-          </CardContent>
-        </Card>
-      )}
+      {accountsError && <Alert variant="error">{accountsError} Rechargez la page pour réessayer.</Alert>}
 
-      {order && order.status === "paid" && type === "license_plan" && order.created_license_id && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Activer votre licence auto-trading</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Renseignez vos identifiants de connexion de votre compte mt5 pour activer votre licence d&apos;auto-trading.
-            </p>
-            <PostPurchaseDetailsForm
-              type="license_plan"
-              licenseId={order.created_license_id}
-              onSubmitted={() => router.push("/dashboard/auto-trading")}
-            />
-          </CardContent>
-        </Card>
-      )}
+      {order &&
+        order.status === "paid" &&
+        type === "bot_license_plan" &&
+        order.created_bot_license_id &&
+        botLicenseAccounts !== null && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Activer votre bot de trading</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-muted-foreground">
+                {botLicenseAccounts > 1
+                  ? `Renseignez l'identifiant de chacun de vos ${botLicenseAccounts} comptes MT5 sur lesquels le bot sera installé.`
+                  : "Renseignez l'identifiant de votre compte MT5 sur lequel le bot sera installé."}
+              </p>
+              <PostPurchaseDetailsForm
+                type="bot_license_plan"
+                licenseId={order.created_bot_license_id}
+                numberOfAccounts={botLicenseAccounts}
+                onSubmitted={() => router.push("/dashboard/bots")}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+      {order &&
+        order.status === "paid" &&
+        type === "license_plan" &&
+        order.created_license_id &&
+        licenseAccounts !== null && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Activer votre licence auto-trading</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-muted-foreground">
+                {licenseAccounts > 1
+                  ? `Renseignez les identifiants de connexion de chacun de vos ${licenseAccounts} comptes MT5 pour activer votre licence d'auto-trading.`
+                  : "Renseignez vos identifiants de connexion de votre compte mt5 pour activer votre licence d'auto-trading."}
+              </p>
+              <PostPurchaseDetailsForm
+                type="license_plan"
+                licenseId={order.created_license_id}
+                numberOfAccounts={licenseAccounts}
+                onSubmitted={() => router.push("/dashboard/auto-trading")}
+              />
+            </CardContent>
+          </Card>
+        )}
 
       {order &&
         order.status === "paid" &&

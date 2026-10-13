@@ -37,6 +37,7 @@ interface PlanDraft {
   duration_unit: LicenseDurationUnit;
   price: string;
   features: string;
+  number_of_accounts: string;
   is_featured: boolean;
   is_active: boolean;
 }
@@ -49,6 +50,7 @@ const EMPTY_DRAFT: PlanDraft = {
   duration_unit: "month",
   price: "",
   features: "",
+  number_of_accounts: "1",
   is_featured: false,
   is_active: true,
 };
@@ -62,6 +64,7 @@ function planToDraft(plan: BotLicensePlan): PlanDraft {
     duration_unit: plan.duration_unit ?? "month",
     price: plan.price.toString(),
     features: plan.features.join("\n"),
+    number_of_accounts: plan.number_of_accounts.toString(),
     is_featured: plan.is_featured,
     is_active: plan.is_active,
   };
@@ -79,6 +82,7 @@ function draftToPayload(draft: PlanDraft) {
       .split("\n")
       .map((f) => f.trim())
       .filter(Boolean),
+    number_of_accounts: Math.max(1, Math.floor(Number(draft.number_of_accounts) || 1)),
     is_featured: draft.is_featured,
     is_active: draft.is_active,
   };
@@ -163,6 +167,21 @@ function PlanFields({ value, onChange }: { value: PlanDraft; onChange: (next: Pl
             onChange={(e) => onChange({ ...value, price: e.target.value })}
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Nombre de comptes inclus</Label>
+        <Input
+          type="number"
+          min="1"
+          max="50"
+          step="1"
+          value={value.number_of_accounts}
+          onChange={(e) => onChange({ ...value, number_of_accounts: e.target.value })}
+        />
+        <p className="text-xs text-muted-foreground">
+          Le client devra saisir l&apos;ID de son compte MT5 pour chacun de ces comptes après achat.
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -281,6 +300,9 @@ export function BotLicensePlansManager({
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{plan.name}</span>
                     <Badge variant="secondary">{OFFER_LABELS[plan.offer_type]}</Badge>
+                    <Badge variant="secondary">
+                      {plan.number_of_accounts} compte{plan.number_of_accounts > 1 ? "s" : ""}
+                    </Badge>
                     {plan.is_featured && <Badge>Populaire</Badge>}
                     {!plan.is_active && <Badge variant="secondary">Inactive</Badge>}
                   </div>
