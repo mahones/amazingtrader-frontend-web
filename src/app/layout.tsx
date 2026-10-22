@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/context/AuthContext";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { PwaInstallPrompts } from "@/components/pwa/PwaInstallPrompts";
+import { SITE_URL } from "@/lib/site";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -25,6 +26,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "./" },
   title: {
     default: "Amazing Traders",
     template: "%s · Amazing Traders",
@@ -68,6 +71,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${roboto.variable} ${poppins.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  name: "Amazing Traders",
+                  url: SITE_URL,
+                  logo: `${SITE_URL}/logo.png`,
+                },
+                { "@type": "WebSite", name: "Amazing Traders", url: SITE_URL, inLanguage: "fr-FR" },
+              ],
+            }),
+          }}
+        />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <AuthProvider>{children}</AuthProvider>
           <Toaster />
