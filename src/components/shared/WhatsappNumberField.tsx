@@ -11,9 +11,25 @@ import {
   SelectLabel,
   SelectSeparator,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { OTHER_COUNTRIES, PRIORITY_COUNTRIES, combineWhatsappNumber, splitWhatsappNumber } from "@/lib/country-codes";
+
+/** Drapeau en image (les emojis de drapeaux ne s'affichent pas sous Windows). */
+function Flag({ iso2 }: { iso2: string }) {
+  const code = iso2.toLowerCase();
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w80/${code}.png`}
+      srcSet={`https://flagcdn.com/w160/${code}.png 2x`}
+      alt=""
+      width={28}
+      height={21}
+      className="h-[21px] w-7 shrink-0 rounded-[2px] object-cover"
+    />
+  );
+}
 
 /**
  * Numéro WhatsApp saisi en deux parties (indicatif pays + numéro local) mais
@@ -26,12 +42,15 @@ export function WhatsappNumberField({
   value,
   onChange,
   required = false,
+  fieldClassName,
 }: {
   idPrefix: string;
   label?: string;
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
+  /** Classes appliquées à l'indicatif et au numéro (ex. style des écrans d'authentification). */
+  fieldClassName?: string;
 }) {
   const [{ dial, number }, setParts] = useState(() => splitWhatsappNumber(value));
 
@@ -39,6 +58,8 @@ export function WhatsappNumberField({
     setParts({ dial: nextDial, number: nextNumber });
     onChange(combineWhatsappNumber(nextDial, nextNumber));
   }
+
+  const selected = [...PRIORITY_COUNTRIES, ...OTHER_COUNTRIES].find((c) => c.dial === dial);
 
   return (
     <div className="space-y-2">
@@ -52,17 +73,23 @@ export function WhatsappNumberField({
         >
           <SelectTrigger
             id={`${idPrefix}-dial`}
-            className="w-32 shrink-0"
+            className={cn("w-20 shrink-0", fieldClassName)}
             aria-label="Indicatif du pays"
           >
-            <SelectValue placeholder="Indicatif" />
+            {selected ? (
+              <Flag iso2={selected.iso2} />
+            ) : (
+              <span className="text-muted-foreground">Pays</span>
+            )}
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="min-w-24">
             <SelectGroup>
               <SelectLabel>Fréquents</SelectLabel>
               {PRIORITY_COUNTRIES.map((c) => (
                 <SelectItem key={c.iso2} value={c.dial}>
-                  {c.dial} {c.name}
+                  <span title={`${c.name} ${c.dial}`}>
+                    <Flag iso2={c.iso2} />
+                  </span>
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -71,7 +98,9 @@ export function WhatsappNumberField({
               <SelectLabel>Tous les pays</SelectLabel>
               {OTHER_COUNTRIES.map((c) => (
                 <SelectItem key={c.iso2} value={c.dial}>
-                  {c.dial} {c.name}
+                  <span title={`${c.name} ${c.dial}`}>
+                    <Flag iso2={c.iso2} />
+                  </span>
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -85,7 +114,7 @@ export function WhatsappNumberField({
           value={number}
           onChange={(e) => update(dial, e.target.value)}
           required={required}
-          className="flex-1"
+          className={cn("flex-1", fieldClassName)}
         />
       </div>
     </div>

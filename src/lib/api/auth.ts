@@ -16,6 +16,15 @@ export async function login(email: string, password: string): Promise<User> {
   return data.data;
 }
 
+export async function adminLogin(email: string, password: string): Promise<User> {
+  const { data } = await apiClient.post<{ data: User; token: string }>("/admin/login", {
+    email,
+    password,
+  });
+  setToken(data.token);
+  return data.data;
+}
+
 export async function register(payload: {
   name: string;
   email: string;

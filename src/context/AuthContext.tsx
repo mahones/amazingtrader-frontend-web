@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { fetchMe, login as apiLogin, logout as apiLogout } from "@/lib/api/auth";
+import { adminLogin as apiAdminLogin, fetchMe, login as apiLogin, logout as apiLogout } from "@/lib/api/auth";
 import { SESSION_EXPIRED_EVENT } from "@/lib/api/client";
 import { getToken } from "@/lib/api/token";
 import type { User } from "@/types/user";
@@ -18,6 +18,7 @@ interface AuthContextValue {
   isLoading: boolean;
   isStaff: boolean;
   login: (email: string, password: string) => Promise<User>;
+  adminLogin: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -62,6 +63,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return me;
   }, []);
 
+  const adminLogin = useCallback(async (email: string, password: string) => {
+    const me = await apiAdminLogin(email, password);
+    setUser(me);
+    return me;
+  }, []);
+
   const logout = useCallback(async () => {
     await apiLogout();
     setUser(null);
@@ -70,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isStaff = user?.role === "admin" || user?.role === "developer";
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isStaff, login, logout, refresh }}>
+    <AuthContext.Provider value={{ user, isLoading, isStaff, login, adminLogin, logout, refresh }}>
       {children}
     </AuthContext.Provider>
   );

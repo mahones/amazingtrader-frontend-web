@@ -7,7 +7,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthCard, authButtonClass, authFieldClass, authLinkClass } from "@/components/auth/AuthCard";
 import { useAuth } from "@/context/AuthContext";
 import { resetPassword } from "@/lib/api/auth";
 import { extractApiError } from "@/lib/api/client";
@@ -59,45 +59,43 @@ function ResetPasswordPageContent() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-12">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-2xl">Nouveau mot de passe</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">Nouveau mot de passe</Label>
-              <PasswordInput
-                id="password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password_confirmation">Confirmer le mot de passe</Label>
-              <PasswordInput
-                id="password_confirmation"
-                required
-                minLength={8}
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-              />
-            </div>
-            {error && <Alert variant="error">{error}</Alert>}
-            <Button type="submit" className="w-full" disabled={pending}>
-              {pending ? "Enregistrement..." : "Réinitialiser le mot de passe"}
-            </Button>
-          </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            <Link href="/login" className="font-medium text-primary hover:underline">
-              Retour à la connexion
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <AuthCard title="Nouveau mot de passe" subtitle="Choisissez un nouveau mot de passe pour votre compte.">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="password">Nouveau mot de passe</Label>
+          <PasswordInput
+            id="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            placeholder="8 caractères minimum"
+            className={`${authFieldClass} pr-12`}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password_confirmation">Confirmer le mot de passe</Label>
+          <PasswordInput
+            id="password_confirmation"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            className={`${authFieldClass} pr-12`}
+            value={passwordConfirmation}
+            onChange={(e) => setPasswordConfirmation(e.target.value)}
+          />
+        </div>
+        {error && <Alert variant="error">{error}</Alert>}
+        <Button type="submit" className={authButtonClass} disabled={pending}>
+          {pending ? "Enregistrement..." : "Réinitialiser le mot de passe"}
+        </Button>
+      </form>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Link href="/login" className={authLinkClass}>
+          Retour à la connexion
+        </Link>
+      </p>
+    </AuthCard>
   );
 }
