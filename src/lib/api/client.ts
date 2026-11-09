@@ -8,6 +8,9 @@ export const SESSION_EXPIRED_EVENT = "auth:session-expired";
 
 export const apiClient = axios.create({
   baseURL: `${API_URL}/api`,
+  // Fail after 20s instead of leaving buttons (login, menu…) hanging forever
+  // when the backend is saturated; the interceptor below shows an error toast.
+  timeout: 20_000,
   headers: {
     Accept: "application/json",
   },

@@ -9,8 +9,17 @@ import type { VipFormation } from "@/types/vipFormation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+// Public data is cached for 60s so page navigation doesn't depend on the
+// (slow, shared-hosting) backend on every click, and a hung backend can't
+// freeze a page forever: the request is aborted after FETCH_TIMEOUT_MS.
+const REVALIDATE_SECONDS = 60;
+const FETCH_TIMEOUT_MS = 10_000;
+
 async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}/api${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_URL}/api${path}`, {
+    next: { revalidate: REVALIDATE_SECONDS },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) {
     throw new Error(`Request to ${path} failed with status ${res.status}`);
   }

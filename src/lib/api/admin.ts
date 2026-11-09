@@ -704,6 +704,20 @@ export async function updateAdminBrokersPageSettings(payload: BrokersPageSetting
   return data.data;
 }
 
+export interface SiteSettings {
+  simple_courses_enabled: boolean;
+}
+
+export async function fetchAdminSiteSettings() {
+  const { data } = await apiClient.get<{ data: SiteSettings }>("/admin/site-settings");
+  return data.data;
+}
+
+export async function updateAdminSiteSettings(payload: SiteSettings) {
+  const { data } = await apiClient.patch<{ data: SiteSettings }>("/admin/site-settings", payload);
+  return data.data;
+}
+
 // Promo codes
 export async function fetchAdminPromoCodes() {
   const { data } = await apiClient.get<{ data: PromoCode[] }>("/admin/promo-codes");

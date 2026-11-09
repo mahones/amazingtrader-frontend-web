@@ -429,7 +429,7 @@ export default function DashboardOverviewPage() {
           <div className="grid gap-5 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <TrendChartCard
-                title={`Revenus des ${period} derniers jours`}
+                title={period === "all" ? "Revenus sur toute la période" : `Revenus des ${period} derniers jours`}
                 href="/dashboard/orders"
                 points={trendPoints}
                 loading={trendLoading}

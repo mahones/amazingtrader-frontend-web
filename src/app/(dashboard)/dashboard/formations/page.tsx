@@ -12,8 +12,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { CatalogCard, CatalogCardGrid } from "@/components/dashboard/CatalogListCard";
 import { useAuth } from "@/context/AuthContext";
 import { fetchMyEnrollments } from "@/lib/api/courses";
-import { deleteAdminCourse, fetchAdminCourses } from "@/lib/api/admin";
+import { Switch } from "@/components/ui/switch";
+import { deleteAdminCourse, fetchAdminCourses, fetchAdminSiteSettings, updateAdminSiteSettings } from "@/lib/api/admin";
 import { extractApiError } from "@/lib/api/client";
+import { toast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
 import type { Enrollment } from "@/types/course";
 import type { Course } from "@/types/course";
@@ -24,9 +26,31 @@ export default function DashboardFormationsPage() {
   const [adminCourses, setAdminCourses] = useState<Course[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [simpleCoursesEnabled, setSimpleCoursesEnabled] = useState<boolean | null>(null);
+  const [savingSetting, setSavingSetting] = useState(false);
+
+  async function handleToggleSimpleCourses(checked: boolean) {
+    setError(null);
+    setSavingSetting(true);
+    try {
+      const settings = await updateAdminSiteSettings({ simple_courses_enabled: checked });
+      setSimpleCoursesEnabled(settings.simple_courses_enabled);
+      toast.success(
+        settings.simple_courses_enabled
+          ? "Les formations simples sont de nouveau visibles."
+          : "Les formations simples sont masquées : seules les formations VIP sont affichées."
+      );
+    } catch (err) {
+      setError(extractApiError(err, "Impossible de modifier ce réglage."));
+    } finally {
+      setSavingSetting(false);
+    }
+  }
+
   useEffect(() => {
     if (isStaff) {
       fetchAdminCourses().then(setAdminCourses);
+      fetchAdminSiteSettings().then((s) => setSimpleCoursesEnabled(s.simple_courses_enabled));
     } else {
       fetchMyEnrollments().then(setEnrollments);
     }
@@ -59,6 +83,24 @@ export default function DashboardFormationsPage() {
             }
           />
         </div>
+
+        <Card>
+          <CardContent className="flex items-center justify-between gap-4 pt-6">
+            <div>
+              <p className="font-medium">Afficher les formations simples sur le site</p>
+              <p className="text-sm text-muted-foreground">
+                Désactivé : seules les formations VIP restent visibles et achetables. Les utilisateurs déjà inscrits
+                gardent l&apos;accès à leurs formations.
+              </p>
+            </div>
+            <Switch
+              checked={simpleCoursesEnabled ?? true}
+              disabled={simpleCoursesEnabled === null || savingSetting}
+              onCheckedChange={handleToggleSimpleCourses}
+              aria-label="Afficher les formations simples"
+            />
+          </CardContent>
+        </Card>
 
         {error && <Alert variant="error">{error}</Alert>}
 

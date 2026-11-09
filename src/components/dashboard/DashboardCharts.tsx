@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import type { ActivityItem, ActivityType, LicenseDistributionPoint, MonthlyPoint, StatsPeriod, TrendPoint } from "@/types/stats";
 
 const MONTH_LETTERS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-const PERIODS: StatsPeriod[] = [7, 30, 90];
+const PERIODS: StatsPeriod[] = [30, 90, "all"];
 const DONUT_STROKE_COLORS = ["stroke-primary", "stroke-primary/55", "stroke-foreground/30", "stroke-foreground/15"];
 const DONUT_LEGEND_COLORS = ["bg-primary", "bg-primary/55", "bg-foreground/30", "bg-foreground/15"];
 
@@ -158,7 +158,7 @@ export function TrendChartCard({
                 period === p ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {p}j
+              {p === "all" ? "Tout" : `${p}j`}
             </button>
           ))}
         </div>

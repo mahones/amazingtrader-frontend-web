@@ -8,7 +8,7 @@ export interface MonthlyPoint {
   value: number;
 }
 
-export type StatsPeriod = 7 | 30 | 90;
+export type StatsPeriod = 30 | 90 | "all";
 
 export interface LicenseDistributionPoint {
   key: string;
